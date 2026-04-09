@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate content cards">
+    <meta name="theme-color" content="#2563eb">
+    <title>Card Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f0cf;</span>
+        <h1>Card Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate content cards</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="cardTitle">Title</label>
+                    <input type="text" id="cardTitle" class="form-input" placeholder="Card Title" maxlength="50" value="Card Title">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardContent">Content</label>
+                    <textarea id="cardContent" class="form-input" placeholder="Card description text..." rows="3" maxlength="200">This is a sample card description with some content.</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardImage">Image URL (optional)</label>
+                    <input type="text" id="cardImage" class="form-input" placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardBgColor">Background Color</label>
+                    <input type="color" id="cardBgColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardTextColor">Text Color</label>
+                    <input type="color" id="cardTextColor" class="form-color" value="#1f2937">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardAccentColor">Accent Color</label>
+                    <input type="color" id="cardAccentColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardWidth">Width (px)</label>
+                    <input type="range" id="cardWidth" class="form-range" min="200" max="500" value="320" step="10">
+                    <span id="cardWidthValue" class="range-value">320</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cardStyle">Card Style</label>
+                    <select id="cardStyle" class="form-input">
+                        <option value="shadow">Shadow</option>
+                        <option value="bordered">Bordered</option>
+                        <option value="flat">Flat</option>
+                        <option value="outlined">Outlined</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Card</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="cardPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML/CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

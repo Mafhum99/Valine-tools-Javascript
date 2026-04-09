@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Find the equation of a line from two points or from a point and slope">
+    <meta name="theme-color" content="#2563eb">
+    <title>📐 Line Equation Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Line Equation Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Find the equation of a line from two points or from a point and slope</p>
+
+            <div id="tool-content">
+                <div class="formula-box">
+                    <strong>Slope-Intercept Form:</strong> y = mx + b<br>
+                    <strong>Point-Slope Form:</strong> y - y₁ = m(x - x₁)<br>
+                    <strong>Standard Form:</strong> Ax + By = C
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="calcMode">Calculation Mode</label>
+                    <select id="calcMode" class="form-select">
+                        <option value="twopoints">From Two Points</option>
+                        <option value="pointslope">From Point & Slope</option>
+                    </select>
+                </div>
+
+                <!-- Two Points Mode -->
+                <div id="twopoints-mode">
+                    <div class="form-group">
+                        <label class="form-label">Point 1 (x₁, y₁)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="x1" class="form-input" placeholder="x₁" step="any">
+                            <input type="number" id="y1" class="form-input" placeholder="y₁" step="any">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Point 2 (x₂, y₂)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="x2" class="form-input" placeholder="x₂" step="any">
+                            <input type="number" id="y2" class="form-input" placeholder="y₂" step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Point & Slope Mode -->
+                <div id="pointslope-mode" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">Point (x₁, y₁)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="px" class="form-input" placeholder="x₁" step="any">
+                            <input type="number" id="py" class="form-input" placeholder="y₁" step="any">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="slope">Slope (m)</label>
+                        <input type="number" id="slope" class="form-input" placeholder="Enter slope m..." step="any">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

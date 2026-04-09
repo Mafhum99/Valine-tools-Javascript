@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate discount amount and final price after discount">
+    <meta name="theme-color" content="#2563eb">
+    <title>💰 Discount Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">💰</span>
+        <h1>Discount Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Calculate discount amount and final price after discount</p>
+
+            <div class="form-group">
+                <label class="form-label" for="originalPrice">Original Price ($)</label>
+                <input type="number" id="originalPrice" class="form-input" placeholder="e.g., 100" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="discountPercent">Discount (%)</label>
+                <input type="number" id="discountPercent" class="form-input" placeholder="e.g., 20" step="0.01" min="0" max="100">
+            </div>
+
+            <div class="btn-group">
+                <button id="calculate" class="btn btn-primary btn-block">💰 Calculate Discount</button>
+                <button id="clear" class="btn btn-secondary">🗑️ Clear</button>
+            </div>
+
+            <div class="result-box" id="resultBox" style="display: none;">
+                <div class="result-label">Results</div>
+                <div id="results"></div>
+            </div>
+
+            <div class="btn-group" id="copyBtn" style="display: none;">
+                <button id="copyResult" class="btn btn-secondary">📋 Copy Results</button>
+            </div>
+        </div>
+
+        <div class="tool-card mt-2">
+            <h3 class="mb-1">📖 How to Use</h3>
+            <ul style="padding-left: 1.5rem; color: var(--gray-600);">
+                <li>Enter the original price</li>
+                <li>Enter the discount percentage</li>
+                <li>Click Calculate to see the results</li>
+            </ul>
+            
+            <h3 class="mt-2 mb-1">📐 Formula</h3>
+            <div class="result-box" style="background: var(--primary-light); border-color: var(--primary);">
+                <code>
+Savings = Original Price × (Discount % / 100)
+Final Price = Original Price - Savings
+                </code>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

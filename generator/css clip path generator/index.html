@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS clip-path shapes">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x2702; CSS Clip Path Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x2702;</span>
+        <h1>CSS Clip Path Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS clip-path shapes</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="shape">Shape</label>
+                    <select id="shape" class="form-select">
+                        <option value="circle">Circle</option>
+                        <option value="ellipse">Ellipse</option>
+                        <option value="polygon">Polygon</option>
+                        <option value="inset">Inset</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="circleParams">
+                    <label class="form-label" for="circleRadius">Radius (%)</label>
+                    <input type="range" id="circleRadius" class="form-range" min="5" max="50" value="30">
+                    <span id="circleRadiusVal" class="range-value">30%</span>
+                </div>
+
+                <div class="form-group" id="ellipseParams" style="display:none;">
+                    <label class="form-label">RX (%)</label>
+                    <input type="range" id="ellipseRx" class="form-range" min="5" max="50" value="25">
+                    <span id="ellipseRxVal" class="range-value">25%</span>
+                    <label class="form-label">RY (%)</label>
+                    <input type="range" id="ellipseRy" class="form-range" min="5" max="50" value="35">
+                    <span id="ellipseRyVal" class="range-value">35%</span>
+                </div>
+
+                <div class="form-group" id="polygonParams" style="display:none;">
+                    <label class="form-label" for="polygonPoints">Points (e.g., 50% 0%, 100% 100%, 0% 100%)</label>
+                    <input type="text" id="polygonPoints" class="form-input" value="50% 0%, 100% 100%, 0% 100%" placeholder="50% 0%, 100% 100%, 0% 100%">
+                </div>
+
+                <div class="form-group" id="insetParams" style="display:none;">
+                    <label class="form-label">Top Right Bottom Left (%)</label>
+                    <input type="text" id="insetValues" class="form-input" value="10% 10% 10% 10%" placeholder="10% 10% 10% 10%">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generateBtn" class="btn btn-primary">&#x26A1; Generate</button>
+                    <button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Preview</div>
+                    <div class="preview-container">
+                        <div id="preview" class="clip-preview"></div>
+                    </div>
+                    <div class="result-label mt-2">CSS Code</div>
+                    <pre id="output" class="code-block">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

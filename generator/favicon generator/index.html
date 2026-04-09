@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate favicons for websites">
+    <meta name="theme-color" content="#2563eb">
+    <title>Favicon Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f310;</span>
+        <h1>Favicon Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate favicons for websites</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="faviconType">Favicon Type</label>
+                    <select id="faviconType" class="form-input">
+                        <option value="text">Text/Letter</option>
+                        <option value="emoji">Emoji</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="faviconTextInputGroup">
+                    <label class="form-label" for="faviconText">Text (1-2 characters)</label>
+                    <input type="text" id="faviconText" class="form-input" placeholder="AB" maxlength="2" value="A">
+                </div>
+
+                <div class="form-group" id="faviconEmojiInputGroup" style="display:none;">
+                    <label class="form-label" for="faviconEmoji">Emoji</label>
+                    <input type="text" id="faviconEmoji" class="form-input" placeholder="&#x1f680;" maxlength="2" value="&#x1f680;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="faviconBgColor">Background Color</label>
+                    <input type="color" id="faviconBgColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="faviconTextColor">Text/Emoji Color</label>
+                    <input type="color" id="faviconTextColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="faviconShape">Shape</label>
+                    <select id="faviconShape" class="form-input">
+                        <option value="square">Square</option>
+                        <option value="rounded">Rounded</option>
+                        <option value="circle">Circle</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="faviconSize">Size</label>
+                    <select id="faviconSize" class="form-input">
+                        <option value="16">16x16</option>
+                        <option value="32" selected>32x32</option>
+                        <option value="48">48x48</option>
+                        <option value="64">64x64</option>
+                        <option value="128">128x128</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="faviconFontSize">Font Size</label>
+                    <input type="range" id="faviconFontSize" class="form-range" min="10" max="80" value="24">
+                    <span id="faviconFontSizeValue" class="range-value">24</span>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Favicon</button>
+                    <button id="download" class="btn btn-secondary">&#x2b07; Download PNG</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="faviconPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy HTML</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

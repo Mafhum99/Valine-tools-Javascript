@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate simple SVG icons">
+    <meta name="theme-color" content="#2563eb">
+    <title>Icon Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x2b50;</span>
+        <h1>Icon Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate simple SVG icons</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="iconType">Icon Type</label>
+                    <select id="iconType" class="form-input">
+                        <option value="home">Home</option>
+                        <option value="search">Search</option>
+                        <option value="user">User</option>
+                        <option value="settings">Settings</option>
+                        <option value="heart">Heart</option>
+                        <option value="star">Star</option>
+                        <option value="check">Check</option>
+                        <option value="close">Close (X)</option>
+                        <option value="menu">Menu (Hamburger)</option>
+                        <option value="arrow">Arrow</option>
+                        <option value="download">Download</option>
+                        <option value="upload">Upload</option>
+                        <option value="play">Play</option>
+                        <option value="pause">Pause</option>
+                        <option value="mail">Mail</option>
+                        <option value="phone">Phone</option>
+                        <option value="location">Location</option>
+                        <option value="calendar">Calendar</option>
+                        <option value="camera">Camera</option>
+                        <option value="lock">Lock</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="iconSize">Size (px)</label>
+                    <input type="range" id="iconSize" class="form-range" min="16" max="128" value="48">
+                    <span id="iconSizeValue" class="range-value">48</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="iconColor">Icon Color</label>
+                    <input type="color" id="iconColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="iconStrokeWidth">Stroke Width</label>
+                    <input type="range" id="iconStrokeWidth" class="form-range" min="1" max="4" value="2" step="0.5">
+                    <span id="iconStrokeWidthValue" class="range-value">2</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="iconBgColor">Background Color</label>
+                    <input type="color" id="iconBgColor" class="form-color" value="#f8fafc">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Icon</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="iconPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">SVG Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy SVG</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

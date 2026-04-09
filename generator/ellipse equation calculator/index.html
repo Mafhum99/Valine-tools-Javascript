@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Find the equation of an ellipse from center and axis lengths">
+    <meta name="theme-color" content="#2563eb">
+    <title>📐 Ellipse Equation Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Ellipse Equation Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Find the equation of an ellipse from center and axis lengths</p>
+
+            <div id="tool-content">
+                <div class="formula-box">
+                    <strong>Horizontal Major Axis (a ≥ b):</strong><br>
+                    (x - h)²/a² + (y - k)²/b² = 1<br><br>
+                    <strong>Vertical Major Axis (a ≥ b):</strong><br>
+                    (x - h)²/b² + (y - k)²/a² = 1<br><br>
+                    <strong>Where:</strong> (h, k) = center, a = semi-major axis, b = semi-minor axis
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Center (h, k)</label>
+                    <div class="inline-inputs">
+                        <input type="number" id="cx" class="form-input" placeholder="h (x-center)" step="any">
+                        <input type="number" id="cy" class="form-input" placeholder="k (y-center)" step="any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="axisA">Semi-major axis (a)</label>
+                    <input type="number" id="axisA" class="form-input" placeholder="Enter semi-major axis a..." step="any" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="axisB">Semi-minor axis (b)</label>
+                    <input type="number" id="axisB" class="form-input" placeholder="Enter semi-minor axis b..." step="any" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="orientation">Orientation</label>
+                    <select id="orientation" class="form-select">
+                        <option value="auto">Auto (based on a vs b)</option>
+                        <option value="horizontal">Horizontal major axis</option>
+                        <option value="vertical">Vertical major axis</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

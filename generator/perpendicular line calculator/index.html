@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Find the equation of a perpendicular line through a given point">
+    <meta name="theme-color" content="#2563eb">
+    <title>📐 Perpendicular Line Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Perpendicular Line Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Find the equation of a line perpendicular to a given line through a point</p>
+
+            <div id="tool-content">
+                <div class="formula-box">
+                    <strong>Key Property:</strong> Perpendicular lines have slopes that are negative reciprocals<br>
+                    m_perp = -1/m (when m ≠ 0)<br><br>
+                    <strong>Special cases:</strong><br>
+                    If m = 0 (horizontal), perpendicular is vertical (x = constant)<br>
+                    If m is undefined (vertical), perpendicular is horizontal (y = constant)<br><br>
+                    <strong>From standard form Ax + By = C:</strong><br>
+                    Perpendicular: -Bx + Ay = K (swap and negate one coefficient)
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="lineInputMode">Original Line Input</label>
+                    <select id="lineInputMode" class="form-select">
+                        <option value="slopeintercept">Slope-Intercept (y = mx + b)</option>
+                        <option value="standard">Standard Form (Ax + By = C)</option>
+                        <option value="twopoints">Two Points</option>
+                    </select>
+                </div>
+
+                <!-- Slope-Intercept Mode -->
+                <div id="slopeintercept-mode">
+                    <div class="form-group">
+                        <label class="form-label" for="origSlope">Slope (m) of original line</label>
+                        <input type="number" id="origSlope" class="form-input" placeholder="Enter slope m..." step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="origIntercept">y-intercept (b) of original line (optional)</label>
+                        <input type="number" id="origIntercept" class="form-input" placeholder="Enter y-intercept b..." step="any">
+                    </div>
+                </div>
+
+                <!-- Standard Form Mode -->
+                <div id="standard-mode" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">Standard Form: Ax + By = C</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="stdA" class="form-input" placeholder="A" step="any">
+                            <input type="number" id="stdB" class="form-input" placeholder="B" step="any">
+                            <input type="number" id="stdC" class="form-input" placeholder="C" step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Points Mode -->
+                <div id="twopoints-mode" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">Point on original line</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="lx1" class="form-input" placeholder="x₁" step="any">
+                            <input type="number" id="ly1" class="form-input" placeholder="y₁" step="any">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Another point on original line</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="lx2" class="form-input" placeholder="x₂" step="any">
+                            <input type="number" id="ly2" class="form-input" placeholder="y₂" step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 1rem 0; border: 1px solid var(--gray-200);">
+
+                <div class="form-group">
+                    <label class="form-label">Point for perpendicular line (x₀, y₀)</label>
+                    <div class="inline-inputs">
+                        <input type="number" id="px" class="form-input" placeholder="x₀" step="any">
+                        <input type="number" id="py" class="form-input" placeholder="y₀" step="any">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

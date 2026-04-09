@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS custom properties (variables)">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F3F7; CSS Variable Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F3F7;</span>
+        <h1>CSS Variable Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS custom properties (variables) with usage examples</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="variableName">Variable Name</label>
+                    <input type="text" id="variableName" class="form-input" value="primary-color" placeholder="primary-color">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="variableValue">Variable Value</label>
+                    <input type="text" id="variableValue" class="form-input" value="#2563eb" placeholder="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="scope">Scope</label>
+                    <select id="scope" class="form-select">
+                        <option value=":root">:root (Global)</option>
+                        <option value="body">body</option>
+                        <option value=".element">.element (Class)</option>
+                        <option value="#id">#id (ID)</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generateBtn" class="btn btn-primary">&#x26A1; Generate</button>
+                    <button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Preview</div>
+                    <div id="preview" class="var-preview" style="background: #2563eb;">Sample</div>
+                    <div class="result-label mt-2">CSS Code</div>
+                    <pre id="output" class="code-block">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

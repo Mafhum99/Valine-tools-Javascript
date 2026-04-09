@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#x2160; Roman Numeral Converter - Mini Tools</title>
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x2160;</span>
+        <h1>Roman Numeral Converter</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Convert between Roman numerals and numbers (1-3999)</p>
+            <div id="tool-content">
+                <div class="form-group"><label class="form-label" for="number">Number (1-3999)</label><input type="number" id="number" class="form-input" placeholder="42" min="1" max="3999"></div>
+                <div class="btn-group"><button id="toRomanBtn" class="btn btn-primary">&#x27A1; Convert to Roman</button></div>
+                <hr style="margin:1rem 0;border:none;border-top:1px solid var(--gray-200);">
+                <div class="form-group"><label class="form-label" for="roman">Roman Numeral</label><input type="text" id="roman" class="form-input" placeholder="XLII" style="text-transform:uppercase;"></div>
+                <div class="btn-group"><button id="toNumberBtn" class="btn btn-primary">&#x27A1; Convert to Number</button><button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button></div>
+                <div class="result-box" id="result"><div class="result-label">Result</div><div id="output">-</div></div>
+                <div class="btn-group"><button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy Result</button></div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

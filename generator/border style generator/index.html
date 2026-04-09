@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS border styles">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#128306; Border Style Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128306;</span>
+        <h1>Border Style Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS border styles</p>
+
+            <div id="tool-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="border-width">Width (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="border-width" min="0" max="20" value="2" class="form-range">
+                            <span id="border-width-value" class="range-value">2px</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="border-style">Style</label>
+                        <select id="border-style" class="form-select">
+                            <option value="solid">Solid</option>
+                            <option value="dashed">Dashed</option>
+                            <option value="dotted">Dotted</option>
+                            <option value="double">Double</option>
+                            <option value="groove">Groove</option>
+                            <option value="ridge">Ridge</option>
+                            <option value="inset">Inset</option>
+                            <option value="outset">Outset</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="border-color">Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="border-color" value="#2563eb" class="color-picker">
+                        <input type="text" id="border-color-text" value="#2563eb" class="form-input color-text" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="border-radius">Border Radius (px)</label>
+                    <div class="range-with-value">
+                        <input type="range" id="border-radius" min="0" max="50" value="0" class="form-range">
+                        <span id="border-radius-value" class="range-value">0px</span>
+                    </div>
+                </div>
+
+                <div class="preview-area border-style-preview-area">
+                    <div class="border-style-preview" id="border-preview"></div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="preset-card" class="btn btn-secondary">Card Preset</button>
+                    <button id="preset-input" class="btn btn-secondary">Input Preset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

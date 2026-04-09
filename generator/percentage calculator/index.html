@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate percentages - find X% of Y, X is what % of Y, and percentage change">
+    <meta name="theme-color" content="#2563eb">
+    <title>Percentage Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128202;</span>
+        <h1>Percentage Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Choose a calculation mode and enter your values.</p>
+
+            <div class="form-group">
+                <label class="form-label" for="mode">Calculation Mode</label>
+                <select id="mode" class="form-select">
+                    <option value="x-of-y">What is X% of Y?</option>
+                    <option value="x-is-what-pct-of-y">X is what % of Y?</option>
+                    <option value="pct-change">% Change from X to Y</option>
+                </select>
+            </div>
+
+            <div id="inputs-x-of-y">
+                <div class="form-group">
+                    <label class="form-label" for="x-of-y-percent">Percentage (X)</label>
+                    <input type="number" id="x-of-y-percent" class="form-input" placeholder="e.g. 25">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="x-of-y-whole">Whole Number (Y)</label>
+                    <input type="number" id="x-of-y-whole" class="form-input" placeholder="e.g. 200">
+                </div>
+            </div>
+
+            <div id="inputs-x-is-what-pct-of-y" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" for="is-part">Part (X)</label>
+                    <input type="number" id="is-part" class="form-input" placeholder="e.g. 50">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="is-whole">Whole (Y)</label>
+                    <input type="number" id="is-whole" class="form-input" placeholder="e.g. 200">
+                </div>
+            </div>
+
+            <div id="inputs-pct-change" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" for="pct-old">Original Value (X)</label>
+                    <input type="number" id="pct-old" class="form-input" placeholder="e.g. 80">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pct-new">New Value (Y)</label>
+                    <input type="number" id="pct-new" class="form-input" placeholder="e.g. 100">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                <button id="clear" class="btn btn-secondary">Clear</button>
+            </div>
+
+            <div class="result-box" id="result">
+                <div class="result-label">Result</div>
+                <div id="output">-</div>
+            </div>
+
+            <div class="btn-group">
+                <button id="copy" class="btn btn-secondary">&#128203; Copy Result</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

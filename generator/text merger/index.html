@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Merge multiple text files together">
+    <meta name="theme-color" content="#2563eb">
+    <title>Text Merger - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128279;</span>
+        <h1>Text Merger</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Merge multiple texts together</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="text1">Text 1</label>
+                    <textarea id="text1" class="form-textarea" placeholder="Enter first text..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="text2">Text 2</label>
+                    <textarea id="text2" class="form-textarea" placeholder="Enter second text..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="separator">Separator</label>
+                    <select id="separator" class="form-select">
+                        <option value="\n">New Line</option>
+                        <option value="\n\n">Double New Line</option>
+                        <option value=" ">Space</option>
+                        <option value=", ">Comma + Space</option>
+                        <option value=" | ">Pipe</option>
+                        <option value="---">Dashes</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+
+                <div class="form-group hidden" id="custom-separator-group">
+                    <label class="form-label" for="custom-separator">Custom Separator</label>
+                    <input type="text" id="custom-separator" class="form-input" placeholder="Enter custom separator...">
+                </div>
+
+                <div class="btn-group">
+                    <button id="merge" class="btn btn-primary btn-block">Merge Texts</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Merged Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

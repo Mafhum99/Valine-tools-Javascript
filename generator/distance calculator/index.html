@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate distance between two points in 2D or 3D space">
+    <meta name="theme-color" content="#2563eb">
+    <title>📐 Distance Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Distance Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Calculate distance between two points in 2D or 3D space</p>
+
+            <div id="tool-content">
+                <div class="formula-box">
+                    <strong>2D Distance Formula:</strong><br>
+                    d = √[(x₂ - x₁)² + (y₂ - y₁)²]<br><br>
+                    <strong>3D Distance Formula:</strong><br>
+                    d = √[(x₂ - x₁)² + (y₂ - y₁)² + (z₂ - z₁)²]
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="dimension">Dimension</label>
+                    <select id="dimension" class="form-select">
+                        <option value="2d">2D (x, y)</option>
+                        <option value="3d">3D (x, y, z)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Point 1</label>
+                    <div class="inline-inputs">
+                        <input type="number" id="x1" class="form-input" placeholder="x₁" step="any">
+                        <input type="number" id="y1" class="form-input" placeholder="y₁" step="any">
+                        <input type="number" id="z1" class="form-input hidden" placeholder="z₁" step="any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Point 2</label>
+                    <div class="inline-inputs">
+                        <input type="number" id="x2" class="form-input" placeholder="x₂" step="any">
+                        <input type="number" id="y2" class="form-input" placeholder="y₂" step="any">
+                        <input type="number" id="z2" class="form-input hidden" placeholder="z₂" step="any">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

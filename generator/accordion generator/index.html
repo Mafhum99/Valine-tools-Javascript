@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate accordion components">
+    <meta name="theme-color" content="#2563eb">
+    <title>Accordion Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Accordion Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate accordion components</p>
+
+            <div id="tool-content">
+                <!-- ====== TOOL CONTENT START ====== -->
+                <div class="form-group">
+                    <label class="form-label" for="acc-items">Items (one per line: title|content)</label>
+                    <textarea id="acc-items" class="form-textarea" rows="4">What is this?|This is an FAQ accordion.
+How does it work?|Click the headers to expand or collapse sections.
+Can I customize it?|Yes, use the controls below to change colors and styles.</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="acc-color">Header Color</label>
+                    <input type="color" id="acc-color" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="acc-color-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="acc-style">Style</label>
+                    <select id="acc-style" class="form-select">
+                        <option value="bordered">Bordered</option>
+                        <option value="card">Card</option>
+                        <option value="minimal">Minimal</option>
+                    </select>
+                </div>
+                <div class="preview-box" id="acc-preview" style="padding:10px;font-family:sans-serif;"></div>
+                <div class="result-box" id="acc-output">
+                    <div class="result-label">HTML Code</div>
+                    <code id="acc-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy HTML</button>
+                </div>
+                <!-- ====== TOOL CONTENT END ====== -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

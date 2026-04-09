@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Encode special characters to HTML entities">
+    <meta name="theme-color" content="#2563eb">
+    <title>HTML Entity Encoder - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128274;</span>
+        <h1>HTML Entity Encoder</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Encode/decode HTML entities</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Input Text</label>
+                    <textarea id="input" class="form-textarea" placeholder="Enter text or HTML entities..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="mode">Mode</label>
+                    <select id="mode" class="form-select">
+                        <option value="encode">Encode to HTML entities</option>
+                        <option value="decode">Decode from HTML entities</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="process" class="btn btn-primary btn-block">Process</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

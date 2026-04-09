@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate a harmonious typography scale">
+    <meta name="theme-color" content="#2563eb">
+    <title>Typography Scale Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Typography Scale Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate a harmonious typography scale</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="ts-base">Base Font Size (px)</label>
+                    <input type="number" id="ts-base" value="16" min="12" max="24" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ts-ratio">Scale Ratio</label>
+                    <select id="ts-ratio" class="form-select">
+                        <option value="1.125">Minor Second (1.125)</option>
+                        <option value="1.25">Major Second (1.250)</option>
+                        <option value="1.333" selected>Minor Third (1.333)</option>
+                        <option value="1.414">Major Third (1.414)</option>
+                        <option value="1.5">Perfect Fourth (1.500)</option>
+                        <option value="1.618">Golden Ratio (1.618)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ts-steps">Steps</label>
+                    <input type="range" id="ts-steps" min="3" max="8" value="6" class="form-range">
+                    <span id="ts-steps-value" class="range-value">6</span>
+                </div>
+                <div class="preview-box" id="ts-preview" style="padding:20px;"></div>
+                <div class="result-box" id="ts-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="ts-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

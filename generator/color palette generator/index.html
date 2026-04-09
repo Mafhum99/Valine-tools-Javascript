@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate color palettes with various harmony types">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F3A8; Color Palette Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F3A8;</span>
+        <h1>Color Palette Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate color palettes with various harmony types</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="baseColor">Base Color</label>
+                    <input type="color" id="baseColor" class="form-input" value="#3b82f6" style="height:50px;cursor:pointer;">
+                </div>
+
+                <div style="display:flex;gap:0.5rem;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label" for="count">Colors (3-10)</label>
+                        <input type="number" id="count" class="form-input" value="5" min="3" max="10">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label" for="harmony">Harmony Type</label>
+                        <select id="harmony" class="form-input">
+                            <option value="analogous">Analogous</option>
+                            <option value="complementary">Complementary</option>
+                            <option value="triadic">Triadic</option>
+                            <option value="tetradic">Tetradic</option>
+                            <option value="split-complementary">Split Complementary</option>
+                            <option value="monochromatic">Monochromatic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Palette</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Palette</div>
+                    <div id="palette-container" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .palette-swatch {
+            width:80px;text-align:center;border-radius:8px;overflow:hidden;
+            border:1px solid #e5e7eb;cursor:pointer;transition:transform 0.2s;
+        }
+        .palette-swatch:hover { transform:scale(1.05); }
+        .palette-color { height:60px; }
+        .palette-label { padding:0.35rem;font-size:0.7rem;font-family:monospace;background:#fff; }
+    </style>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

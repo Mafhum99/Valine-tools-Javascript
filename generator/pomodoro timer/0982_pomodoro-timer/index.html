@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Pomodoro technique timer">
+    <meta name="theme-color" content="#2563eb">
+    <title>🍅 Pomodoro Timer - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">🍅</span>
+        <h1>Pomodoro Timer</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Pomodoro technique timer</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Work Duration (minutes)</label>
+                    <input type="number" id="input" class="form-input" placeholder="Enter value..." value="25">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="breakDuration">Break Duration (minutes)</label>
+                    <input type="number" id="breakDuration" class="form-input" value="5" min="1">
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">🍅 Start Pomodoro</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Timer Status</div>
+                    <div id="output" style="font-family: monospace; word-break: break-all;">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

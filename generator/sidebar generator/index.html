@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate sidebar layouts">
+    <meta name="theme-color" content="#2563eb">
+    <title>◀️ Sidebar Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">◀️</span>
+        <h1>Sidebar Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate sidebar layouts with navigation menus</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="navLinks">Navigation Links (comma-separated)</label>
+                    <input type="text" id="navLinks" class="form-input" value="Home, Dashboard, Settings, Profile, Logout" placeholder="Home, About, Contact...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="sidebarWidth">Sidebar Width (px)</label>
+                        <input type="number" id="sidebarWidth" class="form-input" value="250" min="150" max="500">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="position">Position</label>
+                        <select id="position" class="form-select">
+                            <option value="left">Left</option>
+                            <option value="right">Right</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="bgColor">Background Color</label>
+                        <input type="color" id="bgColor" class="form-input form-color" value="#1e293b">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="textColor">Text Color</label>
+                        <input type="color" id="textColor" class="form-input form-color" value="#e2e8f0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="hoverColor">Hover Color</label>
+                    <input type="color" id="hoverColor" class="form-input form-color" value="#334155">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Sidebar</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-section" id="previewSection">
+                    <h3>Preview</h3>
+                    <div id="preview" class="sidebar-preview"></div>
+                </div>
+
+                <div class="result-box" id="result" style="display:none;">
+                    <div class="result-label">Generated HTML &amp; CSS</div>
+                    <pre id="output"></pre>
+                </div>
+
+                <div class="btn-group" id="copyGroup" style="display:none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

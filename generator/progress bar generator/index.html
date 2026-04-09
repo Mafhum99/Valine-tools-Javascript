@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate progress bar components">
+    <meta name="theme-color" content="#2563eb">
+    <title>Progress Bar Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Progress Bar Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate progress bar components</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="pb-value">Progress Value (%)</label>
+                    <input type="range" id="pb-value" min="0" max="100" value="65" class="form-range">
+                    <span id="pb-value-display" class="range-value">65%</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pb-color">Bar Color</label>
+                    <input type="color" id="pb-color" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="pb-color-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pb-bg">Track Color</label>
+                    <input type="color" id="pb-bg" value="#e5e7eb" class="color-picker-inline">
+                    <input type="text" id="pb-bg-text" value="#e5e7eb" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pb-height">Height (px)</label>
+                    <input type="range" id="pb-height" min="4" max="32" value="8" class="form-range">
+                    <span id="pb-height-value" class="range-value">8px</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pb-style">Style</label>
+                    <select id="pb-style" class="form-select">
+                        <option value="solid">Solid</option>
+                        <option value="striped">Striped</option>
+                        <option value="animated">Animated</option>
+                        <option value="gradient">Gradient</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="pb-show-label"> Show Label
+                    </label>
+                </div>
+                <div class="preview-box" id="pb-preview" style="padding:20px;"></div>
+                <div class="result-box" id="pb-output">
+                    <div class="result-label">HTML Code</div>
+                    <code id="pb-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy HTML</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

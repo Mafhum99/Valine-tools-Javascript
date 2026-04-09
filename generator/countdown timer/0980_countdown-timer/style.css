@@ -1,0 +1,62 @@
+/* Countdown Timer - Custom Styles */
+
+#result {
+    min-height: 80px;
+}
+
+#output {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Countdown Display */
+.countdown-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2rem 1rem;
+    margin: 1rem 0;
+    background: var(--bg-secondary);
+    border-radius: 0.5rem;
+}
+
+.countdown-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.countdown-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+.countdown-separator {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin: 0 0.25rem;
+}
+
+@media (max-width: 480px) {
+    .countdown-value,
+    .countdown-separator {
+        font-size: 1.75rem;
+    }
+
+    .countdown-segment {
+        min-width: 50px;
+    }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Split text by delimiter">
+    <meta name="theme-color" content="#2563eb">
+    <title>Text Splitter - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#9986;&#65039;</span>
+        <h1>Text Splitter</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Split text by delimiter</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Text to Split</label>
+                    <textarea id="input" class="form-textarea" placeholder="Enter text to split..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="delimiter">Delimiter</label>
+                    <select id="delimiter" class="form-select">
+                        <option value=",">Comma</option>
+                        <option value=";">Semicolon</option>
+                        <option value=" ">Space</option>
+                        <option value="\t">Tab</option>
+                        <option value="\n">New Line</option>
+                        <option value="|">Pipe</option>
+                        <option value="-">Dash</option>
+                        <option value="regex">Regular Expression</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+
+                <div class="form-group hidden" id="custom-delimiter-group">
+                    <label class="form-label" for="custom-delimiter">Custom Delimiter</label>
+                    <input type="text" id="custom-delimiter" class="form-input" placeholder="Enter custom delimiter...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="trim-items" checked> Trim whitespace from each part
+                    </label>
+                </div>
+
+                <div class="btn-group">
+                    <button id="split" class="btn btn-primary btn-block">Split Text</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Split Parts</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

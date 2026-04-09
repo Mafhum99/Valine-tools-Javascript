@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate gradient text effects">
+    <meta name="theme-color" content="#2563eb">
+    <title>Text Gradient Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Text Gradient Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate gradient text effects</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="text-input">Text</label>
+                    <input type="text" id="text-input" class="form-input" value="Gradient Text" placeholder="Enter your text...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="color1">Start Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color1" value="#6366f1" class="color-picker">
+                            <input type="text" id="color1-text" value="#6366f1" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="color2">End Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color2" value="#ec4899" class="color-picker">
+                            <input type="text" id="color2-text" value="#ec4899" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="direction">Direction</label>
+                    <select id="direction" class="form-select">
+                        <option value="90deg">Left to Right</option>
+                        <option value="180deg">Top to Bottom</option>
+                        <option value="135deg" selected>Diagonal</option>
+                        <option value="45deg">Diagonal (Bottom-Left to Top-Right)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="font-size">Font Size (px)</label>
+                    <div class="range-with-value">
+                        <input type="range" id="font-size" min="24" max="96" value="48" class="form-range">
+                        <span id="font-size-value" class="range-value">48px</span>
+                    </div>
+                </div>
+
+                <div class="text-preview-box">
+                    <div id="text-preview" class="gradient-text"></div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Colors</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

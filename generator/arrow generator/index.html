@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS arrow indicators">
+    <meta name="theme-color" content="#2563eb">
+    <title>Arrow Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x27a1;&#xfe0f;</span>
+        <h1>Arrow Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS arrow indicators</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="arrowDirection">Direction</label>
+                    <select id="arrowDirection" class="form-input">
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                        <option value="left">Left</option>
+                        <option value="right" selected>Right</option>
+                        <option value="up-right">Up-Right</option>
+                        <option value="down-right">Down-Right</option>
+                        <option value="up-left">Up-Left</option>
+                        <option value="down-left">Down-Left</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="arrowStyle">Arrow Style</label>
+                    <select id="arrowStyle" class="form-input">
+                        <option value="border">CSS Border</option>
+                        <option value="clip">Clip-path</option>
+                        <option value="unicode">Unicode</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="arrowSize">Size (px)</label>
+                    <input type="range" id="arrowSize" class="form-range" min="10" max="150" value="40">
+                    <span id="arrowSizeValue" class="range-value">40</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="arrowShaftWidth">Shaft Width (px)</label>
+                    <input type="range" id="arrowShaftWidth" class="form-range" min="2" max="20" value="6">
+                    <span id="arrowShaftWidthValue" class="range-value">6</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="arrowColor">Color</label>
+                    <input type="color" id="arrowColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Arrow</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="arrowPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate SVG graphics visually">
+    <meta name="theme-color" content="#2563eb">
+    <title>SVG Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>SVG Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate SVG graphics visually</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="shape-type">Shape Type</label>
+                    <select id="shape-type" class="form-select">
+                        <option value="rect">Rectangle</option>
+                        <option value="circle">Circle</option>
+                        <option value="ellipse">Ellipse</option>
+                        <option value="line">Line</option>
+                        <option value="polygon">Polygon</option>
+                        <option value="star">Star</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="width">Width</label>
+                        <input type="number" id="width" value="200" min="10" max="500" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="height">Height</label>
+                        <input type="number" id="height" value="150" min="10" max="500" class="form-input">
+                    </div>
+                </div>
+
+                <div id="radius-group" class="form-group" style="display: none;">
+                    <label class="form-label" for="radius">Radius</label>
+                    <input type="number" id="radius" value="50" min="1" max="250" class="form-input">
+                </div>
+
+                <div id="line-group" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="line-x2">X2</label>
+                            <input type="number" id="line-x2" value="200" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="line-y2">Y2</label>
+                            <input type="number" id="line-y2" value="150" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="polygon-group" class="form-group" style="display: none;">
+                    <label class="form-label" for="polygon-sides">Number of Sides</label>
+                    <input type="number" id="polygon-sides" value="6" min="3" max="12" class="form-input">
+                </div>
+
+                <div id="star-group" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="star-points">Points</label>
+                            <input type="number" id="star-points" value="5" min="3" max="12" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="star-inner">Inner Radius</label>
+                            <input type="number" id="star-inner" value="30" min="5" max="100" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="fill-color">Fill Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="fill-color" value="#6366f1" class="color-picker">
+                        <input type="text" id="fill-color-text" value="#6366f1" class="form-input color-text" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="stroke-color">Stroke Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="stroke-color" value="#4338ca" class="color-picker">
+                        <input type="text" id="stroke-color-text" value="#4338ca" class="form-input color-text" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="stroke-width">Stroke Width</label>
+                        <input type="number" id="stroke-width" value="0" min="0" max="20" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="border-radius">Border Radius (rect only)</label>
+                        <input type="number" id="border-radius" value="0" min="0" max="100" class="form-input">
+                    </div>
+                </div>
+
+                <div class="svg-preview" id="svg-preview"></div>
+
+                <div class="result-box" id="svg-output">
+                    <div class="result-label">SVG Code</div>
+                    <code id="svg-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy SVG</button>
+                    <button id="download" class="btn btn-secondary">Download SVG</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

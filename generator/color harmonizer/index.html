@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate harmonious color palettes">
+    <meta name="theme-color" content="#2563eb">
+    <title>Color Harmonizer - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Color Harmonizer</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate harmonious color palettes</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="ch-base">Base Color</label>
+                    <input type="color" id="ch-base" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="ch-base-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ch-harmony">Harmony Type</label>
+                    <select id="ch-harmony" class="form-select">
+                        <option value="complementary">Complementary</option>
+                        <option value="analogous">Analogous</option>
+                        <option value="triadic">Triadic</option>
+                        <option value="split-complementary">Split Complementary</option>
+                        <option value="tetradic">Tetradic</option>
+                    </select>
+                </div>
+                <div class="preview-box" id="ch-preview" style="display:flex;gap:8px;padding:20px;border-radius:var(--radius);"></div>
+                <div class="result-box" id="ch-output">
+                    <div class="result-label">Color Palette</div>
+                    <code id="ch-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Base</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

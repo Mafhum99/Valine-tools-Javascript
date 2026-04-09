@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate website footers">
+    <meta name="theme-color" content="#2563eb">
+    <title>Footer Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f447;</span>
+        <h1>Footer Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate website footers</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="footerBrand">Brand Name</label>
+                    <input type="text" id="footerBrand" class="form-input" placeholder="MyCompany" maxlength="30" value="MyCompany">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="footerColumns">Columns (comma-separated titles)</label>
+                    <input type="text" id="footerColumns" class="form-input" placeholder="Products, Company, Support" value="Products, Company, Support">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="footerLinks">Links per column (comma-separated)</label>
+                    <input type="text" id="footerLinks" class="form-input" placeholder="Home, About, Pricing, Contact" value="Home, About, Pricing, Contact">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="footerBgColor">Background Color</label>
+                    <input type="color" id="footerBgColor" class="form-color" value="#1f2937">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="footerTextColor">Text Color</label>
+                    <input type="color" id="footerTextColor" class="form-color" value="#d1d5db">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="footerHeadingColor">Heading Color</label>
+                    <input type="color" id="footerHeadingColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="footerPadding">Padding (px)</label>
+                    <input type="range" id="footerPadding" class="form-range" min="20" max="80" value="40">
+                    <span id="footerPaddingValue" class="range-value">40</span>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Footer</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="footerPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML/CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

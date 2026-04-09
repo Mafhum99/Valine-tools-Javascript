@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS checkerboard patterns">
+    <meta name="theme-color" content="#2563eb">
+    <title>Checkerboard Pattern Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Checkerboard Pattern Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS checkerboard patterns</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="cb-color1">Color 1</label>
+                    <input type="color" id="cb-color1" value="#ffffff" class="color-picker-inline">
+                    <input type="text" id="cb-color1-text" value="#ffffff" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cb-color2">Color 2</label>
+                    <input type="color" id="cb-color2" value="#1f2937" class="color-picker-inline">
+                    <input type="text" id="cb-color2-text" value="#1f2937" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cb-size">Square Size (px)</label>
+                    <input type="range" id="cb-size" min="4" max="60" value="20" class="form-range">
+                    <span id="cb-size-value" class="range-value">20px</span>
+                </div>
+
+                <div class="preview-box" id="cb-preview" style="width:100%;height:200px;border-radius:var(--radius);border:1px solid var(--gray-300);"></div>
+
+                <div class="result-box" id="cb-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="cb-css"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Colors</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

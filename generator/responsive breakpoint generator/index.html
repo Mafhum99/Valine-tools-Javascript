@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#x1F4F1; Responsive Breakpoint Generator - Mini Tools</title>
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F4F1;</span>
+        <h1>Responsive Breakpoint Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate evenly spaced responsive breakpoints</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="minWidth">Min Width (px)</label>
+                    <input type="number" id="minWidth" class="form-input" placeholder="320" min="1" value="320">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="maxWidth">Max Width (px)</label>
+                    <input type="number" id="maxWidth" class="form-input" placeholder="1440" min="1" value="1440">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="numBreakpoints">Number of Breakpoints</label>
+                    <input type="number" id="numBreakpoints" class="form-input" placeholder="5" min="2" max="20" value="5">
+                </div>
+                <div class="btn-group">
+                    <button id="generateBtn" class="btn btn-primary">&#x1F522; Generate</button>
+                    <button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button>
+                </div>
+                <div class="result-box" id="result">
+                    <div class="result-label">Generated Breakpoints</div>
+                    <div id="output">-</div>
+                </div>
+                <div class="btn-group">
+                    <button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

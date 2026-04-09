@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Find the best font pairings for your projects">
+    <meta name="theme-color" content="#2563eb">
+    <title>Font Pairing Tool - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Font Pairing Tool</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Find the best font pairings for your projects</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="fp-heading">Heading Font</label>
+                    <select id="fp-heading" class="form-select">
+                        <option value="Inter">Inter</option>
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Merriweather">Merriweather</option>
+                        <option value="Oswald">Oswald</option>
+                        <option value="Raleway">Raleway</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fp-body">Body Font</label>
+                    <select id="fp-body" class="form-select">
+                        <option value="Inter">Inter</option>
+                        <option value="Source Sans 3">Source Sans 3</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Lato">Lato</option>
+                        <option value="Merriweather">Merriweather</option>
+                        <option value="Nunito">Nunito</option>
+                        <option value="DM Sans">DM Sans</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fp-heading-size">Heading Size (px)</label>
+                    <input type="range" id="fp-heading-size" min="24" max="72" value="36" class="form-range">
+                    <span id="fp-heading-size-value" class="range-value">36px</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fp-body-size">Body Size (px)</label>
+                    <input type="range" id="fp-body-size" min="12" max="20" value="16" class="form-range">
+                    <span id="fp-body-size-value" class="range-value">16px</span>
+                </div>
+                <div class="preview-box" id="fp-preview" style="padding:20px;"></div>
+                <div class="result-box" id="fp-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="fp-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Pair</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

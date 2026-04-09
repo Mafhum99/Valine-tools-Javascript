@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Find the equation of a circle from center & radius or from three points">
+    <meta name="theme-color" content="#2563eb">
+    <title>📐 Circle Equation Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Circle Equation Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Find the equation of a circle from center & radius or from three points</p>
+
+            <div id="tool-content">
+                <div class="formula-box">
+                    <strong>Standard Form:</strong><br>
+                    (x - h)² + (y - k)² = r²<br><br>
+                    <strong>General Form:</strong><br>
+                    x² + y² + Dx + Ey + F = 0<br><br>
+                    <strong>Where:</strong> (h, k) = center, r = radius
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="calcMode">Calculation Mode</label>
+                    <select id="calcMode" class="form-select">
+                        <option value="centerradius">From Center & Radius</option>
+                        <option value="threepoints">From Three Points</option>
+                    </select>
+                </div>
+
+                <!-- Center & Radius Mode -->
+                <div id="centerradius-mode">
+                    <div class="form-group">
+                        <label class="form-label">Center (h, k)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="cx" class="form-input" placeholder="h (x-center)" step="any">
+                            <input type="number" id="cy" class="form-input" placeholder="k (y-center)" step="any">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="radius">Radius (r)</label>
+                        <input type="number" id="radius" class="form-input" placeholder="Enter radius..." step="any" min="0">
+                    </div>
+                </div>
+
+                <!-- Three Points Mode -->
+                <div id="threepoints-mode" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label">Point 1 (x₁, y₁)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="x1" class="form-input" placeholder="x₁" step="any">
+                            <input type="number" id="y1" class="form-input" placeholder="y₁" step="any">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Point 2 (x₂, y₂)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="x2" class="form-input" placeholder="x₂" step="any">
+                            <input type="number" id="y2" class="form-input" placeholder="y₂" step="any">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Point 3 (x₃, y₃)</label>
+                        <div class="inline-inputs">
+                            <input type="number" id="x3" class="form-input" placeholder="x₃" step="any">
+                            <input type="number" id="y3" class="form-input" placeholder="y₃" step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

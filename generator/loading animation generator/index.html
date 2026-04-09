@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS loading spinners">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#9203; Loading Animation Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#9203;</span>
+        <h1>Loading Animation Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS loading spinners</p>
+
+            <div id="tool-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="loader-type">Loader Type</label>
+                        <select id="loader-type" class="form-select">
+                            <option value="spinner">Spinner</option>
+                            <option value="dots">Bouncing Dots</option>
+                            <option value="pulse">Pulse</option>
+                            <option value="bars">Loading Bars</option>
+                            <option value="ring">Ring</option>
+                            <option value="wave">Wave</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="loader-color">Primary Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="loader-color" value="#2563eb" class="color-picker">
+                            <input type="text" id="loader-color-text" value="#2563eb" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="loader-size">Size (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="loader-size" min="16" max="100" value="40" class="form-range">
+                            <span id="loader-size-value" class="range-value">40px</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="loader-speed">Speed (s)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="loader-speed" min="0.3" max="3" step="0.1" value="0.8" class="form-range">
+                            <span id="loader-speed-value" class="range-value">0.8s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-area loader-preview-area">
+                    <div class="loader-preview" id="loader-preview"></div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

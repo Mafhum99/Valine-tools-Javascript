@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate pricing table components">
+    <meta name="theme-color" content="#2563eb">
+    <title>Pricing Table Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Pricing Table Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate pricing table components</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="pt-plans">Plans (name:price:period, one per line)</label>
+                    <textarea id="pt-plans" class="form-textarea" rows="3">Basic:$9:month
+Pro:$29:month
+Enterprise:$99:month</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pt-features">Features (comma separated)</label>
+                    <input type="text" id="pt-features" value="10 Users, 5GB Storage, Email Support" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pt-color">Primary Color</label>
+                    <input type="color" id="pt-color" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="pt-color-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pt-highlight">Highlight Plan (0=none)</label>
+                    <input type="number" id="pt-highlight" value="2" min="0" max="5" class="form-input">
+                </div>
+                <div class="preview-box" id="pt-preview" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:10px;"></div>
+                <div class="result-box" id="pt-output">
+                    <div class="result-label">HTML Code</div>
+                    <code id="pt-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy HTML</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

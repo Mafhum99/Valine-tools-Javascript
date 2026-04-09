@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Convert Unix epoch timestamp to human-readable date">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F550; Unix Epoch Converter - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F550;</span>
+        <h1>Unix Epoch Converter</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Convert Unix epoch timestamp to human-readable date</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="timestamp">Unix Timestamp (milliseconds)</label>
+                    <input type="number" id="timestamp" class="form-input" placeholder="e.g., 1700000000000">
+                </div>
+
+                <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                    <button id="use-current" class="btn btn-secondary" style="flex:1;">Use Current Time</button>
+                    <button id="to-seconds" class="btn btn-secondary" style="flex:1;">Convert Seconds</button>
+                </div>
+
+                <div class="btn-group">
+                    <button id="convert" class="btn btn-primary btn-block">Convert</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

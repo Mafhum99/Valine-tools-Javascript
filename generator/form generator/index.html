@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate HTML forms">
+    <meta name="theme-color" content="#2563eb">
+    <title>Form Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f4dd;</span>
+        <h1>Form Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate HTML forms</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="formFields">Fields (comma-separated labels)</label>
+                    <input type="text" id="formFields" class="form-input" placeholder="Name, Email, Message" value="Name, Email, Message">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formFieldTypes">Field Types (comma-separated)</label>
+                    <input type="text" id="formFieldTypes" class="form-input" placeholder="text, email, textarea" value="text, email, textarea">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formSubmitText">Submit Button Text</label>
+                    <input type="text" id="formSubmitText" class="form-input" placeholder="Submit" maxlength="30" value="Submit">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formBgColor">Background Color</label>
+                    <input type="color" id="formBgColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formTextColor">Text Color</label>
+                    <input type="color" id="formTextColor" class="form-color" value="#1f2937">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formAccentColor">Accent Color</label>
+                    <input type="color" id="formAccentColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formWidth">Width (px)</label>
+                    <input type="range" id="formWidth" class="form-range" min="280" max="600" value="400" step="10">
+                    <span id="formWidthValue" class="range-value">400</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="formStyle">Form Style</label>
+                    <select id="formStyle" class="form-input">
+                        <option value="modern">Modern</option>
+                        <option value="minimal">Minimal</option>
+                        <option value="bordered">Bordered</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Form</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="formPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML/CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

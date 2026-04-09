@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate meeting agendas">
+    <meta name="theme-color" content="#2563eb">
+    <title>Meeting Agenda Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📅</span>
+        <h1>Meeting Agenda Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate structured meeting agendas</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="meeting-title">Meeting Title</label>
+                    <input type="text" id="meeting-title" class="form-input" placeholder="e.g., Weekly Team Standup">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="meeting-duration">Duration (minutes)</label>
+                    <select id="meeting-duration" class="form-input">
+                        <option value="15">15 minutes</option>
+                        <option value="30" selected>30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                        <option value="90">90 minutes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="meeting-topics">Topics (one per line, optional)</label>
+                    <textarea id="meeting-topics" class="form-input form-textarea" rows="4" placeholder="Project updates&#10;Budget review&#10;Next steps"></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate-btn" class="btn btn-primary btn-block">Generate Agenda</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Meeting Agenda</div>
+                    <div id="output" class="text-left">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy Agenda</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

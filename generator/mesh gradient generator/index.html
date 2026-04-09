@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate mesh-style gradients">
+    <meta name="theme-color" content="#2563eb">
+    <title>Mesh Gradient Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Mesh Gradient Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate mesh-style gradients</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label">Mesh Colors (4 corners)</label>
+                </div>
+
+                <div class="mesh-colors-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="color1">Top-Left</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color1" value="#6366f1" class="color-picker">
+                            <input type="text" id="color1-text" value="#6366f1" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="color2">Top-Right</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color2" value="#ec4899" class="color-picker">
+                            <input type="text" id="color2-text" value="#ec4899" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="color3">Bottom-Left</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color3" value="#14b8a6" class="color-picker">
+                            <input type="text" id="color3-text" value="#14b8a6" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="color4">Bottom-Right</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="color4" value="#f59e0b" class="color-picker">
+                            <input type="text" id="color4-text" value="#f59e0b" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="blur-intensity">Blur Intensity</label>
+                    <div class="range-with-value">
+                        <input type="range" id="blur-intensity" min="40" max="150" value="80" class="form-range">
+                        <span id="blur-value" class="range-value">80px</span>
+                    </div>
+                </div>
+
+                <div class="preview-box" id="gradient-preview"></div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Colors</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

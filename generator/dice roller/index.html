@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Roll virtual dice">
+    <meta name="theme-color" content="#2563eb">
+    <title>🎲 Dice Roller - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">🎲</span>
+        <h1>Dice Roller</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Roll virtual dice</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Number of Dice (1-20)</label>
+                    <input type="number" id="input" class="form-input" placeholder="Enter value..." value="2">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="sides">Number of Sides</label>
+                    <select id="sides" class="form-input">
+                        <option value="4">D4</option>
+                        <option value="6" selected>D6</option>
+                        <option value="8">D8</option>
+                        <option value="10">D10</option>
+                        <option value="12">D12</option>
+                        <option value="20">D20</option>
+                        <option value="100">D100</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">🎲 Roll Dice</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Dice Roll Results</div>
+                    <div id="output" style="font-family: monospace; word-break: break-all;">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

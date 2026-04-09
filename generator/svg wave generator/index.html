@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate SVG wave shapes">
+    <meta name="theme-color" content="#2563eb">
+    <title>SVG Wave Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>SVG Wave Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate SVG wave shapes</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="wave-type">Wave Type</label>
+                    <select id="wave-type" class="form-select">
+                        <option value="sine">Sine Wave</option>
+                        <option value="smooth">Smooth Curve</option>
+                        <option value="square">Square Wave</option>
+                        <option value="triangle">Triangle Wave</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wave-width">Width (px)</label>
+                    <input type="number" id="wave-width" value="400" min="50" max="1000" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wave-height">Height (px)</label>
+                    <input type="number" id="wave-height" value="100" min="20" max="300" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wave-amplitude">Amplitude</label>
+                    <div class="range-with-value">
+                        <input type="range" id="wave-amplitude" min="5" max="80" step="1" value="30" class="form-range">
+                        <span id="wave-amplitude-value" class="range-value">30</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wave-frequency">Frequency</label>
+                    <div class="range-with-value">
+                        <input type="range" id="wave-frequency" min="1" max="10" step="0.5" value="3" class="form-range">
+                        <span id="wave-frequency-value" class="range-value">3</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wave-color">Wave Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="wave-color" value="#6366f1" class="color-picker">
+                        <input type="text" id="wave-color-text" value="#6366f1" class="form-input color-text" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wave-fill">Fill Below Wave</label>
+                    <select id="wave-fill" class="form-select">
+                        <option value="bottom">Fill to Bottom</option>
+                        <option value="top">Fill to Top</option>
+                        <option value="none">No Fill (Stroke Only)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="stroke-width">Stroke Width</label>
+                    <div class="range-with-value">
+                        <input type="range" id="stroke-width" min="0" max="5" step="0.5" value="0" class="form-range">
+                        <span id="stroke-width-value" class="range-value">0</span>
+                    </div>
+                </div>
+
+                <div class="svg-preview" id="svg-preview"></div>
+
+                <div class="result-box" id="svg-output">
+                    <div class="result-label">SVG Code</div>
+                    <code id="svg-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy SVG</button>
+                    <button id="download" class="btn btn-secondary">Download SVG</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Stopwatch with lap times">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x23F1; Stopwatch - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x23F1;</span>
+        <h1>Stopwatch</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Stopwatch with lap times</p>
+
+            <div id="tool-content">
+                <div class="stopwatch-display" style="text-align:center;padding:2rem 0;">
+                    <div id="display" style="font-size:3rem;font-weight:700;font-variant-numeric:tabular-nums;font-family:monospace;">00:00:00<span style="font-size:1.5rem">.000</span></div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="start" class="btn btn-primary">Start</button>
+                    <button id="stop" class="btn btn-secondary">Stop</button>
+                    <button id="reset" class="btn btn-secondary">Reset</button>
+                    <button id="lap" class="btn btn-secondary">Lap</button>
+                </div>
+
+                <div id="laps" style="margin-top:1rem;max-height:300px;overflow-y:auto;"></div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .lap-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .lap-item:nth-child(odd) { background: #f9fafb; }
+        .lap-best { color: #10b981; font-weight: 600; }
+        .lap-worst { color: #ef4444; }
+    </style>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

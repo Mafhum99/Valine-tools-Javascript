@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate various CSS shapes">
+    <meta name="theme-color" content="#2563eb">
+    <title>Shape Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f537;</span>
+        <h1>Shape Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate various CSS shapes</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="shapeType">Shape Type</label>
+                    <select id="shapeType" class="form-input">
+                        <option value="circle">Circle</option>
+                        <option value="ellipse">Ellipse</option>
+                        <option value="square">Square</option>
+                        <option value="rectangle">Rectangle</option>
+                        <option value="star">Star (5-point)</option>
+                        <option value="heart">Heart</option>
+                        <option value="diamond">Diamond</option>
+                        <option value="hexagon">Hexagon</option>
+                        <option value="pentagon">Pentagon</option>
+                        <option value="octagon">Octagon</option>
+                        <option value="cross">Cross</option>
+                        <option value="parallelogram">Parallelogram</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="shapeWidth">Width (px)</label>
+                    <input type="number" id="shapeWidth" class="form-input" value="100" min="20" max="400">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="shapeHeight">Height (px)</label>
+                    <input type="number" id="shapeHeight" class="form-input" value="100" min="20" max="400">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="shapeColor">Fill Color</label>
+                    <input type="color" id="shapeColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="shapeBgColor">Background Color</label>
+                    <input type="color" id="shapeBgColor" class="form-color" value="#f8fafc">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Shape</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="shapePreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

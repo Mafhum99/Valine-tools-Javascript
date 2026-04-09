@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate impactful resume bullets">
+    <meta name="theme-color" content="#2563eb">
+    <title>📄 Resume Bullet Point Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📄</span>
+        <h1>Resume Bullet Point Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate impactful resume bullets</p>
+            
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="job-role">Job Role / Title</label>
+                    <input type="text" id="job-role" class="form-input" placeholder="e.g., Software Engineer, Marketing Manager...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="achievements">Key Achievements / Responsibilities</label>
+                    <textarea id="achievements" class="form-textarea" placeholder="List your achievements, responsibilities, or projects (one per line)..." rows="6"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bullet-style">Bullet Style</label>
+                    <select id="bullet-style" class="form-select">
+                        <option value="action">Action-Oriented</option>
+                        <option value="result">Result-Focused</option>
+                        <option value="leadership">Leadership-Focused</option>
+                        <option value="technical">Technical Skills</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Bullets</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

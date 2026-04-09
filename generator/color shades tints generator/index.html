@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate shades and tints from a base color">
+    <meta name="theme-color" content="#2563eb">
+    <title>Color Shades & Tints Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Color Shades & Tints Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate shades and tints from a base color</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="cst-base">Base Color</label>
+                    <input type="color" id="cst-base" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="cst-base-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="cst-steps">Steps</label>
+                    <input type="range" id="cst-steps" min="3" max="10" value="5" class="form-range">
+                    <span id="cst-steps-value" class="range-value">5</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tints (lighter)</label>
+                    <div class="preview-box" id="cst-tints" style="display:flex;gap:4px;padding:10px;margin-bottom:8px;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Base Color</label>
+                    <div class="preview-box" id="cst-base-preview" style="display:flex;gap:4px;padding:10px;margin-bottom:8px;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Shades (darker)</label>
+                    <div class="preview-box" id="cst-shades" style="display:flex;gap:4px;padding:10px;margin-bottom:8px;"></div>
+                </div>
+                <div class="result-box" id="cst-output">
+                    <div class="result-label">CSS Variables</div>
+                    <code id="cst-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Color</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

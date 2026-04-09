@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate sales tax and total price including tax">
+    <meta name="theme-color" content="#2563eb">
+    <title>🧾 Tax Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">🧾</span>
+        <h1>Tax Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Calculate sales tax and total price including tax</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="price">Price ($)</label>
+                    <input type="number" id="price" class="form-input" placeholder="Enter price..." step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="taxRate">Tax Rate (%)</label>
+                    <input type="number" id="taxRate" class="form-input" placeholder="Enter tax rate..." step="0.01" min="0">
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Tax Amount</div>
+                    <div id="taxAmount">-</div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Total Price</div>
+                    <div id="totalPrice">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate tints and shades gradient of a color">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F308; Color Shades Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F308;</span>
+        <h1>Color Shades Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate tints and shades gradient of a color</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="baseColor">Base Color</label>
+                    <input type="color" id="baseColor" class="form-input" value="#3b82f6" style="height:50px;cursor:pointer;">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Tints & Shades</div>
+                    <div id="output"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .shades-section { margin: 1rem 0; }
+        .shades-label { font-weight:600;font-size:0.85rem;color:#6b7280;margin-bottom:0.5rem; }
+        .shades-row { display:flex;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb; }
+        .shade-swatch { flex:1;height:50px;display:flex;align-items:center;justify-content:center;
+            font-size:0.6rem;font-family:monospace;cursor:pointer;transition:transform 0.2s; }
+        .shade-swatch:hover { transform:scaleY(1.2); }
+    </style>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

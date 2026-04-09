@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate monthly loan payments">
+    <meta name="theme-color" content="#2563eb">
+    <title>Loan Payment Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">🧮</span>
+        <h1>Loan Payment Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Calculate monthly loan payment: P x [r(1+r)^n] / [(1+r)^n - 1]</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="loan_amount">Loan Amount</label>
+                    <input type="number" id="loan_amount" class="form-input" placeholder="e.g. 100000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="annual_rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="annual_rate" class="form-input" placeholder="e.g. 5.5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loan_term_months">Loan Term (Months)</label>
+                    <input type="number" id="loan_term_months" class="form-input" placeholder="e.g. 60">
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

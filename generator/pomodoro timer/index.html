@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Pomodoro timer with work and break intervals">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F345; Pomodoro Timer - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F345;</span>
+        <h1>Pomodoro Timer</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">25 min work / 5 min break cycles</p>
+
+            <div id="tool-content">
+                <div id="phase-indicator" style="text-align:center;padding:1rem;background:#fef2f2;border-radius:8px;margin-bottom:1rem;">
+                    <span id="phase-name" style="font-size:1.25rem;font-weight:600;color:#dc2626;">Work</span>
+                </div>
+
+                <div class="stopwatch-display" style="text-align:center;padding:1.5rem 0;">
+                    <div id="display" style="font-size:3.5rem;font-weight:700;font-variant-numeric:tabular-nums;font-family:monospace;">25:00</div>
+                </div>
+
+                <div style="text-align:center;margin-bottom:1rem;color:#6b7280;">
+                    Rounds completed: <strong id="rounds">0</strong>
+                </div>
+
+                <div class="btn-group">
+                    <button id="start" class="btn btn-primary">Start</button>
+                    <button id="pause" class="btn btn-secondary">Pause</button>
+                    <button id="reset" class="btn btn-secondary">Reset</button>
+                    <button id="skip" class="btn btn-secondary">Skip</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

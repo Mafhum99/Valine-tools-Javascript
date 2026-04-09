@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Convert polar coordinates (r, θ) to rectangular coordinates (x, y)">
+    <meta name="theme-color" content="#2563eb">
+    <title>📐 Polar to Rectangular Converter - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Polar to Rectangular Converter</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Convert polar coordinates (r, θ) to rectangular coordinates (x, y)</p>
+
+            <div id="tool-content">
+                <div class="formula-box">
+                    <strong>Formulas:</strong><br>
+                    x = r × cos(θ)<br>
+                    y = r × sin(θ)
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="radius">Radius (r)</label>
+                    <input type="number" id="radius" class="form-input" placeholder="Enter radius r..." step="any">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="angle">Angle (θ)</label>
+                    <input type="number" id="angle" class="form-input" placeholder="Enter angle θ..." step="any">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="angleUnit">Angle Unit</label>
+                    <select id="angleUnit" class="form-select">
+                        <option value="degrees">Degrees</option>
+                        <option value="radians">Radians</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Convert</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

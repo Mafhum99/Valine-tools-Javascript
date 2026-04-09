@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Display and preview ASCII art with monospace font">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#127912; ASCII Art Viewer - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#127912;</span>
+        <h1>ASCII Art Viewer</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Display and preview ASCII art with monospace font</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Paste ASCII art</label>
+                    <textarea id="input" class="form-textarea" rows="8" placeholder="Paste your ASCII art here..." style="font-family: 'Courier New', Courier, monospace;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="fontsize">Font Size</label>
+                    <select id="fontsize" class="form-select">
+                        <option value="8">8px</option>
+                        <option value="10">10px</option>
+                        <option value="12">12px</option>
+                        <option value="14" selected>14px</option>
+                        <option value="16">16px</option>
+                        <option value="18">18px</option>
+                        <option value="20">20px</option>
+                        <option value="24">24px</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="render" class="btn btn-primary btn-block">Render ASCII Art</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">ASCII Art Preview</div>
+                    <pre id="output" style="font-family: 'Courier New', Courier, monospace; white-space: pre; overflow-x: auto; font-size: 14px; line-height: 1.2; text-align: left;">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy ASCII Art</button>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label class="form-label">Sample ASCII Art</label>
+                    <div class="btn-group" style="flex-wrap: wrap;">
+                        <button id="sample1" class="btn btn-secondary" style="font-size: 0.8rem;">Cat</button>
+                        <button id="sample2" class="btn btn-secondary" style="font-size: 0.8rem;">Dog</button>
+                        <button id="sample3" class="btn btn-secondary" style="font-size: 0.8rem;">Tree</button>
+                        <button id="sample4" class="btn btn-secondary" style="font-size: 0.8rem;">Rocket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

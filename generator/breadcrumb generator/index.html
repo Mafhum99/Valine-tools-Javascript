@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS breadcrumb navigation">
+    <meta name="theme-color" content="#2563eb">
+    <title>Breadcrumb Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Breadcrumb Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS breadcrumb navigation</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="bc-items">Items (comma separated)</label>
+                    <input type="text" id="bc-items" value="Home, Products, Category, Item" class="form-input" placeholder="Home, About, Contact">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="bc-separator">Separator</label>
+                    <select id="bc-separator" class="form-select">
+                        <option value="/">/ (Slash)</option>
+                        <option value=">">&gt; (Greater than)</option>
+                        <option value="»">» (Double angle)</option>
+                        <option value="•">• (Bullet)</option>
+                        <option value="chevron">› Chevron</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="bc-color">Link Color</label>
+                    <input type="color" id="bc-color" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="bc-color-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="preview-box" id="bc-preview" style="padding:20px;font-family:sans-serif;"></div>
+                <div class="result-box" id="bc-output">
+                    <div class="result-label">HTML Code</div>
+                    <code id="bc-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy HTML</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

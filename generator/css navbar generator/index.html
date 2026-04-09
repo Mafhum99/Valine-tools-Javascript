@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS navigation bars">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F9ED; CSS Navbar Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F9ED;</span>
+        <h1>CSS Navbar Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate navigation bar HTML and CSS</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="bgColor">Background Color</label>
+                    <input type="color" id="bgColor" class="form-input form-input-color" value="#1f2937">
+                    <input type="text" id="bgColorText" class="form-input" value="#1f2937" maxlength="7">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="textColor">Text Color</label>
+                    <input type="color" id="textColor" class="form-input form-input-color" value="#ffffff">
+                    <input type="text" id="textColorText" class="form-input" value="#ffffff" maxlength="7">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="navItems">Menu Items (comma-separated)</label>
+                    <input type="text" id="navItems" class="form-input" value="Home, About, Services, Contact" placeholder="Home, About, Services, Contact">
+                </div>
+
+                <div class="btn-group">
+                    <button id="generateBtn" class="btn btn-primary">&#x26A1; Generate</button>
+                    <button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Preview</div>
+                    <div id="preview" class="nav-preview"></div>
+                    <div class="result-label mt-2">HTML + CSS Code</div>
+                    <pre id="output" class="code-block">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

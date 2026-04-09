@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate soft pastel colors">
+    <meta name="theme-color" content="#2563eb">
+    <title>Pastel Color Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">🌸</span>
+        <h1>Pastel Color Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate soft pastel colors with high lightness and low saturation</p>
+
+            <div id="tool-content">
+                <div id="color-preview" style="width: 100%; height: 120px; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e5e7eb; background-color: #f8c8dc;"></div>
+
+                <button id="generate" class="btn btn-primary btn-block">🌸 Generate Pastel Color</button>
+
+                <div class="color-values">
+                    <div class="color-value-item">
+                        <span class="color-value-label">HEX</span>
+                        <span class="color-value" id="hex-value">#F8C8DC</span>
+                        <button class="copy-btn" data-target="hex-value">📋</button>
+                    </div>
+                    <div class="color-value-item">
+                        <span class="color-value-label">RGB</span>
+                        <span class="color-value" id="rgb-value">rgb(248, 200, 220)</span>
+                        <button class="copy-btn" data-target="rgb-value">📋</button>
+                    </div>
+                    <div class="color-value-item">
+                        <span class="color-value-label">HSL</span>
+                        <span class="color-value" id="hsl-value">hsl(335, 71%, 88%)</span>
+                        <button class="copy-btn" data-target="hsl-value">📋</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

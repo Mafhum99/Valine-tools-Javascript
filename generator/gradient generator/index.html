@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS gradient code">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F308; Gradient Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F308;</span>
+        <h1>Gradient Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS gradient code</p>
+
+            <div id="tool-content">
+                <div style="display:flex;gap:0.5rem;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label" for="fromColor">From Color</label>
+                        <input type="color" id="fromColor" class="form-input" value="#3b82f6" style="height:50px;cursor:pointer;">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label" for="toColor">To Color</label>
+                        <input type="color" id="toColor" class="form-input" value="#8b5cf6" style="height:50px;cursor:pointer;">
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:0.5rem;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label" for="direction">Direction</label>
+                        <select id="direction" class="form-input">
+                            <option value="to right">To Right</option>
+                            <option value="to left">To Left</option>
+                            <option value="to bottom">To Bottom</option>
+                            <option value="to top">To Top</option>
+                            <option value="to bottom right" selected>To Bottom Right</option>
+                            <option value="to bottom left">To Bottom Left</option>
+                            <option value="to top right">To Top Right</option>
+                            <option value="to top left">To Top Left</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Gradient Preview & Code</div>
+                    <div id="output"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .gradient-preview { height:120px;border-radius:8px;margin:0.75rem 0;border:1px solid #e5e7eb; }
+        .code-block { background:#1f2937;color:#e5e7eb;padding:0.75rem;border-radius:6px;font-family:monospace;
+            font-size:0.8rem;word-break:break-all;position:relative;margin-top:0.5rem; }
+        .copy-code-btn { position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.5rem;font-size:0.7rem;
+            background:#374151;color:#e5e7eb;border:1px solid #4b5563;border-radius:4px;cursor:pointer; }
+        .copy-code-btn:hover { background:#4b5563; }
+    </style>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

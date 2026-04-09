@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate harmonious color palettes">
+    <meta name="theme-color" content="#2563eb">
+    <title>Color Palette Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">🎨</span>
+        <h1>Color Palette Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate harmonious color palettes from a base color</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="base-color">Base Color</label>
+                    <input type="color" id="base-color" class="form-input" value="#3b82f6" style="width: 100%; height: 60px; padding: 8px; cursor: pointer;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="harmony">Harmony Type</label>
+                    <select id="harmony" class="form-input">
+                        <option value="complementary">Complementary</option>
+                        <option value="analogous">Analogous</option>
+                        <option value="triadic">Triadic</option>
+                        <option value="split-complementary">Split Complementary</option>
+                        <option value="tetradic">Tetradic</option>
+                        <option value="monochromatic">Monochromatic</option>
+                    </select>
+                </div>
+
+                <button id="generate" class="btn btn-primary btn-block">Generate Palette</button>
+
+                <div id="palette" class="palette-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

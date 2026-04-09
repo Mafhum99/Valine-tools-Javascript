@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS transform values">
+    <meta name="theme-color" content="#2563eb">
+    <title>CSS Transform Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>CSS Transform Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS transform values</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="scale-x">Scale X</label>
+                    <div class="range-with-value">
+                        <input type="range" id="scale-x" min="0.1" max="3" step="0.1" value="1" class="form-range">
+                        <span id="scale-x-value" class="range-value">1</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="scale-y">Scale Y</label>
+                    <div class="range-with-value">
+                        <input type="range" id="scale-y" min="0.1" max="3" step="0.1" value="1" class="form-range">
+                        <span id="scale-y-value" class="range-value">1</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="rotate">Rotate (degrees)</label>
+                    <div class="range-with-value">
+                        <input type="range" id="rotate" min="-360" max="360" step="1" value="0" class="form-range">
+                        <span id="rotate-value" class="range-value">0deg</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="translate-x">Translate X (px)</label>
+                        <input type="number" id="translate-x" value="0" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="translate-y">Translate Y (px)</label>
+                        <input type="number" id="translate-y" value="0" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="skew-x">Skew X (degrees)</label>
+                        <input type="number" id="skew-x" value="0" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="skew-y">Skew Y (degrees)</label>
+                        <input type="number" id="skew-y" value="0" class="form-input">
+                    </div>
+                </div>
+
+                <div class="preview-box" id="preview-container">
+                    <div class="preview-element" id="preview">Preview</div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="reset" class="btn btn-secondary">Reset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

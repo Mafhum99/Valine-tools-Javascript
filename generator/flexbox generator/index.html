@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate flexbox layouts visually">
+    <meta name="theme-color" content="#2563eb">
+    <title>Flexbox Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Flexbox Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate flexbox layouts visually</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="fb-direction">Flex Direction</label>
+                    <select id="fb-direction" class="form-select">
+                        <option value="row">Row</option>
+                        <option value="column">Column</option>
+                        <option value="row-reverse">Row Reverse</option>
+                        <option value="column-reverse">Column Reverse</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fb-justify">Justify Content</label>
+                    <select id="fb-justify" class="form-select">
+                        <option value="flex-start">Flex Start</option>
+                        <option value="center">Center</option>
+                        <option value="flex-end">Flex End</option>
+                        <option value="space-between">Space Between</option>
+                        <option value="space-around">Space Around</option>
+                        <option value="space-evenly">Space Evenly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fb-align">Align Items</label>
+                    <select id="fb-align" class="form-select">
+                        <option value="stretch">Stretch</option>
+                        <option value="flex-start">Flex Start</option>
+                        <option value="center">Center</option>
+                        <option value="flex-end">Flex End</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fb-gap">Gap (px)</label>
+                    <input type="range" id="fb-gap" min="0" max="32" value="12" class="form-range">
+                    <span id="fb-gap-value" class="range-value">12px</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fb-items">Items</label>
+                    <input type="range" id="fb-items" min="1" max="8" value="4" class="form-range">
+                    <span id="fb-items-value" class="range-value">4</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="fb-color">Item Color</label>
+                    <input type="color" id="fb-color" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="fb-color-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="preview-box" id="fb-preview" style="display:flex;gap:12px;min-height:150px;padding:10px;border:2px dashed var(--gray-300);border-radius:var(--radius);"></div>
+                <div class="result-box" id="fb-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="fb-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

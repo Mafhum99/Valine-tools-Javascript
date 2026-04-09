@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate glowing text and box effects">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#10024; Glow Effect Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#10024;</span>
+        <h1>Glow Effect Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate glowing text and box effects</p>
+
+            <div id="tool-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="glow-type">Glow Target</label>
+                        <select id="glow-type" class="form-select">
+                            <option value="text">Text Glow</option>
+                            <option value="box">Box Glow</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="preview-text">Preview Text</label>
+                        <input type="text" id="preview-text" class="form-input" value="Glowing Text" placeholder="Enter preview text...">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="glow-color">Glow Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="glow-color" value="#00bfff" class="color-picker">
+                            <input type="text" id="glow-color-text" value="#00bfff" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="blur-size">Blur Size (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="blur-size" min="1" max="50" value="10" class="form-range">
+                            <span id="blur-size-value" class="range-value">10px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="glow-intensity">Intensity (layers)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="glow-intensity" min="1" max="5" value="3" class="form-range">
+                            <span id="glow-intensity-value" class="range-value">3</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="glow-spread">Spread (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="glow-spread" min="0" max="20" value="2" class="form-range">
+                            <span id="glow-spread-value" class="range-value">2px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-area glow-preview-area">
+                    <div class="glow-preview-box" id="glow-preview">Glowing Text</div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="preset-neon" class="btn btn-secondary">Neon Preset</button>
+                    <button id="preset-warm" class="btn btn-secondary">Warm Preset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

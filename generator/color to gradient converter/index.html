@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Convert colors to gradient CSS">
+    <meta name="theme-color" content="#2563eb">
+    <title>Color to Gradient Converter - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Color to Gradient Converter</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Convert colors to gradient CSS</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="base-color">Base Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="base-color" value="#6366f1" class="color-picker">
+                        <input type="text" id="base-color-text" value="#6366f1" class="form-input color-text" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="gradient-style">Gradient Style</label>
+                    <select id="gradient-style" class="form-select">
+                        <option value="lighter">Light to Dark</option>
+                        <option value="darker">Dark to Light</option>
+                        <option value="complementary">Complementary</option>
+                        <option value="analogous">Analogous</option>
+                        <option value="split">Split Complementary</option>
+                        <option value="monochromatic">Monochromatic</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="direction">Direction</label>
+                    <select id="direction" class="form-select">
+                        <option value="90deg">Left to Right</option>
+                        <option value="180deg">Top to Bottom</option>
+                        <option value="135deg" selected>Diagonal</option>
+                        <option value="45deg">Diagonal (Bottom-Left)</option>
+                    </select>
+                </div>
+
+                <div class="preview-box" id="gradient-preview"></div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="color-palette" id="color-palette">
+                    <div class="result-label">Generated Palette</div>
+                    <div class="palette-colors">
+                        <div class="palette-swatch" id="swatch1"></div>
+                        <div class="palette-swatch" id="swatch2"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

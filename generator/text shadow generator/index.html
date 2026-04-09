@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS text shadows">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#9997;&#65039; Text Shadow Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#9997;&#65039;</span>
+        <h1>Text Shadow Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS text shadows</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="preview-text">Preview Text</label>
+                    <input type="text" id="preview-text" class="form-input" value="Shadow Text" placeholder="Enter text to preview...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="offset-x">Horizontal Offset (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="offset-x" min="-20" max="20" value="2" class="form-range">
+                            <span id="offset-x-value" class="range-value">2px</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="offset-y">Vertical Offset (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="offset-y" min="-20" max="20" value="2" class="form-range">
+                            <span id="offset-y-value" class="range-value">2px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="blur">Blur Radius (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="blur" min="0" max="30" value="4" class="form-range">
+                            <span id="blur-value" class="range-value">4px</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="shadow-color">Shadow Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="shadow-color" value="#000000" class="color-picker">
+                            <input type="text" id="shadow-color-text" value="#000000" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-area text-preview-area">
+                    <div class="text-preview" id="text-preview">Shadow Text</div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="preset-soft" class="btn btn-secondary">Soft Preset</button>
+                    <button id="preset-bold" class="btn btn-secondary">Bold Preset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate inner box shadows">
+    <meta name="theme-color" content="#2563eb">
+    <title>Inner Shadow Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Inner Shadow Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate inner box shadows</p>
+
+            <div id="tool-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="offset-x">Horizontal Offset (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="offset-x" min="-50" max="50" value="5" class="form-range">
+                            <span id="offset-x-value" class="range-value">5px</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="offset-y">Vertical Offset (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="offset-y" min="-50" max="50" value="5" class="form-range">
+                            <span id="offset-y-value" class="range-value">5px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="blur">Blur Radius (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="blur" min="0" max="100" value="10" class="form-range">
+                            <span id="blur-value" class="range-value">10px</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="spread">Spread Radius (px)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="spread" min="-50" max="50" value="0" class="form-range">
+                            <span id="spread-value" class="range-value">0px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="shadow-color">Shadow Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="shadow-color" value="#000000" class="color-picker">
+                            <input type="text" id="shadow-color-text" value="#000000" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="opacity">Opacity</label>
+                        <div class="range-with-value">
+                            <input type="range" id="opacity" min="0" max="100" value="30" class="form-range">
+                            <span id="opacity-value" class="range-value">0.30</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bg-color">Background Color</label>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="bg-color" value="#ffffff" class="color-picker">
+                        <input type="text" id="bg-color-text" value="#ffffff" class="form-input color-text" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="border-radius">Border Radius (px)</label>
+                    <div class="range-with-value">
+                        <input type="range" id="border-radius" min="0" max="100" value="12" class="form-range">
+                        <span id="border-radius-value" class="range-value">12px</span>
+                    </div>
+                </div>
+
+                <div class="shadow-preview-area" id="preview-area">
+                    <div class="shadow-preview-box" id="preview-box"></div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

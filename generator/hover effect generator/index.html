@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS hover effects">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#128433;&#65039; Hover Effect Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128433;&#65039;</span>
+        <h1>Hover Effect Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS hover effects</p>
+
+            <div id="tool-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="effect-type">Effect Type</label>
+                        <select id="effect-type" class="form-select">
+                            <option value="scale">Scale Up</option>
+                            <option value="scale-down">Scale Down</option>
+                            <option value="rotate">Rotate</option>
+                            <option value="color">Color Change</option>
+                            <option value="shadow">Shadow Lift</option>
+                            <option value="underline">Underline</option>
+                            <option value="glow">Glow</option>
+                            <option value="flip">Flip</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="hover-color">Effect Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="hover-color" value="#2563eb" class="color-picker">
+                            <input type="text" id="hover-color-text" value="#2563eb" class="form-input color-text" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="hover-intensity">Intensity</label>
+                        <div class="range-with-value">
+                            <input type="range" id="hover-intensity" min="1" max="30" value="10" class="form-range">
+                            <span id="hover-intensity-value" class="range-value">10</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="hover-duration">Transition Speed (s)</label>
+                        <div class="range-with-value">
+                            <input type="range" id="hover-duration" min="0.1" max="1" step="0.1" value="0.3" class="form-range">
+                            <span id="hover-duration-value" class="range-value">0.3s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-area hover-preview-area">
+                    <div class="hover-preview-box" id="hover-preview">Hover Me</div>
+                </div>
+
+                <div class="result-box" id="css-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="css-code"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="preset-button" class="btn btn-secondary">Button Preset</button>
+                    <button id="preset-card" class="btn btn-secondary">Card Preset</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

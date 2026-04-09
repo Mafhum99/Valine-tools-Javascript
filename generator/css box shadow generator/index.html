@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS box shadows visually">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x2B1C; CSS Box Shadow Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x2B1C;</span>
+        <h1>CSS Box Shadow Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS box-shadow with custom parameters</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="hShadow">H-Shadow (px)</label>
+                    <input type="range" id="hShadow" class="form-range" min="-50" max="50" value="5">
+                    <span id="hShadowVal" class="range-value">5px</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="vShadow">V-Shadow (px)</label>
+                    <input type="range" id="vShadow" class="form-range" min="-50" max="50" value="10">
+                    <span id="vShadowVal" class="range-value">10px</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="blur">Blur (px)</label>
+                    <input type="range" id="blur" class="form-range" min="0" max="100" value="15">
+                    <span id="blurVal" class="range-value">15px</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="spread">Spread (px)</label>
+                    <input type="range" id="spread" class="form-range" min="-50" max="50" value="0">
+                    <span id="spreadVal" class="range-value">0px</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="shadowColor">Shadow Color</label>
+                    <input type="color" id="shadowColor" class="form-input form-input-color" value="#000000">
+                    <input type="text" id="shadowColorText" class="form-input" value="#000000" maxlength="7">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="shadowOpacity">Opacity</label>
+                    <input type="range" id="shadowOpacity" class="form-range" min="0" max="100" value="30">
+                    <span id="shadowOpacityVal" class="range-value">30%</span>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generateBtn" class="btn btn-primary">&#x26A1; Generate</button>
+                    <button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Preview</div>
+                    <div class="preview-container">
+                        <div id="preview" class="shadow-preview"></div>
+                    </div>
+                    <div class="result-label mt-2">CSS Code</div>
+                    <pre id="output" class="code-block">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

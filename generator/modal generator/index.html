@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate modal dialogs and popups">
+    <meta name="theme-color" content="#2563eb">
+    <title>Modal Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f5d5;&#xfe0f;</span>
+        <h1>Modal Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate modal dialogs and popups</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="modalTitle">Title</label>
+                    <input type="text" id="modalTitle" class="form-input" placeholder="Confirm Action" maxlength="50" value="Confirm Action">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalContent">Content</label>
+                    <textarea id="modalContent" class="form-input" placeholder="Are you sure you want to proceed?" rows="3" maxlength="300">Are you sure you want to proceed? This action cannot be undone.</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalConfirmText">Confirm Button Text</label>
+                    <input type="text" id="modalConfirmText" class="form-input" placeholder="Confirm" maxlength="20" value="Confirm">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalCancelText">Cancel Button Text</label>
+                    <input type="text" id="modalCancelText" class="form-input" placeholder="Cancel" maxlength="20" value="Cancel">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalBgColor">Background Color</label>
+                    <input type="color" id="modalBgColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalTextColor">Text Color</label>
+                    <input type="color" id="modalTextColor" class="form-color" value="#1f2937">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalAccentColor">Accent Color</label>
+                    <input type="color" id="modalAccentColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalOverlayColor">Overlay Color</label>
+                    <input type="color" id="modalOverlayColor" class="form-color" value="#000000">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalWidth">Width (px)</label>
+                    <input type="range" id="modalWidth" class="form-range" min="300" max="600" value="420" step="10">
+                    <span id="modalWidthValue" class="range-value">420</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalStyle">Modal Style</label>
+                    <select id="modalStyle" class="form-input">
+                        <option value="default">Default</option>
+                        <option value="rounded">Rounded</option>
+                        <option value="minimal">Minimal</option>
+                        <option value="alert">Alert</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Modal</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="modalPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML/CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

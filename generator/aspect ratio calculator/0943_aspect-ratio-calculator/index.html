@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate aspect ratios for containers">
+    <meta name="theme-color" content="#2563eb">
+    <title>Aspect Ratio Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Aspect Ratio Calculator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Calculate aspect ratios for containers</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="ar-ratio">Common Ratios</label>
+                    <select id="ar-ratio" class="form-select">
+                        <option value="16:9">16:9 (Widescreen)</option>
+                        <option value="4:3">4:3 (Standard)</option>
+                        <option value="1:1">1:1 (Square)</option>
+                        <option value="21:9">21:9 (Ultrawide)</option>
+                        <option value="3:2">3:2 (Photo)</option>
+                        <option value="2:3">2:3 (Portrait)</option>
+                        <option value="9:16">9:16 (Mobile/Story)</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group" id="ar-custom" style="display:none;">
+                    <label class="form-label">Custom Ratio (W : H)</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <input type="number" id="ar-w" value="16" min="1" class="form-input" style="width:80px;">
+                        <span>:</span>
+                        <input type="number" id="ar-h" value="9" min="1" class="form-input" style="width:80px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ar-width">Container Width (px)</label>
+                    <input type="number" id="ar-width" value="800" min="1" class="form-input">
+                </div>
+                <div class="preview-box" id="ar-preview" style="display:flex;align-items:center;justify-content:center;padding:20px;"></div>
+                <div class="result-box" id="ar-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="ar-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

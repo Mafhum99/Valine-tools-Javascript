@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate web banners">
+    <meta name="theme-color" content="#2563eb">
+    <title>Banner Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f3f3;&#xfe0f;</span>
+        <h1>Banner Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate web banners</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="bannerText">Banner Text</label>
+                    <input type="text" id="bannerText" class="form-input" placeholder="Welcome to Our Website" maxlength="80" value="Welcome to Our Website">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bannerBgColor">Background Color</label>
+                    <input type="color" id="bannerBgColor" class="form-color" value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bannerTextColor">Text Color</label>
+                    <input type="color" id="bannerTextColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bannerWidth">Width (px)</label>
+                    <input type="range" id="bannerWidth" class="form-range" min="300" max="1200" value="800" step="10">
+                    <span id="bannerWidthValue" class="range-value">800</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bannerHeight">Height (px)</label>
+                    <input type="range" id="bannerHeight" class="form-range" min="60" max="300" value="120" step="5">
+                    <span id="bannerHeightValue" class="range-value">120</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bannerFontSize">Font Size (px)</label>
+                    <input type="range" id="bannerFontSize" class="form-range" min="14" max="48" value="28">
+                    <span id="bannerFontSizeValue" class="range-value">28</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bannerStyle">Banner Style</label>
+                    <select id="bannerStyle" class="form-input">
+                        <option value="solid">Solid</option>
+                        <option value="gradient">Gradient</option>
+                        <option value="striped">Striped</option>
+                        <option value="bordered">Bordered</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Banner</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="bannerPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML/CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

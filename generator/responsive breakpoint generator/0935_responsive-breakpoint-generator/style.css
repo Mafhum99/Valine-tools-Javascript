@@ -1,0 +1,14 @@
+/* Responsive Breakpoint Generator - Custom Styles */
+
+/* Add custom styles here if needed */
+/* Most styles come from shared.css */
+
+#result {
+    min-height: 80px;
+}
+
+#output {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+}

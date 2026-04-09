@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate random sentences from word lists">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#127918; Random Sentence Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#127918;</span>
+        <h1>Random Sentence Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate random sentences from word lists</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="count">Number of Sentences</label>
+                    <input type="number" id="count" class="form-input" value="5" min="1" max="100" style="width:100px;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="style">Sentence Style</label>
+                    <select id="style" class="form-select">
+                        <option value="simple">Simple (Subject + Verb + Object)</option>
+                        <option value="compound">Compound (with conjunctions)</option>
+                        <option value="complex">Complex (with clauses)</option>
+                        <option value="mixed">Mixed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="topic">Topic (optional)</label>
+                    <select id="topic" class="form-select">
+                        <option value="general">General</option>
+                        <option value="technology">Technology</option>
+                        <option value="nature">Nature</option>
+                        <option value="business">Business</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Sentences</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Generated Sentences</div>
+                    <textarea id="output" class="form-textarea" rows="10" readonly style="white-space: pre-wrap;"></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy Sentences</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate video thumbnails">
+    <meta name="theme-color" content="#2563eb">
+    <title>Thumbnail Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1f5bc;&#xfe0f;</span>
+        <h1>Thumbnail Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate video thumbnails</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="thumbTitle">Title</label>
+                    <input type="text" id="thumbTitle" class="form-input" placeholder="My Awesome Video" maxlength="50" value="My Awesome Video">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbSubtitle">Subtitle</label>
+                    <input type="text" id="thumbSubtitle" class="form-input" placeholder="Watch Now!" maxlength="60" value="Watch Now!">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbBgColor">Background Color</label>
+                    <input type="color" id="thumbBgColor" class="form-color" value="#1e40af">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbTextColor">Text Color</label>
+                    <input type="color" id="thumbTextColor" class="form-color" value="#ffffff">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbWidth">Width (px)</label>
+                    <input type="range" id="thumbWidth" class="form-range" min="320" max="1280" value="640" step="10">
+                    <span id="thumbWidthValue" class="range-value">640</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbHeight">Height (px)</label>
+                    <input type="range" id="thumbHeight" class="form-range" min="180" max="720" value="360" step="10">
+                    <span id="thumbHeightValue" class="range-value">360</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbFontSize">Font Size (px)</label>
+                    <input type="range" id="thumbFontSize" class="form-range" min="14" max="48" value="24">
+                    <span id="thumbFontSizeValue" class="range-value">24</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="thumbStyle">Style</label>
+                    <select id="thumbStyle" class="form-input">
+                        <option value="center">Centered</option>
+                        <option value="bottom">Bottom Aligned</option>
+                        <option value="top">Top Aligned</option>
+                        <option value="split">Split Layout</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate Thumbnail</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="preview-box" id="preview">
+                    <div class="result-label">Preview</div>
+                    <div id="thumbPreview"></div>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">HTML/CSS Code</div>
+                    <pre id="output" class="code-output">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1f4cb; Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

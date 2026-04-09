@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS speech bubbles">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F4AC; CSS Speech Bubble Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F4AC;</span>
+        <h1>CSS Speech Bubble Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS speech bubbles with tails</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="bgColor">Background Color</label>
+                    <input type="color" id="bgColor" class="form-input form-input-color" value="#2563eb">
+                    <input type="text" id="bgColorText" class="form-input" value="#2563eb" maxlength="7">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="textColor">Text Color</label>
+                    <input type="color" id="textColor" class="form-input form-input-color" value="#ffffff">
+                    <input type="text" id="textColorText" class="form-input" value="#ffffff" maxlength="7">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="tailPosition">Tail Position</label>
+                    <select id="tailPosition" class="form-select">
+                        <option value="bottom">Bottom</option>
+                        <option value="top">Top</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generateBtn" class="btn btn-primary">&#x26A1; Generate</button>
+                    <button id="clearBtn" class="btn btn-secondary">&#x1F5D1; Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Preview</div>
+                    <div class="preview-container">
+                        <div id="preview" class="speech-bubble">Hello! This is a speech bubble.</div>
+                    </div>
+                    <div class="result-label mt-2">CSS Code</div>
+                    <pre id="output" class="code-block">-</pre>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copyBtn" class="btn btn-secondary">&#x1F4CB; Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

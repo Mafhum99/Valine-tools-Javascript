@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Convert Unicode characters to ASCII equivalents">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#128260; Unicode to ASCII Converter - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128260;</span>
+        <h1>Unicode to ASCII Converter</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Convert Unicode characters to ASCII equivalents</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Unicode text</label>
+                    <textarea id="input" class="form-textarea" rows="6" placeholder="e.g., Caf&#233; na&#239;ve r&#233;sum&#233; &#241;..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="mode">Conversion Mode</label>
+                    <select id="mode" class="form-select">
+                        <option value="transliterate">Transliterate (cafe, naive, resume)</option>
+                        <option value="strip">Strip Accents Only</option>
+                        <option value="strip-all">Strip All Non-ASCII</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="convert" class="btn btn-primary btn-block">Convert to ASCII</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">ASCII Result</div>
+                    <div id="output" style="white-space: pre-wrap;">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

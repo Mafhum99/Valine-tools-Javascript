@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate CSS grid layouts visually">
+    <meta name="theme-color" content="#2563eb">
+    <title>CSS Grid Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>CSS Grid Generator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate CSS grid layouts visually</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="grid-cols">Columns</label>
+                    <input type="range" id="grid-cols" min="1" max="6" value="3" class="form-range">
+                    <span id="grid-cols-value" class="range-value">3</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="grid-rows">Rows</label>
+                    <input type="range" id="grid-rows" min="1" max="6" value="2" class="form-range">
+                    <span id="grid-rows-value" class="range-value">2</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="grid-gap">Gap (px)</label>
+                    <input type="range" id="grid-gap" min="0" max="32" value="16" class="form-range">
+                    <span id="grid-gap-value" class="range-value">16px</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="grid-items">Items</label>
+                    <input type="range" id="grid-items" min="1" max="12" value="6" class="form-range">
+                    <span id="grid-items-value" class="range-value">6</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="grid-color">Item Color</label>
+                    <input type="color" id="grid-color" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="grid-color-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+                <div class="preview-box" id="grid-preview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:10px;min-height:200px;"></div>
+                <div class="result-box" id="grid-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="grid-css"></code>
+                </div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Add repeating watermark text across content">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#128167; Text Watermark Adder - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#128167;</span>
+        <h1>Text Watermark Adder</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Add repeating watermark text across content</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Original text</label>
+                    <textarea id="input" class="form-textarea" rows="5" placeholder="Enter your text content..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="watermark">Watermark text</label>
+                    <input type="text" id="watermark" class="form-input" placeholder="e.g., CONFIDENTIAL, DRAFT">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="style">Watermark Style</label>
+                    <select id="style" class="form-select">
+                        <option value="between">Between each line</option>
+                        <option value="every-n">Every N lines</option>
+                        <option value="top-bottom">Top and bottom only</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="everyNGroup" style="display:none;">
+                    <label class="form-label" for="everyN">Every how many lines?</label>
+                    <input type="number" id="everyN" class="form-input" value="3" min="1" style="width:100px;">
+                </div>
+
+                <div class="btn-group">
+                    <button id="apply" class="btn btn-primary btn-block">Add Watermark</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Watermarked Text</div>
+                    <textarea id="output" class="form-textarea" rows="8" readonly style="white-space: pre-wrap;"></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#128203; Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

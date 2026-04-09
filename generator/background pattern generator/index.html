@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate seamless background patterns with CSS">
+    <meta name="theme-color" content="#2563eb">
+    <title>Background Pattern Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>Background Pattern Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate seamless background patterns with CSS</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="bg-pattern-style">Pattern Style</label>
+                    <select id="bg-pattern-style" class="form-select">
+                        <option value="diagonal">Diagonal Lines</option>
+                        <option value="horizontal">Horizontal Lines</option>
+                        <option value="vertical">Vertical Lines</option>
+                        <option value="plaid">Plaid</option>
+                        <option value="triangles">Triangles</option>
+                        <option value="diamonds">Diamonds</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bg-color1">Line Color</label>
+                    <input type="color" id="bg-color1" value="#94a3b8" class="color-picker-inline">
+                    <input type="text" id="bg-color1-text" value="#94a3b8" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bg-color2">Background Color</label>
+                    <input type="color" id="bg-color2" value="#f8fafc" class="color-picker-inline">
+                    <input type="text" id="bg-color2-text" value="#f8fafc" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bg-line-width">Line Width (px)</label>
+                    <input type="range" id="bg-line-width" min="1" max="10" value="2" class="form-range">
+                    <span id="bg-line-width-value" class="range-value">2px</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bg-spacing">Spacing (px)</label>
+                    <input type="range" id="bg-spacing" min="5" max="50" value="20" class="form-range">
+                    <span id="bg-spacing-value" class="range-value">20px</span>
+                </div>
+
+                <div class="preview-box" id="bg-pattern-preview" style="width:100%;height:200px;border-radius:var(--radius);border:1px solid var(--gray-300);"></div>
+
+                <div class="result-box" id="bg-pattern-output">
+                    <div class="result-label">CSS Code</div>
+                    <code id="bg-pattern-css"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy CSS</button>
+                    <button id="random" class="btn btn-secondary">Random Colors</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

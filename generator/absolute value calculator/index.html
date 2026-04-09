@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculate the absolute value of a number">
+    <meta name="theme-color" content="#2563eb">
+    <title>Absolute Value Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">|x|</span>
+        <h1>Absolute Value Calculator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Calculate the absolute value |x| of a number</p>
+
+            <div id="tool-content">
+                <!-- ====== TOOL CONTENT START ====== -->
+                <div class="form-group">
+                    <label class="form-label" for="number">Number</label>
+                    <input type="number" id="number" class="form-input" placeholder="-42" step="any">
+                </div>
+
+                <div class="btn-group">
+                    <button id="action-btn" class="btn btn-primary btn-block">Calculate |x|</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Absolute Value</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+                <!-- ====== TOOL CONTENT END ====== -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate HMAC hash with message, secret key, and algorithm selection">
+    <meta name="theme-color" content="#2563eb">
+    <title>&#x1F511; HMAC Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">&#x1F511;</span>
+        <h1>HMAC Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate HMAC with message, secret key, and algorithm</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="input">Message</label>
+                    <textarea id="input" class="form-input form-textarea" placeholder="Enter message..." rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="key">Secret Key</label>
+                    <textarea id="key" class="form-input form-textarea" placeholder="Enter secret key..." rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="algorithm">Algorithm</label>
+                    <select id="algorithm" class="form-input">
+                        <option value="SHA-1">SHA-1</option>
+                        <option value="SHA-256" selected>SHA-256</option>
+                        <option value="SHA-512">SHA-512</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button id="generate" class="btn btn-primary btn-block">Generate HMAC</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">&#x1F4CB; Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

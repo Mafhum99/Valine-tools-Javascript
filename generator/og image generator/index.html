@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Generate Open Graph social media images">
+    <meta name="theme-color" content="#2563eb">
+    <title>OG Image Generator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon"></span>
+        <h1>OG Image Generator</h1>
+    </header>
+
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Generate Open Graph social media images</p>
+
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="og-title">Title</label>
+                    <input type="text" id="og-title" value="My Awesome Page" class="form-input" placeholder="Page title">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="og-desc">Description</label>
+                    <input type="text" id="og-desc" value="A great description for my page" class="form-input" placeholder="Short description">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="og-color1">Background Color</label>
+                    <input type="color" id="og-color1" value="#1e293b" class="color-picker-inline">
+                    <input type="text" id="og-color1-text" value="#1e293b" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="og-color2">Accent Color</label>
+                    <input type="color" id="og-color2" value="#3b82f6" class="color-picker-inline">
+                    <input type="text" id="og-color2-text" value="#3b82f6" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="og-textcolor">Text Color</label>
+                    <input type="color" id="og-textcolor" value="#ffffff" class="color-picker-inline">
+                    <input type="text" id="og-textcolor-text" value="#ffffff" class="form-input" maxlength="7" placeholder="#hex">
+                </div>
+
+                <div class="preview-box" id="og-preview" style="width:100%;aspect-ratio:1200/630;max-height:315px;border-radius:var(--radius);border:1px solid var(--gray-300);overflow:hidden;"></div>
+
+                <div class="result-box" id="og-output">
+                    <div class="result-label">HTML Code</div>
+                    <code id="og-css"></code>
+                </div>
+
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">Copy HTML</button>
+                    <button id="random" class="btn btn-secondary">Random Colors</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
+                🐙 GitHub
+            </a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
+                ☕ Support me
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
