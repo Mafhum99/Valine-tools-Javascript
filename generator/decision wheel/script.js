@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputEl.focus();
     }
 
-    calculateBtn.addEventListener('click', () => { calculate(););
+    calculateBtn.addEventListener('click', () => { calculate(); });
     clearBtn.addEventListener('click', clear);
 
     if (copyBtn) {

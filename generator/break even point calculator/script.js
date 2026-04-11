@@ -253,11 +253,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        try {
-            const result = fixedCosts * pricePerUnit;
+        if (pricePerUnit <= variableCostPerUnit) {
+            breakEvenUnitsEl.textContent = 'Price must exceed variable cost';
+            breakEvenRevenueEl.textContent = '-';
+            return;
+        }
 
-            breakEvenUnitsEl.textContent = breakEvenUnits.toFixed(2);
-            breakEvenRevenueEl.textContent = breakEvenRevenue.toFixed(2);
+        try {
+            const contributionMargin = pricePerUnit - variableCostPerUnit;
+            const breakEvenUnits = fixedCosts / contributionMargin;
+            const breakEvenRevenue = breakEvenUnits * pricePerUnit;
+
+            breakEvenUnitsEl.textContent = formatNumber(breakEvenUnits, 2) + ' units';
+            breakEvenRevenueEl.textContent = formatCurrency(breakEvenRevenue);
         } catch (error) {
             breakEvenUnitsEl.textContent = 'Error: ' + error.message;
             breakEvenRevenueEl.textContent = '-';

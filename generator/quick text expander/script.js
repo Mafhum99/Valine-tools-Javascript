@@ -250,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'aka': 'also known as',
         'diy': 'do it yourself',
         'eta': 'estimated time of arrival',
-        'eta': 'estimated time of arrival',
         'eod': 'end of day',
         'cob': 'close of business',
         'oo': 'out of office',

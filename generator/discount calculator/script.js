@@ -230,15 +230,17 @@ function initTool(toolInfo) {
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Discount Calculator', icon: '🧮' });
+    initTool({ name: 'Discount Calculator', icon: '💰' });
 
     // Get elements
     const originalPriceEl = $('#originalPrice');
     const discountPercentEl = $('#discountPercent');
     const resultsEl = $('#results');
+    const resultBox = $('#resultBox');
+    const copyBtnContainer = $('#copyBtn');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
-    const copyBtn = $('#copy');
+    const copyBtn = $('#copyResult');
 
     function calculate() {
         const originalPrice = parseFloat(originalPriceEl.value.trim());
@@ -250,11 +252,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const result = originalPrice * discountPercent;
+            const discountAmount = originalPrice * (discountPercent / 100);
+            const finalPrice = originalPrice - discountAmount;
+            const youSave = discountAmount;
 
-            resultsEl.textContent = results.toFixed(2);
+            resultsEl.innerHTML = `
+                <div class="result-item">
+                    <span class="result-label">Discount Amount:</span>
+                    <span class="result-value">${formatCurrency(discountAmount)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Final Price:</span>
+                    <span class="result-value">${formatCurrency(finalPrice)}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">You Save:</span>
+                    <span class="result-value">${formatCurrency(youSave)}</span>
+                </div>
+            `;
+            
+            // Show result box and copy button
+            resultBox.style.display = 'block';
+            copyBtnContainer.style.display = 'block';
         } catch (error) {
             resultsEl.textContent = 'Error: ' + error.message;
+            resultBox.style.display = 'block';
+            copyBtnContainer.style.display = 'none';
         }
     }
 
@@ -262,6 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
         originalPriceEl.value = '';
         discountPercentEl.value = '';
         resultsEl.textContent = '-';
+        resultBox.style.display = 'none';
+        copyBtnContainer.style.display = 'none';
         originalPriceEl.focus();
     }
 
