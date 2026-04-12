@@ -221,64 +221,166 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Body Fat Percentage Calculator
+// Estimate body fat using Navy method
 // ========================================
 
-/**
- * Body Fat Percentage Calculator
- * Estimate body fat percentage
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Body Fat Percentage Calculator', icon: '📊' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const waistEl = $('#waist');
+    const neckEl = $('#neck');
+    const heightEl = $('#height');
+    const hipEl = $('#hip');
+    const hipGroup = $('#hip-group');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    // Show/hide hip input based on gender
+    function updateHipVisibility() {
+        const gender = document.querySelector('input[name="gender"]:checked')?.value || 'male';
+        hipGroup.style.display = gender === 'female' ? 'block' : 'none';
+    }
+
+    document.querySelectorAll('input[name="gender"]').forEach(radio => {
+        radio.addEventListener('change', updateHipVisibility);
+    });
+    updateHipVisibility();
+
+    function getGender() {
+        return document.querySelector('input[name="gender"]:checked')?.value || 'male';
+    }
+
+    function getBodyFatCategory(bf) {
+        const gender = getGender();
+        if (gender === 'male') {
+            if (bf < 6) return { name: 'Essential Fat', color: '#3b82f6' };
+            if (bf < 14) return { name: 'Athletes', color: '#22c55e' };
+            if (bf < 18) return { name: 'Fitness', color: '#84cc16' };
+            if (bf < 25) return { name: 'Average', color: '#f59e0b' };
+            return { name: 'Obese', color: '#ef4444' };
+        } else {
+            if (bf < 14) return { name: 'Essential Fat', color: '#3b82f6' };
+            if (bf < 21) return { name: 'Athletes', color: '#22c55e' };
+            if (bf < 25) return { name: 'Fitness', color: '#84cc16' };
+            if (bf < 32) return { name: 'Average', color: '#f59e0b' };
+            return { name: 'Obese', color: '#ef4444' };
+        }
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const gender = getGender();
+        const waistVal = waistEl.value;
+        const neckVal = neckEl.value;
+        const heightVal = heightEl.value;
+
+        if (waistVal === '' || neckVal === '' || heightVal === '') {
+            outputEl.textContent = 'Waist, neck, and height are required';
             return;
         }
-        
+
+        const waist = Number(waistVal);
+        const neck = Number(neckVal);
+        const height = Number(heightVal);
+
+        if (waist <= 0 || neck <= 0 || height <= 0) {
+            outputEl.textContent = 'All measurements must be positive numbers';
+            return;
+        }
+
+        if (height < 100 || height > 250) {
+            outputEl.textContent = 'Height must be between 100 and 250 cm';
+            return;
+        }
+
+        if (waist <= neck) {
+            outputEl.textContent = 'Waist must be greater than neck';
+            return;
+        }
+
+        let bodyFat = 0;
+
         try {
-            // TODO: Implement Body Fat Percentage Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            if (gender === 'male') {
+                // Male: 86.010 * log10(waist - neck) - 70.041 * log10(height) + 36.76
+                bodyFat = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76;
+            } else {
+                const hipVal = hipEl.value;
+                if (hipVal === '') {
+                    outputEl.textContent = 'Hip circumference is required for females';
+                    return;
+                }
+                const hip = Number(hipVal);
+                if (hip <= 0) {
+                    outputEl.textContent = 'Hip measurement must be a positive number';
+                    return;
+                }
+                // Female: 163.205 * log10(waist + hip - neck) - 97.684 * log10(height) - 78.387
+                bodyFat = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(height) - 78.387;
+            }
+
+            if (bodyFat < 0 || bodyFat > 60) {
+                outputEl.textContent = 'Result seems unrealistic. Please check your measurements.';
+                return;
+            }
+
+            const category = getBodyFatCategory(bodyFat);
+            const leanMass = 100 - bodyFat;
+
+            // Progress bar
+            const progressPct = Math.min((bodyFat / 50) * 100, 100);
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:2.5rem;font-weight:700;color:${category.color};">${formatNumber(bodyFat, 1)}%</div>
+                    <div style="font-size:1rem;font-weight:600;color:${category.color};margin-top:0.25rem;">${category.name}</div>
+                    <div style="margin-top:0.75rem;background:#e5e7eb;border-radius:9999px;height:8px;overflow:hidden;">
+                        <div style="background:${category.color};height:100%;width:${progressPct}%;border-radius:9999px;"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.625rem;color:#6b7280;margin-top:0.25rem;">
+                        <span>0%</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.75rem;">
+                        <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.75rem;color:#6b7280;">Body Fat</div>
+                            <div style="font-weight:600;">${formatNumber(bodyFat, 1)}%</div>
+                        </div>
+                        <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.75rem;color:#6b7280;">Lean Mass</div>
+                            <div style="font-weight:600;">${formatNumber(leanMass, 1)}%</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.625rem;color:#6b7280;margin-top:0.5rem;">Method: U.S. Navy</div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        waistEl.value = '';
+        neckEl.value = '';
+        heightEl.value = '';
+        hipEl.value = '';
+        document.querySelector('input[name="gender"][value="male"]').checked = true;
+        hipGroup.style.display = 'none';
         outputEl.textContent = '-';
-        inputEl.focus();
+        waistEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

@@ -226,57 +226,222 @@ function initTool(toolInfo) {
 
 /**
  * BMR Calculator
- * Calculate basal metabolic rate
+ * Calculate basal metabolic rate using Mifflin-St Jeor and Harris-Benedict formulas
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'BMR Calculator', icon: '🔥' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const ageEl = $('#age');
+    const weightEl = $('#weight');
+    const weightUnitEl = $('#weight-unit');
+    const heightCmEl = $('#height-cm');
+    const heightFtEl = $('#height-ft');
+    const heightInEl = $('#height-in');
+    const heightUnitEl = $('#height-unit');
+    const heightMetricDiv = $('#height-metric');
+    const heightImperialDiv = $('#height-imperial');
+    const activityEl = $('#activity');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    // Toggle height input mode
+    function updateHeightInput() {
+        if (heightUnitEl.value === 'ft') {
+            heightMetricDiv.style.display = 'none';
+            heightImperialDiv.style.display = 'flex';
+        } else {
+            heightMetricDiv.style.display = 'flex';
+            heightImperialDiv.style.display = 'none';
+        }
+    }
+
+    heightUnitEl.addEventListener('change', updateHeightInput);
+
+    function getGender() {
+        return document.querySelector('input[name="gender"]:checked')?.value || 'male';
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const ageVal = ageEl.value;
+        const weightVal = weightEl.value;
+
+        if (ageVal === '') {
+            outputEl.textContent = 'Age is required';
             return;
         }
-        
+        if (weightVal === '') {
+            outputEl.textContent = 'Weight is required';
+            return;
+        }
+
+        const age = Number(ageVal);
+        if (!Number.isInteger(age) || age < 15 || age > 100) {
+            outputEl.textContent = 'Age must be an integer between 15 and 100';
+            return;
+        }
+
+        let weightKg = Number(weightVal);
+        if (isNaN(weightKg) || weightKg <= 0) {
+            outputEl.textContent = 'Weight must be a positive number';
+            return;
+        }
+
+        // Convert weight to kg
+        if (weightUnitEl.value === 'lbs') {
+            weightKg = weightKg * 0.453592;
+        }
+
+        if (weightKg >= 500) {
+            outputEl.textContent = 'Weight must be less than 500 kg';
+            return;
+        }
+
+        // Get height in cm
+        let heightCm = 0;
+        if (heightUnitEl.value === 'cm') {
+            const heightCmVal = heightCmEl.value;
+            if (heightCmVal === '') {
+                outputEl.textContent = 'Height is required';
+                return;
+            }
+            heightCm = Number(heightCmVal);
+            if (isNaN(heightCm) || heightCm <= 0) {
+                outputEl.textContent = 'Height must be a positive number';
+                return;
+            }
+        } else {
+            const ftVal = Number(heightFtEl.value);
+            const inVal = Number(heightInEl.value);
+            if (heightFtEl.value === '' && heightInEl.value === '') {
+                outputEl.textContent = 'Height is required';
+                return;
+            }
+            if ((heightFtEl.value !== '' && isNaN(ftVal)) || (heightInEl.value !== '' && isNaN(inVal))) {
+                outputEl.textContent = 'Height values must be valid numbers';
+                return;
+            }
+            const totalInches = ftVal * 12 + inVal;
+            if (totalInches <= 0) {
+                outputEl.textContent = 'Total height must be greater than 0';
+                return;
+            }
+            heightCm = totalInches * 2.54;
+        }
+
+        if (heightCm >= 300) {
+            outputEl.textContent = 'Height must be less than 300 cm';
+            return;
+        }
+
         try {
-            // TODO: Implement BMR Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const gender = getGender();
+            const activityMultiplier = Number(activityEl.value);
+
+            // Mifflin-St Jeor Equation
+            let bmrMifflin;
+            if (gender === 'male') {
+                bmrMifflin = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+            } else {
+                bmrMifflin = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+            }
+
+            // Harris-Benedict Equation
+            let bmrHarris;
+            if (gender === 'male') {
+                bmrHarris = 88.362 + (13.397 * weightKg) + (4.799 * heightCm) - (5.677 * age);
+            } else {
+                bmrHarris = 447.593 + (9.247 * weightKg) + (3.098 * heightCm) - (4.330 * age);
+            }
+
+            // Use Mifflin-St Jeor as primary (more accurate)
+            const bmr = bmrMifflin;
+            const tdee = bmr * activityMultiplier;
+
+            // Calorie goals
+            const weightLoss = tdee - 500;
+            const maintenance = tdee;
+            const weightGain = tdee + 500;
+
+            // Activity label
+            const activityLabel = activityEl.options[activityEl.selectedIndex].text;
+
+            outputEl.innerHTML = `
+                <div style="text-align:left;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                        <div style="padding:0.75rem;background:#f0f9ff;border-radius:0.375rem;text-align:center;border:2px solid #3b82f6;">
+                            <div style="font-size:0.625rem;color:#6b7280;text-transform:uppercase;font-weight:600;">BMR (Mifflin-St Jeor)</div>
+                            <div style="font-size:1.5rem;font-weight:700;color:#3b82f6;">${formatNumber(bmr, 0)}</div>
+                            <div style="font-size:0.625rem;color:#6b7280;">cal/day</div>
+                        </div>
+                        <div style="padding:0.75rem;background:#fef3c7;border-radius:0.375rem;text-align:center;border:2px solid #f59e0b;">
+                            <div style="font-size:0.625rem;color:#6b7280;text-transform:uppercase;font-weight:600;">TDEE</div>
+                            <div style="font-size:1.5rem;font-weight:700;color:#f59e0b;">${formatNumber(tdee, 0)}</div>
+                            <div style="font-size:0.625rem;color:#6b7280;">cal/day</div>
+                        </div>
+                    </div>
+
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.625rem;color:#6b7280;font-weight:600;">BMR (Harris-Benedict)</div>
+                        <div style="font-weight:600;">${formatNumber(bmrHarris, 0)} cal/day</div>
+                    </div>
+
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.75rem;">
+                        <div style="font-size:0.625rem;color:#6b7280;font-weight:600;">Activity Level</div>
+                        <div style="font-size:0.875rem;">${activityLabel}</div>
+                    </div>
+
+                    <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;margin-bottom:0.5rem;">Daily Calorie Goals</div>
+                    <div style="display:flex;flex-direction:column;gap:0.375rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:#dcfce7;border-radius:0.375rem;">
+                            <span style="font-size:0.875rem;font-weight:600;color:#16a34a;">📉 Weight Loss</span>
+                            <span style="font-weight:700;color:#16a34a;">${formatNumber(weightLoss, 0)} cal</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:#fef3c7;border-radius:0.375rem;">
+                            <span style="font-size:0.875rem;font-weight:600;color:#ca8a04;">⚖️ Maintenance</span>
+                            <span style="font-weight:700;color:#ca8a04;">${formatNumber(maintenance, 0)} cal</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:#fee2e2;border-radius:0.375rem;">
+                            <span style="font-size:0.875rem;font-weight:600;color:#dc2626;">📈 Weight Gain</span>
+                            <span style="font-weight:700;color:#dc2626;">${formatNumber(weightGain, 0)} cal</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        ageEl.value = '';
+        weightEl.value = '';
+        weightUnitEl.value = 'kg';
+        heightCmEl.value = '';
+        heightFtEl.value = '';
+        heightInEl.value = '';
+        heightUnitEl.value = 'cm';
+        heightMetricDiv.style.display = 'flex';
+        heightImperialDiv.style.display = 'none';
+        activityEl.value = '1.55';
+        document.querySelector('input[name="gender"][value="male"]').checked = true;
         outputEl.textContent = '-';
-        inputEl.focus();
+        ageEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

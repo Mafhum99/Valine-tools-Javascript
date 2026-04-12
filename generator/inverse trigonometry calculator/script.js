@@ -229,56 +229,81 @@ function initTool(toolInfo) {
  * Calculate arcsin, arccos, arctan
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Inverse Trigonometry Calculator', icon: '🔄' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const valueEl = $('#input-value');
+    const funcEl = $('#function');
+    const unitEl = $('#unit');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const value = parseFloat(valueEl.value);
+        const func = funcEl.value;
+        const unit = unitEl.value;
+
+        if (isNaN(value)) {
+            outputEl.textContent = 'Please enter a valid number';
             return;
         }
-        
+
         try {
-            // TODO: Implement Inverse Trigonometry Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let resultRad, resultDeg;
+
+            if (func === 'arcsin') {
+                if (value < -1 || value > 1) {
+                    outputEl.textContent = 'Error: arcsin input must be between -1 and 1';
+                    return;
+                }
+                resultRad = Math.asin(value);
+            } else if (func === 'arccos') {
+                if (value < -1 || value > 1) {
+                    outputEl.textContent = 'Error: arccos input must be between -1 and 1';
+                    return;
+                }
+                resultRad = Math.acos(value);
+            } else {
+                resultRad = Math.atan(value);
+            }
+
+            resultDeg = resultRad * (180 / Math.PI);
+
+            const displayValue = unit === 'degrees' ? resultDeg : resultRad;
+            const unitSymbol = unit === 'degrees' ? '\u00B0' : ' rad';
+
+            const funcNames = { arcsin: 'sin\u207B\u00B9', arccos: 'cos\u207B\u00B9', arctan: 'tan\u207B\u00B9' };
+
+            let html = `<div class="result-main">${funcNames[func]}(${value}) = <strong>${formatNumber(displayValue, 6)}${unitSymbol}</strong></div>`;
+            html += `<div class="result-detail">In radians: <strong>${formatNumber(resultRad, 6)} rad</strong></div>`;
+            html += `<div class="result-detail">In degrees: <strong>${formatNumber(resultDeg, 6)}\u00B0</strong></div>`;
+
+            outputEl.innerHTML = html;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        valueEl.value = '';
+        funcEl.value = 'arcsin';
+        unitEl.value = 'radians';
         outputEl.textContent = '-';
-        inputEl.focus();
+        valueEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    valueEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

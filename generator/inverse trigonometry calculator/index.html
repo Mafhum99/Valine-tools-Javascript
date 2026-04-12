@@ -17,24 +17,40 @@
     <main class="tool-container">
         <div class="tool-card">
             <p class="text-muted mb-2">Calculate arcsin, arccos, arctan</p>
-            
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="input-value">Value</label>
+                    <input type="number" step="any" id="input-value" class="form-input" placeholder="Enter value...">
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="function">Function</label>
+                    <select id="function" class="form-select">
+                        <option value="arcsin">arcsin (sin⁻¹)</option>
+                        <option value="arccos">arccos (cos⁻¹)</option>
+                        <option value="arctan">arctan (tan⁻¹)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="unit">Output Unit</label>
+                    <select id="unit" class="form-select">
+                        <option value="radians">Radians</option>
+                        <option value="degrees">Degrees</option>
+                    </select>
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
                     <div class="result-label">Result</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
@@ -46,12 +62,8 @@
     <footer class="site-footer">
         <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
         <div class="footer-actions">
-            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
-                🐙 GitHub
-            </a>
-            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
-                ☕ Support me
-            </a>
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">☕ Support me</a>
         </div>
     </footer>
 </body>

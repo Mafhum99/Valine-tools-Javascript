@@ -229,54 +229,162 @@ function initTool(toolInfo) {
  * Calculate body mass index
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'BMI Calculator', icon: '⚖️' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const weightEl = $('#weight');
+    const weightUnitEl = $('#weight-unit');
+    const heightCmEl = $('#height-cm');
+    const heightFtEl = $('#height-ft');
+    const heightInEl = $('#height-in');
+    const heightUnitEl = $('#height-unit');
+    const heightMetricDiv = $('#height-metric');
+    const heightImperialDiv = $('#height-imperial');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    // Toggle height input mode
+    function updateHeightInput() {
+        if (heightUnitEl.value === 'ft') {
+            heightMetricDiv.style.display = 'none';
+            heightImperialDiv.style.display = 'flex';
+        } else {
+            heightMetricDiv.style.display = 'flex';
+            heightImperialDiv.style.display = 'none';
+        }
+    }
+
+    heightUnitEl.addEventListener('change', updateHeightInput);
+
+    // Get BMI category
+    function getCategory(bmi) {
+        if (bmi < 18.5) return { name: 'Underweight', color: '#3b82f6' };
+        if (bmi < 25) return { name: 'Normal weight', color: '#22c55e' };
+        if (bmi < 30) return { name: 'Overweight', color: '#f59e0b' };
+        if (bmi < 35) return { name: 'Obese Class I', color: '#f97316' };
+        if (bmi < 40) return { name: 'Obese Class II', color: '#ef4444' };
+        return { name: 'Obese Class III', color: '#dc2626' };
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const weightVal = weightEl.value;
+        if (weightVal === '') {
+            outputEl.textContent = 'Weight is required';
             return;
         }
-        
+
+        let weightKg = Number(weightVal);
+        if (isNaN(weightKg) || weightKg <= 0) {
+            outputEl.textContent = 'Weight must be a positive number';
+            return;
+        }
+
+        // Convert weight to kg
+        if (weightUnitEl.value === 'lbs') {
+            weightKg = weightKg * 0.453592;
+        }
+
+        if (weightKg >= 1000) {
+            outputEl.textContent = 'Weight must be less than 1000 kg';
+            return;
+        }
+
+        // Get height in meters
+        let heightM = 0;
+        if (heightUnitEl.value === 'cm') {
+            const heightCmVal = heightCmEl.value;
+            if (heightCmVal === '') {
+                outputEl.textContent = 'Height is required';
+                return;
+            }
+            heightM = Number(heightCmVal) / 100;
+            if (isNaN(heightM) || heightM <= 0) {
+                outputEl.textContent = 'Height must be a positive number';
+                return;
+            }
+        } else {
+            const ftVal = Number(heightFtEl.value);
+            const inVal = Number(heightInEl.value);
+            if (heightFtEl.value === '' && heightInEl.value === '') {
+                outputEl.textContent = 'Height is required';
+                return;
+            }
+            if ((heightFtEl.value !== '' && isNaN(ftVal)) || (heightInEl.value !== '' && isNaN(inVal))) {
+                outputEl.textContent = 'Height values must be valid numbers';
+                return;
+            }
+            const totalInches = ftVal * 12 + inVal;
+            if (totalInches <= 0) {
+                outputEl.textContent = 'Total height must be greater than 0';
+                return;
+            }
+            heightM = totalInches * 0.0254;
+        }
+
+        if (heightM >= 3) {
+            outputEl.textContent = 'Height must be less than 300 cm';
+            return;
+        }
+
         try {
-            // TODO: Implement BMI Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Calculate BMI
+            const bmi = weightKg / (heightM * heightM);
+            const category = getCategory(bmi);
+
+            // Healthy weight range (BMI 18.5 - 24.9)
+            const healthyMin = 18.5 * heightM * heightM;
+            const healthyMax = 24.9 * heightM * heightM;
+
+            // BMI progress bar (0-50 scale)
+            const progressPct = Math.min((bmi / 50) * 100, 100);
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:2.5rem;font-weight:700;color:${category.color};">${formatNumber(bmi, 1)}</div>
+                    <div style="font-size:1rem;font-weight:600;color:${category.color};margin-top:0.25rem;">${category.name}</div>
+                    <div style="margin-top:0.75rem;background:#e5e7eb;border-radius:9999px;height:8px;overflow:hidden;">
+                        <div style="background:${category.color};height:100%;width:${progressPct}%;border-radius:9999px;transition:width 0.5s;"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.625rem;color:#6b7280;margin-top:0.25rem;">
+                        <span>0</span><span>18.5</span><span>25</span><span>30</span><span>40</span><span>50</span>
+                    </div>
+                    <div style="margin-top:0.75rem;padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;text-align:left;">
+                        <div style="font-size:0.75rem;color:#6b7280;font-weight:600;">Healthy Weight Range for Your Height</div>
+                        <div style="font-weight:600;margin-top:0.25rem;">${formatNumber(healthyMin, 1)} - ${formatNumber(healthyMax, 1)} kg</div>
+                    </div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        weightEl.value = '';
+        weightUnitEl.value = 'kg';
+        heightCmEl.value = '';
+        heightFtEl.value = '';
+        heightInEl.value = '';
+        heightUnitEl.value = 'cm';
+        heightMetricDiv.style.display = 'flex';
+        heightImperialDiv.style.display = 'none';
         outputEl.textContent = '-';
-        inputEl.focus();
+        weightEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

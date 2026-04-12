@@ -221,64 +221,140 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Calorie Calculator
+// Calculate daily calorie needs using Mifflin-St Jeor equation
 // ========================================
 
-/**
- * Calorie Calculator
- * Calculate daily calorie needs
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Calorie Calculator', icon: '🔥' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const ageEl = $('#age');
+    const weightEl = $('#weight');
+    const heightEl = $('#height');
+    const activityEl = $('#activity');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    function getGender() {
+        return document.querySelector('input[name="gender"]:checked')?.value || 'male';
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const ageVal = ageEl.value;
+        const weightVal = weightEl.value;
+        const heightVal = heightEl.value;
+
+        if (ageVal === '' || weightVal === '' || heightVal === '') {
+            outputEl.textContent = 'All fields are required';
             return;
         }
-        
+
+        const age = Number(ageVal);
+        const weight = Number(weightVal);
+        const height = Number(heightVal);
+
+        if (!Number.isInteger(age) || age < 15 || age > 100) {
+            outputEl.textContent = 'Age must be an integer between 15 and 100';
+            return;
+        }
+
+        if (weight <= 0 || weight >= 500) {
+            outputEl.textContent = 'Weight must be between 0 and 500 kg';
+            return;
+        }
+
+        if (height <= 0 || height >= 300) {
+            outputEl.textContent = 'Height must be between 0 and 300 cm';
+            return;
+        }
+
         try {
-            // TODO: Implement Calorie Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const gender = getGender();
+            const activityMultiplier = Number(activityEl.value);
+
+            // Mifflin-St Jeor Equation
+            let bmr;
+            if (gender === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+
+            // TDEE
+            const tdee = bmr * activityMultiplier;
+
+            // Calorie goals
+            const weightLoss = tdee - 500;
+            const maintenance = tdee;
+            const weightGain = tdee + 500;
+
+            // Activity label
+            const activityLabel = activityEl.options[activityEl.selectedIndex].text;
+
+            outputEl.innerHTML = `
+                <div style="text-align:left;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;">
+                        <div style="padding:0.75rem;background:#f0f9ff;border-radius:0.375rem;text-align:center;border:2px solid #3b82f6;">
+                            <div style="font-size:0.625rem;color:#6b7280;text-transform:uppercase;font-weight:600;">BMR</div>
+                            <div style="font-size:1.5rem;font-weight:700;color:#3b82f6;">${formatNumber(bmr, 0)}</div>
+                            <div style="font-size:0.625rem;color:#6b7280;">cal/day</div>
+                        </div>
+                        <div style="padding:0.75rem;background:#fef3c7;border-radius:0.375rem;text-align:center;border:2px solid #f59e0b;">
+                            <div style="font-size:0.625rem;color:#6b7280;text-transform:uppercase;font-weight:600;">TDEE</div>
+                            <div style="font-size:1.5rem;font-weight:700;color:#f59e0b;">${formatNumber(tdee, 0)}</div>
+                            <div style="font-size:0.625rem;color:#6b7280;">cal/day</div>
+                        </div>
+                    </div>
+
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.75rem;">
+                        <div style="font-size:0.625rem;color:#6b7280;font-weight:600;">Activity Level</div>
+                        <div style="font-size:0.875rem;">${activityLabel}</div>
+                    </div>
+
+                    <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;margin-bottom:0.5rem;">Daily Calorie Goals</div>
+                    <div style="display:flex;flex-direction:column;gap:0.375rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:#dcfce7;border-radius:0.375rem;">
+                            <span style="font-size:0.875rem;font-weight:600;color:#16a34a;">📉 Weight Loss</span>
+                            <span style="font-weight:700;color:#16a34a;">${formatNumber(weightLoss, 0)} cal</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:#fef3c7;border-radius:0.375rem;">
+                            <span style="font-size:0.875rem;font-weight:600;color:#ca8a04;">⚖️ Maintenance</span>
+                            <span style="font-weight:700;color:#ca8a04;">${formatNumber(maintenance, 0)} cal</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:#fee2e2;border-radius:0.375rem;">
+                            <span style="font-size:0.875rem;font-weight:600;color:#dc2626;">📈 Weight Gain</span>
+                            <span style="font-weight:700;color:#dc2626;">${formatNumber(weightGain, 0)} cal</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        ageEl.value = '';
+        weightEl.value = '';
+        heightEl.value = '';
+        activityEl.value = '1.55';
+        document.querySelector('input[name="gender"][value="male"]').checked = true;
         outputEl.textContent = '-';
-        inputEl.focus();
+        ageEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

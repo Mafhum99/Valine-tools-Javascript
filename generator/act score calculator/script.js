@@ -226,33 +226,75 @@ function initTool(toolInfo) {
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'ACT Score Calculator', icon: '🎓' });
 
-    const inputEl = $('#input');
+    const englishEl = $('#english');
+    const mathEl = $('#math');
+    const readingEl = $('#reading');
+    const scienceEl = $('#science');
     const outputEl = $('#output');
+    const breakdownEl = $('#breakdown');
+    const sectionScoresEl = $('#section-scores');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
 
-    function calculate() {
-        const input = inputEl.value.trim();
-
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
-            return;
+    function validateScore(value, name) {
+        const num = Number(value);
+        if (value === '' || isNaN(num)) {
+            throw new Error(`${name} score is required`);
         }
+        if (!Number.isInteger(num) || num < 1 || num > 36) {
+            throw new Error(`${name} score must be an integer between 1 and 36`);
+        }
+        return num;
+    }
 
+    function calculate() {
         try {
-            // TODO: Implement ACT Score Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const english = validateScore(englishEl.value, 'English');
+            const math = validateScore(mathEl.value, 'Math');
+            const reading = validateScore(readingEl.value, 'Reading');
+            const science = validateScore(scienceEl.value, 'Science');
+
+            const composite = Math.round((english + math + reading + science) / 4);
+
+            outputEl.textContent = `${composite} / 36`;
+            
+            // Show section breakdown
+            breakdownEl.style.display = 'block';
+            sectionScoresEl.innerHTML = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;">
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">English</div>
+                        <div style="font-weight:600;">${english}</div>
+                    </div>
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">Math</div>
+                        <div style="font-weight:600;">${math}</div>
+                    </div>
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">Reading</div>
+                        <div style="font-weight:600;">${reading}</div>
+                    </div>
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">Science</div>
+                        <div style="font-weight:600;">${science}</div>
+                    </div>
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.textContent = error.message;
+            breakdownEl.style.display = 'none';
         }
     }
 
     function clear() {
-        inputEl.value = '';
+        englishEl.value = '';
+        mathEl.value = '';
+        readingEl.value = '';
+        scienceEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        breakdownEl.style.display = 'none';
+        englishEl.focus();
     }
 
     calculateBtn.addEventListener('click', calculate);
@@ -260,13 +302,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const compositeScore = outputEl.textContent;
+            if (compositeScore !== '-' && !compositeScore.startsWith('Error')) {
+                const breakdownText = sectionScoresEl.innerText || '';
+                copyToClipboard(`ACT Composite: ${compositeScore}\n${breakdownText}`);
+            } else {
+                copyToClipboard(compositeScore);
+            }
         });
     }
 
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    // Enter key support
+    const allInputs = [englishEl, mathEl, readingEl, scienceEl];
+    allInputs.forEach((input, index) => {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculate();
+            } else if (e.key === 'ArrowDown' && index < allInputs.length - 1) {
+                allInputs[index + 1].focus();
+            }
+        });
     });
 });

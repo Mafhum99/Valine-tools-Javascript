@@ -226,59 +226,137 @@ function initTool(toolInfo) {
 
 /**
  * Laplace Transform Calculator
- * Calculate Laplace transforms
+ * Calculate Laplace transforms for common functions
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Laplace Transform Calculator', icon: '📈' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const funcEl = $('#function');
+    const paramAEl = $('#param-a');
+    const paramNEl = $('#param-n');
+    const paramGroup = $('#param-group');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
-    function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
-            return;
+
+    const laplaceTable = {
+        '1': { ft: '1', Fs: '1/s', needsA: false, needsN: false },
+        't': { ft: 't', Fs: '1/s²', needsA: false, needsN: false },
+        'tn': { ft: 'tⁿ', Fs: (n) => `${n}!/s^(${n}+1)`, needsA: false, needsN: true },
+        'eat': { ft: 'e^(at)', Fs: (a) => `1/(s - (${a}))`, needsA: true, needsN: false },
+        'sinat': { ft: 'sin(at)', Fs: (a) => `${a}/(s² + ${a}²)`, needsA: true, needsN: false },
+        'cosat': { ft: 'cos(at)', Fs: (a) => `s/(s² + ${a}²)`, needsA: true, needsN: false },
+        'sinhat': { ft: 'sinh(at)', Fs: (a) => `${a}/(s² - ${a}²)`, needsA: true, needsN: false },
+        'coshat': { ft: 'cosh(at)', Fs: (a) => `s/(s² - ${a}²)`, needsA: true, needsN: false }
+    };
+
+    function updateParams() {
+        const func = funcEl.value;
+        const info = laplaceTable[func];
+        paramGroup.style.display = (info.needsA || info.needsN) ? 'block' : 'none';
+
+        if (info.needsA && !info.needsN) {
+            paramAEl.parentElement.style.display = 'block';
+            paramNEl.parentElement.style.display = 'none';
+        } else if (!info.needsA && info.needsN) {
+            paramAEl.parentElement.style.display = 'none';
+            paramNEl.parentElement.style.display = 'block';
+        } else if (info.needsA && info.needsN) {
+            paramAEl.parentElement.style.display = 'block';
+            paramNEl.parentElement.style.display = 'block';
+        } else {
+            paramAEl.parentElement.style.display = 'none';
+            paramNEl.parentElement.style.display = 'none';
         }
-        
+    }
+
+    funcEl.addEventListener('change', updateParams);
+    updateParams();
+
+    function factorial(n) {
+        if (n < 0) return NaN;
+        if (n === 0 || n === 1) return 1;
+        let result = 1;
+        for (let i = 2; i <= n; i++) result *= i;
+        return result;
+    }
+
+    function calculate() {
+        const func = funcEl.value;
+        const a = parseFloat(paramAEl.value) || 0;
+        const n = parseInt(paramNEl.value) || 0;
+        const info = laplaceTable[func];
+
         try {
-            // TODO: Implement Laplace Transform Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let Fs, ft;
+
+            switch (func) {
+                case '1':
+                    Fs = '1/s';
+                    ft = '1';
+                    break;
+                case 't':
+                    Fs = '1/s²';
+                    ft = 't';
+                    break;
+                case 'tn':
+                    if (n < 0) { outputEl.textContent = 'Error: n must be a non-negative integer'; return; }
+                    const fact = factorial(n);
+                    Fs = `${fact}/s^${n + 1}`;
+                    ft = `t^${n}`;
+                    break;
+                case 'eat':
+                    Fs = `1/(s - (${a}))`;
+                    ft = `e^(${a}t)`;
+                    break;
+                case 'sinat':
+                    Fs = `${a}/(s² + ${a}²)`;
+                    ft = `sin(${a}t)`;
+                    break;
+                case 'cosat':
+                    Fs = `s/(s² + ${a}²)`;
+                    ft = `cos(${a}t)`;
+                    break;
+                case 'sinhat':
+                    Fs = `${a}/(s² - ${a}²)`;
+                    ft = `sinh(${a}t)`;
+                    break;
+                case 'coshat':
+                    Fs = `s/(s² - ${a}²)`;
+                    ft = `cosh(${a}t)`;
+                    break;
+            }
+
+            let html = `<div class="result-main">L{${ft}} = <strong>${Fs}</strong></div>`;
+            html += `<div class="result-detail">f(t) = ${ft}</div>`;
+            html += `<div class="result-detail">F(s) = ${Fs}</div>`;
+            html += `<div class="result-detail">Convergence: s > 0 (for most cases)</div>`;
+
+            outputEl.innerHTML = html;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        funcEl.value = '1';
+        paramAEl.value = '';
+        paramNEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        updateParams();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+
+    paramAEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') calculate(); });
+    paramNEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') calculate(); });
 });

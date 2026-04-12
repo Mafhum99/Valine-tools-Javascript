@@ -221,62 +221,164 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Area Calculator
+// Calculate area of various shapes
 // ========================================
 
-/**
- * Area Calculator
- * Calculate area of various shapes
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Area Calculator', icon: '📐' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    // Shape selector
+    const shapeSelect = $('#shape');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    // All shape input containers
+    const shapeInputs = $$('.shape-inputs');
+
+    // Map shape value to its input container id
+    const shapeInputMap = {
+        circle: 'circle-inputs',
+        rectangle: 'rectangle-inputs',
+        triangle: 'triangle-inputs',
+        ellipse: 'ellipse-inputs',
+        trapezoid: 'trapezoid-inputs',
+        parallelogram: 'parallelogram-inputs',
+        sector: 'sector-inputs'
+    };
+
+    // Show/hide input fields based on selected shape
+    function updateInputFields() {
+        const selectedShape = shapeSelect.value;
+        shapeInputs.forEach(el => el.style.display = 'none');
+        if (selectedShape && shapeInputMap[selectedShape]) {
+            $(`#${shapeInputMap[selectedShape]}`).style.display = 'block';
+        }
+        outputEl.textContent = '-';
+    }
+
+    shapeSelect.addEventListener('change', updateInputFields);
+
+    // Helper: get positive number or throw error
+    function getPositiveValue(value, name) {
+        const num = Number(value);
+        if (value === '' || isNaN(num)) {
+            throw new Error(`${name} is required`);
+        }
+        if (num <= 0) {
+            throw new Error(`${name} must be greater than 0`);
+        }
+        return num;
+    }
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const shape = shapeSelect.value;
+
+        if (!shape) {
+            outputEl.textContent = 'Please select a shape';
             return;
         }
-        
+
         try {
-            // TODO: Implement Area Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let area = 0;
+            let formula = '';
+
+            switch (shape) {
+                case 'circle': {
+                    const radius = getPositiveValue($('#circle-radius').value, 'Radius');
+                    area = Math.PI * radius * radius;
+                    formula = `π × ${radius}²`;
+                    break;
+                }
+                case 'rectangle': {
+                    const length = getPositiveValue($('#rect-length').value, 'Length');
+                    const width = getPositiveValue($('#rect-width').value, 'Width');
+                    area = length * width;
+                    formula = `${length} × ${width}`;
+                    break;
+                }
+                case 'triangle': {
+                    const base = getPositiveValue($('#tri-base').value, 'Base');
+                    const height = getPositiveValue($('#tri-height').value, 'Height');
+                    area = 0.5 * base * height;
+                    formula = `0.5 × ${base} × ${height}`;
+                    break;
+                }
+                case 'ellipse': {
+                    const a = getPositiveValue($('#ellipse-a').value, 'Semi-major axis');
+                    const b = getPositiveValue($('#ellipse-b').value, 'Semi-minor axis');
+                    area = Math.PI * a * b;
+                    formula = `π × ${a} × ${b}`;
+                    break;
+                }
+                case 'trapezoid': {
+                    const base1 = getPositiveValue($('#trap-base1').value, 'Base 1');
+                    const base2 = getPositiveValue($('#trap-base2').value, 'Base 2');
+                    const height = getPositiveValue($('#trap-height').value, 'Height');
+                    area = 0.5 * (base1 + base2) * height;
+                    formula = `0.5 × (${base1} + ${base2}) × ${height}`;
+                    break;
+                }
+                case 'parallelogram': {
+                    const base = getPositiveValue($('#para-base').value, 'Base');
+                    const height = getPositiveValue($('#para-height').value, 'Height');
+                    area = base * height;
+                    formula = `${base} × ${height}`;
+                    break;
+                }
+                case 'sector': {
+                    const radius = getPositiveValue($('#sector-radius').value, 'Radius');
+                    const angleVal = $('#sector-angle').value;
+                    const angle = Number(angleVal);
+                    if (angleVal === '' || isNaN(angle)) {
+                        throw new Error('Angle is required');
+                    }
+                    if (angle <= 0 || angle > 360) {
+                        throw new Error('Angle must be between 0 and 360 degrees');
+                    }
+                    area = (angle / 360) * Math.PI * radius * radius;
+                    formula = `(${angle} / 360) × π × ${radius}²`;
+                    break;
+                }
+                default:
+                    throw new Error('Unknown shape');
+            }
+
+            outputEl.innerHTML = `
+                <div style="font-size:1.5rem;font-weight:700;">${formatNumber(area, 4)}</div>
+                <div style="font-size:0.75rem;color:#6b7280;margin-top:0.5rem;">Formula: ${formula}</div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        shapeSelect.value = '';
+        shapeInputs.forEach(el => {
+            el.style.display = 'none';
+            el.querySelectorAll('input').forEach(input => input.value = '');
+        });
         outputEl.textContent = '-';
-        inputEl.focus();
+        shapeSelect.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

@@ -221,13 +221,9 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// A/B Test Significance Calculator
+// Calculates conversion rates, lift, and statistical significance using z-test
 // ========================================
-
-/**
- * A/B Test Significance Calculator
- * Calculates conversion rates for A/B test with lift percentage
- */
 
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'A/B Test Significance Calculator', icon: '\u{1F9EA}' });
@@ -241,6 +237,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
 
+    // Normal CDF approximation (Abramowitz and Stegun)
+    function normalCdf(x) {
+        const a1 = 0.254829592;
+        const a2 = -0.284496736;
+        const a3 = 1.421413741;
+        const a4 = -1.453152027;
+        const a5 = 1.061405429;
+        const p = 0.3275911;
+        const sign = x < 0 ? -1 : 1;
+        x = Math.abs(x) / Math.sqrt(2);
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        return 0.5 * (1.0 + sign * y);
+    }
+
     function calculate() {
         try {
             const visA = parseFloat(visitorsAEl.value);
@@ -253,20 +264,115 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (visA === 0 || visB === 0) {
-                outputEl.textContent = 'Visitor counts cannot be zero';
+            if (visA <= 0 || visB <= 0) {
+                outputEl.textContent = 'Visitor counts must be greater than 0';
                 return;
             }
 
+            if (convA < 0 || convB < 0) {
+                outputEl.textContent = 'Conversions cannot be negative';
+                return;
+            }
+
+            if (convA > visA || convB > visB) {
+                outputEl.textContent = 'Conversions cannot exceed visitors';
+                return;
+            }
+
+            // Conversion rates
             const rateA = (convA / visA) * 100;
             const rateB = (convB / visB) * 100;
 
+            // Lift
             let lift = 0;
             if (rateA > 0) {
                 lift = ((rateB - rateA) / rateA) * 100;
             }
 
-            outputEl.textContent = 'A: ' + rateA.toFixed(2) + '% | B: ' + rateB.toFixed(2) + '% | Lift: ' + lift.toFixed(2) + '%';
+            // Z-test for two proportions
+            const pA = convA / visA;
+            const pB = convB / visB;
+            const pPool = (convA + convB) / (visA + visB);
+
+            let z = 0;
+            let pValue = 1;
+
+            if (pPool > 0 && pPool < 1) {
+                const se = Math.sqrt(pPool * (1 - pPool) * (1 / visA + 1 / visB));
+                if (se > 0) {
+                    z = (pB - pA) / se;
+                    pValue = 2 * (1 - normalCdf(Math.abs(z)));
+                }
+            }
+
+            const isSignificant = pValue < 0.05;
+            const isHighlySignificant = pValue < 0.01;
+
+            let significanceText = '';
+            let recommendation = '';
+
+            if (isHighlySignificant) {
+                significanceText = '✅ Highly Statistically Significant (p < 0.01)';
+                recommendation = rateB > rateA
+                    ? 'Variant B performs significantly better. Strong evidence to implement.'
+                    : 'Variant A performs significantly better. Stick with the original.';
+            } else if (isSignificant) {
+                significanceText = '✅ Statistically Significant (p < 0.05)';
+                recommendation = rateB > rateA
+                    ? 'Variant B performs significantly better. Consider implementing.'
+                    : 'Variant A performs significantly better. Do not switch to B.';
+            } else {
+                significanceText = '❌ Not Statistically Significant (p > 0.05)';
+                recommendation = 'Results are not conclusive. Run the test longer or increase sample size.';
+            }
+
+            outputEl.innerHTML = `
+                <div style="text-align:left;">
+                    <div style="margin-bottom:0.75rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;margin-bottom:0.5rem;">Conversion Rates</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                            <div style="padding:0.5rem;background:#f0f9ff;border-radius:0.375rem;text-align:center;">
+                                <div style="font-size:0.625rem;color:#6b7280;text-transform:uppercase;">Variant A</div>
+                                <div style="font-size:1.25rem;font-weight:700;color:#3b82f6;">${formatNumber(rateA, 2)}%</div>
+                                <div style="font-size:0.625rem;color:#6b7280;">${convA} / ${visA}</div>
+                            </div>
+                            <div style="padding:0.5rem;background:#fef3c7;border-radius:0.375rem;text-align:center;">
+                                <div style="font-size:0.625rem;color:#6b7280;text-transform:uppercase;">Variant B</div>
+                                <div style="font-size:1.25rem;font-weight:700;color:#f59e0b;">${formatNumber(rateB, 2)}%</div>
+                                <div style="font-size:0.625rem;color:#6b7280;">${convB} / ${visB}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;text-align:center;">
+                        <div style="font-size:0.625rem;color:#6b7280;font-weight:600;">Lift</div>
+                        <div style="font-size:1.125rem;font-weight:700;color:${lift >= 0 ? '#22c55e' : '#ef4444'};">
+                            ${lift >= 0 ? '+' : ''}${formatNumber(lift, 2)}%
+                        </div>
+                    </div>
+
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.625rem;color:#6b7280;font-weight:600;">Statistical Test (Z-Test)</div>
+                        <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+                            <span style="font-size:0.75rem;">Z-Score:</span>
+                            <span style="font-weight:600;">${formatNumber(z, 4)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+                            <span style="font-size:0.75rem;">P-Value:</span>
+                            <span style="font-weight:600;">${formatNumber(pValue, 4)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+                            <span style="font-size:0.75rem;">Significance (95%):</span>
+                            <span style="font-weight:600;">${isSignificant ? '✅ Yes' : '❌ No'}</span>
+                        </div>
+                    </div>
+
+                    <div style="padding:0.75rem;background:${isSignificant ? '#dcfce7' : '#fee2e2'};border-radius:0.375rem;text-align:center;">
+                        <div style="font-weight:700;font-size:0.875rem;color:${isSignificant ? '#16a34a' : '#dc2626'};">${significanceText}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">${recommendation}</div>
+                    </div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }

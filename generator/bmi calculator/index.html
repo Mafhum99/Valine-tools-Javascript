@@ -21,20 +21,41 @@
             <div id="tool-content">
                 <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label">Weight</label>
+                    <div style="display:flex;gap:0.5rem;">
+                        <input type="number" id="weight" class="form-input" placeholder="Enter weight" min="0" max="1000" step="any" style="flex:1;">
+                        <select id="weight-unit" class="form-input" style="width:80px;flex:none;">
+                            <option value="kg">kg</option>
+                            <option value="lbs">lbs</option>
+                        </select>
+                    </div>
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label">Height</label>
+                    <div id="height-metric" style="display:flex;gap:0.5rem;">
+                        <input type="number" id="height-cm" class="form-input" placeholder="Height in cm" min="0" max="300" step="any" style="flex:1;">
+                        <select id="height-unit" class="form-input" style="width:80px;flex:none;">
+                            <option value="cm">cm</option>
+                            <option value="ft">ft/in</option>
+                        </select>
+                    </div>
+                    <div id="height-imperial" style="display:none;gap:0.5rem;">
+                        <input type="number" id="height-ft" class="form-input" placeholder="Feet" min="0" max="9" step="1" style="flex:1;">
+                        <input type="number" id="height-in" class="form-input" placeholder="Inches" min="0" max="11" step="any" style="flex:1;">
+                    </div>
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Results</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

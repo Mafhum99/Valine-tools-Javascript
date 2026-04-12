@@ -21,20 +21,113 @@
             <div id="tool-content">
                 <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="shape">Shape</label>
+                    <select id="shape" class="form-input">
+                        <option value="">-- Select a shape --</option>
+                        <option value="circle">Circle</option>
+                        <option value="rectangle">Rectangle</option>
+                        <option value="triangle">Triangle</option>
+                        <option value="ellipse">Ellipse</option>
+                        <option value="trapezoid">Trapezoid</option>
+                        <option value="parallelogram">Parallelogram</option>
+                        <option value="sector">Sector</option>
+                    </select>
                 </div>
-                
+
+                <!-- Circle -->
+                <div class="shape-inputs" id="circle-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="circle-radius">Radius</label>
+                        <input type="number" id="circle-radius" class="form-input" placeholder="Enter radius" min="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Rectangle -->
+                <div class="shape-inputs" id="rectangle-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="rect-length">Length</label>
+                        <input type="number" id="rect-length" class="form-input" placeholder="Enter length" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="rect-width">Width</label>
+                        <input type="number" id="rect-width" class="form-input" placeholder="Enter width" min="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Triangle -->
+                <div class="shape-inputs" id="triangle-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="tri-base">Base</label>
+                        <input type="number" id="tri-base" class="form-input" placeholder="Enter base" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="tri-height">Height</label>
+                        <input type="number" id="tri-height" class="form-input" placeholder="Enter height" min="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Ellipse -->
+                <div class="shape-inputs" id="ellipse-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="ellipse-a">Semi-major axis (a)</label>
+                        <input type="number" id="ellipse-a" class="form-input" placeholder="Enter semi-major axis" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ellipse-b">Semi-minor axis (b)</label>
+                        <input type="number" id="ellipse-b" class="form-input" placeholder="Enter semi-minor axis" min="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Trapezoid -->
+                <div class="shape-inputs" id="trapezoid-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="trap-base1">Base 1</label>
+                        <input type="number" id="trap-base1" class="form-input" placeholder="Enter base 1" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="trap-base2">Base 2</label>
+                        <input type="number" id="trap-base2" class="form-input" placeholder="Enter base 2" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="trap-height">Height</label>
+                        <input type="number" id="trap-height" class="form-input" placeholder="Enter height" min="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Parallelogram -->
+                <div class="shape-inputs" id="parallelogram-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="para-base">Base</label>
+                        <input type="number" id="para-base" class="form-input" placeholder="Enter base" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="para-height">Height</label>
+                        <input type="number" id="para-height" class="form-input" placeholder="Enter height" min="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Sector -->
+                <div class="shape-inputs" id="sector-inputs" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="sector-radius">Radius</label>
+                        <input type="number" id="sector-radius" class="form-input" placeholder="Enter radius" min="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="sector-angle">Angle (degrees)</label>
+                        <input type="number" id="sector-angle" class="form-input" placeholder="Enter angle (0-360)" min="0" max="360" step="any">
+                    </div>
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Area</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

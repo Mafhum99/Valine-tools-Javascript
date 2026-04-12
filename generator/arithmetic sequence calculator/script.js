@@ -229,56 +229,120 @@ function initTool(toolInfo) {
  * Calculate arithmetic sequences and sums
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Arithmetic Sequence Calculator', icon: '📊' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const firstTermEl = $('#first-term');
+    const commonDiffEl = $('#common-diff');
+    const numTermsEl = $('#num-terms');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const aVal = firstTermEl.value;
+        const dVal = commonDiffEl.value;
+        const nVal = numTermsEl.value;
+
+        if (aVal === '' || dVal === '' || nVal === '') {
+            outputEl.textContent = 'All fields are required';
             return;
         }
-        
+
+        const a = Number(aVal);
+        const d = Number(dVal);
+        const n = Number(nVal);
+
+        if (isNaN(a) || isNaN(d)) {
+            outputEl.textContent = 'First term and common difference must be valid numbers';
+            return;
+        }
+
+        if (!Number.isInteger(n) || n < 1) {
+            outputEl.textContent = 'Number of terms must be a positive integer';
+            return;
+        }
+
+        if (n > 1000) {
+            outputEl.textContent = 'Number of terms must be <= 1000';
+            return;
+        }
+
         try {
-            // TODO: Implement Arithmetic Sequence Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Generate sequence
+            const sequence = [];
+            for (let i = 0; i < n; i++) {
+                sequence.push(a + i * d);
+            }
+
+            // n-th term
+            const nthTerm = a + (n - 1) * d;
+
+            // Sum of first n terms
+            const sum = (n / 2) * (2 * a + (n - 1) * d);
+
+            // Display sequence (truncate if too long)
+            let sequenceStr;
+            if (n <= 50) {
+                sequenceStr = sequence.map(v => formatNumber(v, 4)).join(', ');
+            } else {
+                const shown = sequence.slice(0, 25).map(v => formatNumber(v, 4)).join(', ');
+                const tail = sequence.slice(-25).map(v => formatNumber(v, 4)).join(', ');
+                sequenceStr = `${shown}, ... (${n - 50} terms omitted) ..., ${tail}`;
+            }
+
+            outputEl.innerHTML = `
+                <div style="text-align:left;">
+                    <div style="margin-bottom:0.75rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;">Sequence</div>
+                        <div style="font-size:0.875rem;word-break:break-word;line-height:1.6;">${sequenceStr}</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.75rem;">
+                        <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.75rem;color:#6b7280;">n-th Term</div>
+                            <div style="font-weight:600;font-size:1.125rem;">${formatNumber(nthTerm, 4)}</div>
+                        </div>
+                        <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.75rem;color:#6b7280;">Sum (Sₙ)</div>
+                            <div style="font-weight:600;font-size:1.125rem;">${formatNumber(sum, 2)}</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.75rem;color:#6b7280;margin-top:0.5rem;">
+                        Formula: aₙ = ${formatNumber(a, 4)} + (${n} - 1) × ${formatNumber(d, 4)} = ${formatNumber(nthTerm, 4)}
+                    </div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        firstTermEl.value = '';
+        commonDiffEl.value = '';
+        numTermsEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        firstTermEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    const allInputs = [firstTermEl, commonDiffEl, numTermsEl];
+    allInputs.forEach((input, index) => {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculate();
+            } else if (e.key === 'ArrowDown' && index < allInputs.length - 1) {
+                allInputs[index + 1].focus();
+            }
+        });
     });
 });

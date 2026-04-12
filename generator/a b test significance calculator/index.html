@@ -19,21 +19,23 @@
             <p class="text-muted mb-2">Determine if A/B test results are significant</p>
 
             <div id="tool-content">
-                <div class="form-group">
-                    <label class="form-label" for="visitors_a">Visitors (Variant A)</label>
-                    <input type="number" id="visitors_a" class="form-input" placeholder="e.g. 1000">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="conversions_a">Conversions (Variant A)</label>
-                    <input type="number" id="conversions_a" class="form-input" placeholder="e.g. 100">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="visitors_b">Visitors (Variant B)</label>
-                    <input type="number" id="visitors_b" class="form-input" placeholder="e.g. 1000">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="conversions_b">Conversions (Variant B)</label>
-                    <input type="number" id="conversions_b" class="form-input" placeholder="e.g. 120">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="visitors_a">Visitors (A)</label>
+                        <input type="number" id="visitors_a" class="form-input" placeholder="e.g. 1000" min="1" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="conversions_a">Conversions (A)</label>
+                        <input type="number" id="conversions_a" class="form-input" placeholder="e.g. 100" min="0" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="visitors_b">Visitors (B)</label>
+                        <input type="number" id="visitors_b" class="form-input" placeholder="e.g. 1000" min="1" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="conversions_b">Conversions (B)</label>
+                        <input type="number" id="conversions_b" class="form-input" placeholder="e.g. 120" min="0" step="1">
+                    </div>
                 </div>
 
                 <div class="btn-group">
@@ -42,7 +44,7 @@
                 </div>
 
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Results</div>
                     <div id="output">-</div>
                 </div>
 
