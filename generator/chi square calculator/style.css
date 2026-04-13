@@ -322,17 +322,14 @@ body {
 
 
 /* ---- Custom Tool Styles ---- */
-/* Chi-Square Calculator - Custom Styles */
-
-/* Add custom styles here if needed */
-
+/* Chi Square Calculator - Custom Styles */
 
 #result {
     min-height: 80px;
 }
 
 #output {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--primary);
+    font-size: 1rem;
+    color: var(--gray-900);
+    font-family: inherit;
 }

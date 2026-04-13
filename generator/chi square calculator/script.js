@@ -221,62 +221,208 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Chi Square Calculator
+// Calculate Chi-Square statistic for goodness of fit test
 // ========================================
 
-/**
- * Chi-Square Calculator
- * Calculate chi-square test statistic
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Chi-Square Calculator', icon: '📊' });
-    
+    initTool({ name: 'Chi Square Calculator', icon: '📊' });
+
     // Get elements
-    const inputEl = $('#input');
+    const observedInput = $('#observed');
+    const expectedInput = $('#expected');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    /**
+     * Approximation of p-value from chi-square statistic and degrees of freedom
+     * Using Wilson-Hilferty transformation for better approximation
+     */
+    function approximatePValue(chiSquare, df) {
+        if (df <= 0) return 1;
+        if (chiSquare <= 0) return 1;
+        
+        // Wilson-Hilferty transformation
+        const z = Math.pow(chiSquare / df, 1/3) - (1 - 2/(9*df));
+        const se = Math.sqrt(2/(9*df));
+        const zScore = z / se;
+        
+        // Standard normal CDF approximation
+        const pValue = 1 - normalCDF(zScore);
+        return Math.max(0, Math.min(1, pValue));
+    }
+
+    /**
+     * Standard normal cumulative distribution function
+     */
+    function normalCDF(x) {
+        const a1 =  0.254829592;
+        const a2 = -0.284496736;
+        const a3 =  1.421413741;
+        const a4 = -1.453152027;
+        const a5 =  1.061405429;
+        const p  =  0.3275911;
+
+        const sign = x < 0 ? -1 : 1;
+        x = Math.abs(x) / Math.sqrt(2);
+
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+        return 0.5 * (1.0 + sign * y);
+    }
+
+    /**
+     * Interpret p-value
+     */
+    function interpretPValue(pValue) {
+        if (pValue < 0.01) return 'Highly significant (p < 0.01)';
+        if (pValue < 0.05) return 'Significant (p < 0.05)';
+        if (pValue < 0.10) return 'Marginally significant (p < 0.10)';
+        return 'Not significant (p >= 0.10)';
+    }
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const observedStr = observedInput.value.trim();
+        const expectedStr = expectedInput.value.trim();
+
+        if (!observedStr || !expectedStr) {
+            outputEl.textContent = 'Please enter both observed and expected values';
             return;
         }
-        
+
         try {
-            // TODO: Implement Chi-Square Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Parse comma-separated values
+            const observed = observedStr.split(',').map(v => {
+                const num = parseFloat(v.trim());
+                if (isNaN(num)) throw new Error(`Invalid observed value: "${v.trim()}"`);
+                return num;
+            });
+
+            const expected = expectedStr.split(',').map(v => {
+                const num = parseFloat(v.trim());
+                if (isNaN(num)) throw new Error(`Invalid expected value: "${v.trim()}"`);
+                return num;
+            });
+
+            // Validation
+            if (observed.length !== expected.length) {
+                throw new Error('Observed and expected arrays must have the same length');
+            }
+
+            if (observed.length < 2) {
+                throw new Error('At least 2 categories are required');
+            }
+
+            for (let i = 0; i < expected.length; i++) {
+                if (expected[i] <= 0) {
+                    throw new Error(`All expected values must be > 0 (value at position ${i + 1} is ${expected[i]})`);
+                }
+            }
+
+            // Calculate Chi-Square statistic: χ² = Σ((O - E)² / E)
+            let chiSquare = 0;
+            const contributions = [];
+            
+            for (let i = 0; i < observed.length; i++) {
+                const o = observed[i];
+                const e = expected[i];
+                const contribution = Math.pow(o - e, 2) / e;
+                chiSquare += contribution;
+                contributions.push({ observed: o, expected: e, contribution });
+            }
+
+            // Degrees of freedom: df = n - 1
+            const df = observed.length - 1;
+
+            // Approximate p-value
+            const pValue = approximatePValue(chiSquare, df);
+
+            // Build result HTML
+            let resultHTML = `
+                <div style="text-align:left;">
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Chi-Square Statistic (χ²)</div>
+                        <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${formatNumber(chiSquare, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Degrees of Freedom (df)</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${df}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">P-Value</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(pValue, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Interpretation</div>
+                        <div style="font-size:0.875rem;font-weight:500;">${interpretPValue(pValue)}</div>
+                    </div>
+                    <div style="border-top:1px solid var(--gray-200);padding-top:0.75rem;margin-top:0.75rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">Contributions</div>
+                        <div style="font-size:0.75rem;overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--gray-200);">
+                                        <th style="text-align:left;padding:0.25rem;">Category</th>
+                                        <th style="text-align:right;padding:0.25rem;">Observed</th>
+                                        <th style="text-align:right;padding:0.25rem;">Expected</th>
+                                        <th style="text-align:right;padding:0.25rem;">Contribution</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            `;
+
+            contributions.forEach((c, i) => {
+                resultHTML += `
+                    <tr style="border-bottom:1px solid var(--gray-100);">
+                        <td style="padding:0.25rem;">${i + 1}</td>
+                        <td style="text-align:right;padding:0.25rem;">${formatNumber(c.observed, 2)}</td>
+                        <td style="text-align:right;padding:0.25rem;">${formatNumber(c.expected, 2)}</td>
+                        <td style="text-align:right;padding:0.25rem;">${formatNumber(c.contribution, 4)}</td>
+                    </tr>
+                `;
+            });
+
+            resultHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="font-size:0.75rem;color:#6b7280;margin-top:0.75rem;">
+                        Formula: χ² = Σ((O - E)² / E)
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = resultHTML;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        observedInput.value = '';
+        expectedInput.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        observedInput.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

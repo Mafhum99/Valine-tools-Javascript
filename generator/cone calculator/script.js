@@ -221,62 +221,115 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Cone Calculator
+// Calculate volume, surface area, and slant height of a cone
 // ========================================
 
-/**
- * Cone Calculator
- * Calculate cone volume and surface area
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Cone Calculator', icon: '🔺' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const radiusInput = $('#radius');
+    const heightInput = $('#height');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const radiusStr = radiusInput.value.trim();
+        const heightStr = heightInput.value.trim();
+
+        if (!radiusStr || !heightStr) {
+            outputEl.textContent = 'Please enter both radius and height';
             return;
         }
-        
+
         try {
-            // TODO: Implement Cone Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const radius = parseFloat(radiusStr);
+            const height = parseFloat(heightStr);
+
+            if (isNaN(radius) || isNaN(height)) {
+                throw new Error('Please enter valid numbers');
+            }
+
+            if (radius <= 0 || height <= 0) {
+                throw new Error('Both radius and height must be greater than 0');
+            }
+
+            // Calculate slant height: l = √(r² + h²)
+            const slantHeight = Math.sqrt(Math.pow(radius, 2) + Math.pow(height, 2));
+
+            // Calculate volume: V = (1/3) × π × r² × h
+            const volume = (1/3) * Math.PI * Math.pow(radius, 2) * height;
+
+            // Calculate lateral surface area: LSA = π × r × l
+            const lateralSurfaceArea = Math.PI * radius * slantHeight;
+
+            // Calculate base area: Base = π × r²
+            const baseArea = Math.PI * Math.pow(radius, 2);
+
+            // Calculate total surface area: TSA = π × r × (r + l) = LSA + Base
+            const totalSurfaceArea = Math.PI * radius * (radius + slantHeight);
+
+            // Build result HTML
+            const resultHTML = `
+                <div style="text-align:left;">
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Slant Height (l)</div>
+                        <div style="font-size:1.25rem;font-weight:600;color:var(--primary);">${formatNumber(slantHeight, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: l = √(r² + h²) = √(${formatNumber(radius, 2)}² + ${formatNumber(height, 2)}²)</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Volume</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(volume, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: V = (1/3) × π × r² × h</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Lateral Surface Area</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(lateralSurfaceArea, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: LSA = π × r × l</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Base Area</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(baseArea, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: Base = π × r²</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Total Surface Area</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(totalSurfaceArea, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: TSA = π × r × (r + l)</div>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = resultHTML;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        radiusInput.value = '';
+        heightInput.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        radiusInput.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

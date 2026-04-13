@@ -1,52 +1,46 @@
 # Cone Calculator
 
-> **Category**: Math Tools
-> **Project Number**: 743
-> **Folder**: `743_cone-calculator`
+Calculate the volume, surface area, and slant height of a cone.
 
-## 📝 Description
-**How it works:** Calculates cone properties including volume, lateral surface area, and slant height.
+## Features
 
+- Input radius and height
+- Automatic calculation of all cone properties
+- Formula display for transparency
+- Responsive design for mobile devices
 
-## 🚀 How to Use
-1. Open `index.html` in your browser
-2. Enter the required values or parameters
-3. Click Calculate button
-4. View results instantly with step-by-step solution
-5. Copy results if needed
+## Formulas
 
-## 📁 File Structure
-```
-743_cone-calculator/
-├── index.html      # Main UI interface
-├── script.js       # Calculation logic
-├── style.css       # Custom styling
-└── README.md       # This file
-```
+**Slant Height:** l = √(r² + h²)
 
-## ⚡ Features
-- Real-time calculations
-- Mobile responsive design
-- Copy results to clipboard
-- Step-by-step solutions
-- Error handling for invalid inputs
-- Clean, modern UI
+**Volume:** V = (1/3) × π × r² × h
 
-## 🛠️ Technical Details
-- **HTML5** - Semantic markup
-- **CSS3** - Responsive design
-- **JavaScript (ES6+)** - No dependencies
-- **Standalone** - All assets self-contained (no shared.css/js required)
+**Lateral Surface Area:** LSA = π × r × l
 
-## 🐛 Troubleshooting
-If you encounter issues:
-1. Check browser console (F12) for errors
-2. Ensure JavaScript is enabled
-3. Try clearing browser cache
-4. Verify all files are present in folder
+**Base Area:** Base = π × r²
 
-## 📊 Related Tools
-Check other math tools in the parent directory for complementary functionality.
+**Total Surface Area:** TSA = π × r × (r + l) = LSA + Base
 
----
-*Auto-generated on 2026-04-06*
+Where:
+- r = radius of the base
+- h = height of the cone
+- l = slant height
+
+## Usage
+
+1. Enter the radius of the cone's base (must be positive)
+2. Enter the height of the cone (must be positive)
+3. Click "Calculate" to see the results
+
+## Validation
+
+- Both radius and height must be valid numbers
+- Both radius and height must be greater than 0
+
+## Output
+
+- **Slant Height (l)**: The distance from the apex to the edge of the base
+- **Volume**: The space inside the cone (cubic units)
+- **Lateral Surface Area**: The curved surface area only (square units)
+- **Base Area**: The area of the circular base (square units)
+- **Total Surface Area**: Lateral surface area + base area (square units)

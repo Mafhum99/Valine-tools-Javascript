@@ -221,62 +221,111 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Circle Calculator
+// Calculate circumference and area of a circle
 // ========================================
 
-/**
- * Circle Calculator
- * Calculate circle area, circumference, radius
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Circle Calculator', icon: '⭕' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const inputTypeSelect = $('#input-type');
+    const valueInput = $('#value');
+    const valueLabel = $('#value-label');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    // Update label based on input type
+    function updateLabel() {
+        const type = inputTypeSelect.value;
+        valueLabel.textContent = type === 'radius' ? 'Radius' : 'Diameter';
+        valueInput.placeholder = `Enter ${type}`;
+    }
+
+    inputTypeSelect.addEventListener('change', updateLabel);
+    updateLabel();
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
+        const valueStr = valueInput.value.trim();
+
+        if (!valueStr) {
             outputEl.textContent = 'Please enter a value';
             return;
         }
-        
+
         try {
-            // TODO: Implement Circle Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const inputValue = parseFloat(valueStr);
+
+            if (isNaN(inputValue)) {
+                throw new Error('Please enter a valid number');
+            }
+
+            if (inputValue <= 0) {
+                throw new Error('Value must be greater than 0');
+            }
+
+            // Calculate radius from input type
+            const radius = inputTypeSelect.value === 'diameter' ? inputValue / 2 : inputValue;
+            const diameter = inputTypeSelect.value === 'diameter' ? inputValue : inputValue * 2;
+
+            // Calculate circumference: C = 2 × π × r
+            const circumference = 2 * Math.PI * radius;
+
+            // Calculate area: A = π × r²
+            const area = Math.PI * Math.pow(radius, 2);
+
+            // Build result HTML
+            const resultHTML = `
+                <div style="text-align:left;">
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Radius</div>
+                        <div style="font-size:1.25rem;font-weight:600;color:var(--primary);">${formatNumber(radius, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Diameter</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(diameter, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Circumference</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(circumference, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: C = 2 × π × r = ${formatNumber(2 * Math.PI, 4)} × ${formatNumber(radius, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Area</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(area, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: A = π × r² = π × ${formatNumber(radius, 4)}²</div>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = resultHTML;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        valueInput.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        valueInput.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

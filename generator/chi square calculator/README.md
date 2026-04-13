@@ -1,52 +1,44 @@
-# Chi-Square Calculator
+# Chi Square Calculator
 
-> **Category**: Math Tools
-> **Project Number**: 714
-> **Folder**: `714_chi-square-calculator`
+Calculate the Chi-Square (χ²) statistic for goodness of fit tests.
 
-## 📝 Description
-**How it works:** Performs chi-square tests to analyze categorical data and test independence between variables. Enter observed and expected frequencies.
+## Features
 
+- Input observed and expected values as comma-separated arrays
+- Automatic calculation of Chi-Square statistic
+- Degrees of freedom calculation
+- P-value approximation using Wilson-Hilferty transformation
+- Detailed breakdown of each category's contribution
+- Statistical significance interpretation
 
-## 🚀 How to Use
-1. Open `index.html` in your browser
-2. Enter the required values or parameters
-3. Click Calculate button
-4. View results instantly with step-by-step solution
-5. Copy results if needed
+## Formula
 
-## 📁 File Structure
-```
-714_chi-square-calculator/
-├── index.html      # Main UI interface
-├── script.js       # Calculation logic
-├── style.css       # Custom styling
-└── README.md       # This file
-```
+**Chi-Square Statistic:** χ² = Σ((O - E)² / E)
 
-## ⚡ Features
-- Real-time calculations
-- Mobile responsive design
-- Copy results to clipboard
-- Step-by-step solutions
-- Error handling for invalid inputs
-- Clean, modern UI
+Where:
+- O = Observed frequency
+- E = Expected frequency
 
-## 🛠️ Technical Details
-- **HTML5** - Semantic markup
-- **CSS3** - Responsive design
-- **JavaScript (ES6+)** - No dependencies
-- **Standalone** - All assets self-contained (no shared.css/js required)
+**Degrees of Freedom:** df = n - 1
 
-## 🐛 Troubleshooting
-If you encounter issues:
-1. Check browser console (F12) for errors
-2. Ensure JavaScript is enabled
-3. Try clearing browser cache
-4. Verify all files are present in folder
+Where n is the number of categories.
 
-## 📊 Related Tools
-Check other math tools in the parent directory for complementary functionality.
+## Usage
 
----
-*Auto-generated on 2026-04-06*
+1. Enter observed values as comma-separated numbers (e.g., `10, 15, 20, 25, 30`)
+2. Enter expected values as comma-separated numbers (e.g., `12, 14, 18, 26, 30`)
+3. Click "Calculate" to see the results
+
+## Validation
+
+- Both arrays must have the same length
+- All expected values must be greater than 0
+- At least 2 categories are required
+
+## Output
+
+- **Chi-Square Statistic (χ²)**: The test statistic
+- **Degrees of Freedom (df)**: Number of categories minus 1
+- **P-Value**: Approximate probability value
+- **Interpretation**: Statistical significance assessment
+- **Contributions Table**: Breakdown by category

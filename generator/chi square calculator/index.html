@@ -3,38 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate chi-square test statistic">
+    <meta name="description" content="Calculate Chi-Square statistic for observed and expected values">
     <meta name="theme-color" content="#2563eb">
-    <title>📊 Chi-Square Calculator - Mini Tools</title>
+    <title>📊 Chi Square Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
         <span class="tool-header-icon">📊</span>
-        <h1>Chi-Square Calculator</h1>
+        <h1>Chi Square Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate chi-square test statistic</p>
-            
+            <p class="text-muted mb-2">Calculate Chi-Square statistic for goodness of fit test</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="observed">Observed Values (comma-separated)</label>
+                    <input type="text" id="observed" class="form-input" placeholder="e.g., 10, 15, 20, 25, 30">
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="expected">Expected Values (comma-separated)</label>
+                    <input type="text" id="expected" class="form-input" placeholder="e.g., 12, 14, 18, 26, 30">
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
                     <div class="result-label">Result</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

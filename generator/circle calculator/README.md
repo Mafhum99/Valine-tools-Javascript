@@ -1,52 +1,38 @@
 # Circle Calculator
 
-> **Category**: Math Tools
-> **Project Number**: 732
-> **Folder**: `732_circle-calculator`
+Calculate the circumference and area of a circle from radius or diameter.
 
-## 📝 Description
-**How it works:** Computes circle properties including radius, diameter, circumference, and area from any given value.
+## Features
 
+- Input value as radius or diameter
+- Automatic calculation of all circle properties
+- Formula display for transparency
+- Responsive design for mobile devices
 
-## 🚀 How to Use
-1. Open `index.html` in your browser
-2. Enter the required values or parameters
-3. Click Calculate button
-4. View results instantly with step-by-step solution
-5. Copy results if needed
+## Formulas
 
-## 📁 File Structure
-```
-732_circle-calculator/
-├── index.html      # Main UI interface
-├── script.js       # Calculation logic
-├── style.css       # Custom styling
-└── README.md       # This file
-```
+**Circumference:**
+- From radius: C = 2 × π × r
+- From diameter: C = π × d
 
-## ⚡ Features
-- Real-time calculations
-- Mobile responsive design
-- Copy results to clipboard
-- Step-by-step solutions
-- Error handling for invalid inputs
-- Clean, modern UI
+**Area:**
+- From radius: A = π × r²
+- From diameter: A = π × (d/2)²
 
-## 🛠️ Technical Details
-- **HTML5** - Semantic markup
-- **CSS3** - Responsive design
-- **JavaScript (ES6+)** - No dependencies
-- **Standalone** - All assets self-contained (no shared.css/js required)
+## Usage
 
-## 🐛 Troubleshooting
-If you encounter issues:
-1. Check browser console (F12) for errors
-2. Ensure JavaScript is enabled
-3. Try clearing browser cache
-4. Verify all files are present in folder
+1. Select input type: Radius or Diameter
+2. Enter the value (must be positive)
+3. Click "Calculate" to see the results
 
-## 📊 Related Tools
-Check other math tools in the parent directory for complementary functionality.
+## Validation
 
----
-*Auto-generated on 2026-04-06*
+- Value must be a valid number
+- Value must be greater than 0
+
+## Output
+
+- **Radius**: The radius of the circle
+- **Diameter**: The diameter of the circle (2 × radius)
+- **Circumference**: The distance around the circle
+- **Area**: The space inside the circle (square units)
