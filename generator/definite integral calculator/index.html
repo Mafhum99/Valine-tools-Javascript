@@ -19,22 +19,38 @@
             <p class="text-muted mb-2">Calculate definite integrals with bounds</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="functionExpr">Function f(x)</label>
+                    <input type="text" id="functionExpr" class="form-input" placeholder="e.g., x**2 + Math.sin(x), Math.exp(x)">
                 </div>
-                
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="lowerBound">Lower Bound (a)</label>
+                        <input type="number" id="lowerBound" class="form-input" placeholder="0" step="any">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="upperBound">Upper Bound (b)</label>
+                        <input type="number" id="upperBound" class="form-input" placeholder="1" step="any">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="intervals">Intervals (n)</label>
+                        <input type="number" id="intervals" class="form-input" placeholder="10" step="1" min="2" value="10">
+                    </div>
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Results</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

@@ -232,53 +232,172 @@ function initTool(toolInfo) {
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Derivative Calculator', icon: '📈' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const functionExprEl = $('#functionExpr');
+    const evalPointEl = $('#evalPoint');
+    const stepSizeEl = $('#stepSize');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    // Parse function expression safely
+    function parseFunction(expr) {
+        try {
+            let sanitized = expr
+                .replace(/\bsin\b/g, 'Math.sin')
+                .replace(/\bcos\b/g, 'Math.cos')
+                .replace(/\btan\b/g, 'Math.tan')
+                .replace(/\bexp\b/g, 'Math.exp')
+                .replace(/\blog\b/g, 'Math.log')
+                .replace(/\bsqrt\b/g, 'Math.sqrt')
+                .replace(/\bpi\b/gi, 'Math.PI')
+                .replace(/\bpow\b/g, 'Math.pow')
+                .replace(/\babs\b/g, 'Math.abs')
+                .replace(/\bPI\b/g, 'Math.PI');
+
+            return function(x) {
+                return eval(sanitized);
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Numerical derivative using central difference method
+    function centralDifference(f, x, h) {
+        return (f(x + h) - f(x - h)) / (2 * h);
+    }
+
+    // Symbolic derivative rules for common functions
+    function getSymbolicDerivative(expr) {
+        const rules = [
+            // Power rules
+            { pattern: /^x\s*\*\*\s*([0-9]+(?:\.[0-9]+)?)$/, replace: (n) => {
+                const power = parseFloat(n);
+                const newPower = power - 1;
+                if (newPower === 0) return `${power}`;
+                if (newPower === 1) return `${power} * x`;
+                return `${power} * x**${newPower}`;
+            }},
+            { pattern: /^([0-9]+(?:\.[0-9]+)?)\s*\*\s*x$/, replace: (c) => `${c}` },
+            { pattern: /^x$/, replace: () => '1' },
+
+            // Trig derivatives
+            { pattern: /^Math\.sin\(x\)$/, replace: () => 'Math.cos(x)' },
+            { pattern: /^Math\.cos\(x\)$/, replace: () => '-Math.sin(x)' },
+            { pattern: /^Math\.tan\(x\)$/, replace: () => '1 / (Math.cos(x) ** 2)' },
+
+            // Exponential / Logarithmic
+            { pattern: /^Math\.exp\(x\)$/, replace: () => 'Math.exp(x)' },
+            { pattern: /^Math\.log\(x\)$/, replace: () => '1 / x' },
+            { pattern: /^Math\.sqrt\(x\)$/, replace: () => '1 / (2 * Math.sqrt(x))' },
+        ];
+
+        for (const rule of rules) {
+            const match = expr.match(rule.pattern);
+            if (match) {
+                return rule.replace(match[1] || '');
+            }
+        }
+
+        return null; // Cannot derive symbolically
+    }
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const expr = functionExprEl.value.trim();
+        const stepSize = parseFloat(stepSizeEl.value.trim());
+
+        if (!expr) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a function expression</span>';
             return;
         }
-        
+
+        let h = stepSize;
+        if (isNaN(h) || h <= 0) {
+            h = 1e-5; // Default step size
+        }
+
+        const f = parseFunction(expr);
+        if (!f) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Invalid function expression. Use JavaScript math syntax (e.g., x**2, Math.sin(x))</span>';
+            return;
+        }
+
         try {
-            // TODO: Implement Derivative Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Test the function
+            f(0);
+
+            const symbolicDeriv = getSymbolicDerivative(expr);
+
+            let outputParts = [`<strong>📈 Derivative Results:</strong><br>`];
+            outputParts.push(`<strong>Function:</strong> f(x) = ${expr}`);
+            outputParts.push(`<strong>Step Size (h):</strong> ${h}`);
+            outputParts.push(`<br>`);
+
+            // Check if evaluation point is provided
+            const x0Str = evalPointEl.value.trim();
+            if (x0Str !== '') {
+                const x0 = parseFloat(x0Str);
+                if (isNaN(x0)) {
+                    outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a valid number for the evaluation point</span>';
+                    return;
+                }
+
+                // Numerical derivative at x₀
+                const derivValue = centralDifference(f, x0, h);
+
+                outputParts.push(`<strong>Evaluation Point (x₀):</strong> ${formatNumber(x0, 6)}`);
+                outputParts.push(`<strong>Numerical Derivative f'(x₀):</strong> ${formatNumber(derivValue, 6)}`);
+
+                // Also compute f(x₀)
+                const fx = f(x0);
+                outputParts.push(`<strong>f(x₀):</strong> ${formatNumber(fx, 6)}`);
+
+                // Second derivative (numerical)
+                const secondDeriv = (f(x0 + h) - 2 * f(x0) + f(x0 - h)) / (h * h);
+                outputParts.push(`<strong>Second Derivative f''(x₀):</strong> ${formatNumber(secondDeriv, 6)}`);
+            }
+
+            // Always show symbolic derivative if available
+            if (symbolicDeriv !== null) {
+                outputParts.push(`<br><strong>Symbolic Derivative f'(x):</strong> ${symbolicDeriv}`);
+            }
+
+            outputParts.push(`<br><strong>Method:</strong> Central Difference: f'(x) ≈ [f(x+h) - f(x-h)] / (2h)`);
+
+            outputEl.innerHTML = `<div style="text-align: left; line-height: 1.8;">${outputParts.join('<br>')}</div>`;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = '<span style="color: #ef4444;">Error evaluating function: ' + error.message + '</span>';
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        functionExprEl.value = '';
+        evalPointEl.value = '';
+        stepSizeEl.value = '0.00001';
         outputEl.textContent = '-';
-        inputEl.focus();
+        functionExprEl.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') calculate();
+    };
+    functionExprEl.addEventListener('keypress', handleEnter);
+    evalPointEl.addEventListener('keypress', handleEnter);
+    stepSizeEl.addEventListener('keypress', handleEnter);
 });

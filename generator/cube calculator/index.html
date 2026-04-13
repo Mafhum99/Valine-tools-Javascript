@@ -19,22 +19,21 @@
             <p class="text-muted mb-2">Calculate cube volume and surface area</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="sideLength">Side Length (s)</label>
+                    <input type="number" id="sideLength" class="form-input" placeholder="Enter side length..." step="any" min="0">
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Results</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

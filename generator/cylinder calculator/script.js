@@ -232,53 +232,72 @@ function initTool(toolInfo) {
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Cylinder Calculator', icon: '🛢️' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const radiusEl = $('#radius');
+    const heightEl = $('#height');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const r = parseFloat(radiusEl.value.trim());
+        const h = parseFloat(heightEl.value.trim());
+
+        if (isNaN(r) || isNaN(h)) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Please enter valid numbers for both radius and height</span>';
             return;
         }
-        
+
+        if (r <= 0 || h <= 0) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Both radius and height must be positive</span>';
+            return;
+        }
+
         try {
-            // TODO: Implement Cylinder Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const volume = Math.PI * Math.pow(r, 2) * h;
+            const lateralSA = 2 * Math.PI * r * h;
+            const totalSA = 2 * Math.PI * r * (r + h);
+
+            outputEl.innerHTML = `
+                <div style="text-align: left; line-height: 1.8;">
+                    <strong>🛢️ Cylinder Results:</strong><br>
+                    <strong>Radius (r):</strong> ${formatNumber(r, 4)}<br>
+                    <strong>Height (h):</strong> ${formatNumber(h, 4)}<br>
+                    <strong>Volume (V = πr²h):</strong> ${formatNumber(volume, 4)} cubic units<br>
+                    <strong>Lateral Surface Area (LSA = 2πrh):</strong> ${formatNumber(lateralSA, 4)} square units<br>
+                    <strong>Total Surface Area (TSA = 2πr(r+h)):</strong> ${formatNumber(totalSA, 4)} square units
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = '<span style="color: #ef4444;">Error: ' + error.message + '</span>';
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        radiusEl.value = '';
+        heightEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        radiusEl.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') calculate();
+    };
+    radiusEl.addEventListener('keypress', handleEnter);
+    heightEl.addEventListener('keypress', handleEnter);
 });

@@ -232,51 +232,68 @@ function initTool(toolInfo) {
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Cube Calculator', icon: '🎲' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const sideLengthEl = $('#sideLength');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const s = parseFloat(sideLengthEl.value.trim());
+
+        if (isNaN(s)) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a valid number</span>';
             return;
         }
-        
+
+        if (s <= 0) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Side length must be positive</span>';
+            return;
+        }
+
         try {
-            // TODO: Implement Cube Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const volume = Math.pow(s, 3);
+            const surfaceArea = 6 * Math.pow(s, 2);
+            const spaceDiagonal = s * Math.sqrt(3);
+            const faceDiagonal = s * Math.sqrt(2);
+
+            outputEl.innerHTML = `
+                <div style="text-align: left; line-height: 1.8;">
+                    <strong>📐 Cube Results:</strong><br>
+                    <strong>Side Length (s):</strong> ${formatNumber(s, 4)}<br>
+                    <strong>Volume (V = s³):</strong> ${formatNumber(volume, 4)} cubic units<br>
+                    <strong>Surface Area (SA = 6s²):</strong> ${formatNumber(surfaceArea, 4)} square units<br>
+                    <strong>Space Diagonal (d = s√3):</strong> ${formatNumber(spaceDiagonal, 4)} units<br>
+                    <strong>Face Diagonal (fd = s√2):</strong> ${formatNumber(faceDiagonal, 4)} units
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = '<span style="color: #ef4444;">Error: ' + error.message + '</span>';
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        sideLengthEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        sideLengthEl.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    sideLengthEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }

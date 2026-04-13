@@ -232,53 +232,165 @@ function initTool(toolInfo) {
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Degree to Radian Converter', icon: '🔄' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const degreesEl = $('#degrees');
+    const radiansEl = $('#radians');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
-    function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
-            return;
+
+    // Find fraction representation of a decimal with respect to π
+    function findPiFraction(value) {
+        // Common fractions
+        const fractions = [
+            { num: 0, den: 1, label: '0' },
+            { num: 1, den: 6, label: 'π/6' },
+            { num: 1, den: 4, label: 'π/4' },
+            { num: 1, den: 3, label: 'π/3' },
+            { num: 1, den: 2, label: 'π/2' },
+            { num: 2, den: 3, label: '2π/3' },
+            { num: 3, den: 4, label: '3π/4' },
+            { num: 5, den: 6, label: '5π/6' },
+            { num: 1, den: 1, label: 'π' },
+            { num: 7, den: 6, label: '7π/6' },
+            { num: 5, den: 4, label: '5π/4' },
+            { num: 4, den: 3, label: '4π/3' },
+            { num: 3, den: 2, label: '3π/2' },
+            { num: 5, den: 3, label: '5π/3' },
+            { num: 7, den: 4, label: '7π/4' },
+            { num: 11, den: 6, label: '11π/6' },
+            { num: 2, den: 1, label: '2π' },
+        ];
+
+        for (const frac of fractions) {
+            const expected = (frac.num / frac.den) * Math.PI;
+            if (Math.abs(value - expected) < 1e-10) {
+                return frac.label;
+            }
         }
-        
-        try {
-            // TODO: Implement Degree to Radian Converter logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        // For non-standard values, show as multiple of π
+        const multiple = value / Math.PI;
+        if (Math.abs(multiple - Math.round(multiple)) < 1e-10) {
+            return `${Math.round(multiple)}π`;
         }
+
+        // Try to find a simple fraction
+        for (let den = 2; den <= 12; den++) {
+            const num = Math.round(value * den / Math.PI);
+            if (Math.abs(value - (num / den) * Math.PI) < 1e-10) {
+                if (num === 0) return '0';
+                if (num === 1 && den === 1) return 'π';
+                if (den === 1) return `${num}π`;
+                if (num === 1) return `π/${den}`;
+                return `${num}π/${den}`;
+            }
+        }
+
+        return null;
     }
-    
+
+    // Main conversion function - bidirectional
+    function convert(source) {
+        let degrees, radians;
+
+        if (source === 'degrees') {
+            const deg = parseFloat(degreesEl.value.trim());
+            if (isNaN(deg)) {
+                outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a valid number for degrees</span>';
+                return;
+            }
+            degrees = deg;
+            radians = degrees * (Math.PI / 180);
+            radiansEl.value = formatNumber(radians, 6);
+        } else {
+            const rad = parseFloat(radiansEl.value.trim());
+            if (isNaN(rad)) {
+                outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a valid number for radians</span>';
+                return;
+            }
+            radians = rad;
+            degrees = radians * (180 / Math.PI);
+            degreesEl.value = formatNumber(degrees, 6);
+        }
+
+        const piFraction = findPiFraction(radians);
+
+        let piFractionDisplay = '';
+        if (piFraction) {
+            piFractionDisplay = `<br><strong>In terms of π:</strong> ${piFraction}`;
+        }
+
+        outputEl.innerHTML = `
+            <div style="text-align: left; line-height: 1.8;">
+                <strong>🔄 Conversion Results:</strong><br>
+                <strong>Degrees:</strong> ${formatNumber(degrees, 6)}°<br>
+                <strong>Radians:</strong> ${formatNumber(radians, 6)} rad${piFractionDisplay}<br>
+                <br>
+                <strong>Formulas:</strong><br>
+                radians = degrees × (π / 180)<br>
+                degrees = radians × (180 / π)
+            </div>
+        `;
+    }
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        degreesEl.value = '';
+        radiansEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        degreesEl.focus();
     }
-    
+
     // Event listeners
-    calculateBtn.addEventListener('click', calculate);
+    calculateBtn.addEventListener('click', () => {
+        // Determine which field has input
+        const hasDegrees = degreesEl.value.trim() !== '';
+        const hasRadians = radiansEl.value.trim() !== '';
+
+        if (!hasDegrees && !hasRadians) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a value in either degrees or radians</span>';
+            return;
+        }
+
+        // Prefer degrees if both are filled
+        convert(hasDegrees ? 'degrees' : 'radians');
+    });
+
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    const handleEnter = (e) => {
         if (e.key === 'Enter') {
-            calculate();
+            const hasDegrees = degreesEl.value.trim() !== '';
+            const hasRadians = radiansEl.value.trim() !== '';
+            if (!hasDegrees && !hasRadians) {
+                outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a value in either degrees or radians</span>';
+                return;
+            }
+            convert(hasDegrees ? 'degrees' : 'radians');
+        }
+    };
+    degreesEl.addEventListener('keypress', handleEnter);
+    radiansEl.addEventListener('keypress', handleEnter);
+
+    // Auto-convert on input change
+    degreesEl.addEventListener('input', () => {
+        if (degreesEl.value.trim()) {
+            convert('degrees');
+        }
+    });
+    radiansEl.addEventListener('input', () => {
+        if (radiansEl.value.trim()) {
+            convert('radians');
         }
     });
 });

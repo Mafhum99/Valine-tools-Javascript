@@ -19,22 +19,26 @@
             <p class="text-muted mb-2">Calculate cylinder volume and surface area</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="radius">Radius (r)</label>
+                    <input type="number" id="radius" class="form-input" placeholder="Enter radius..." step="any" min="0">
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="height">Height (h)</label>
+                    <input type="number" id="height" class="form-input" placeholder="Enter height..." step="any" min="0">
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Results</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

@@ -232,53 +232,155 @@ function initTool(toolInfo) {
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Definite Integral Calculator', icon: '∫' });
-    
+
     // Get elements
-    const inputEl = $('#input');
+    const functionExprEl = $('#functionExpr');
+    const lowerBoundEl = $('#lowerBound');
+    const upperBoundEl = $('#upperBound');
+    const intervalsEl = $('#intervals');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    // Parse function expression safely
+    function parseFunction(expr) {
+        try {
+            // Replace common math shorthand
+            let sanitized = expr
+                .replace(/\bsin\b/g, 'Math.sin')
+                .replace(/\bcos\b/g, 'Math.cos')
+                .replace(/\btan\b/g, 'Math.tan')
+                .replace(/\bexp\b/g, 'Math.exp')
+                .replace(/\blog\b/g, 'Math.log')
+                .replace(/\bsqrt\b/g, 'Math.sqrt')
+                .replace(/\bpi\b/gi, 'Math.PI')
+                .replace(/\bpow\b/g, 'Math.pow')
+                .replace(/\babs\b/g, 'Math.abs')
+                .replace(/\bPI\b/g, 'Math.PI');
+
+            return function(x) {
+                return eval(sanitized);
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Simpson's Rule for numerical integration
+    function simpsonsRule(f, a, b, n) {
+        if (n % 2 !== 0) {
+            n += 1; // Make n even for Simpson's rule
+        }
+        const h = (b - a) / n;
+        let sum = f(a) + f(b);
+
+        for (let i = 1; i < n; i++) {
+            const x = a + i * h;
+            const coeff = i % 2 === 0 ? 2 : 4;
+            sum += coeff * f(x);
+        }
+
+        return (h / 3) * sum;
+    }
+
+    // Trapezoidal Rule (fallback)
+    function trapezoidalRule(f, a, b, n) {
+        const h = (b - a) / n;
+        let sum = f(a) + f(b);
+
+        for (let i = 1; i < n; i++) {
+            const x = a + i * h;
+            sum += 2 * f(x);
+        }
+
+        return (h / 2) * sum;
+    }
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const expr = functionExprEl.value.trim();
+        const a = parseFloat(lowerBoundEl.value.trim());
+        const b = parseFloat(upperBoundEl.value.trim());
+        let n = parseInt(intervalsEl.value.trim());
+
+        if (!expr) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Please enter a function expression</span>';
             return;
         }
-        
+
+        if (isNaN(a) || isNaN(b)) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Please enter valid bounds</span>';
+            return;
+        }
+
+        if (a >= b) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Lower bound must be less than upper bound</span>';
+            return;
+        }
+
+        if (isNaN(n) || n < 2) {
+            n = 10; // Default
+        }
+
+        const f = parseFunction(expr);
+        if (!f) {
+            outputEl.innerHTML = '<span style="color: #ef4444;">Invalid function expression. Use JavaScript math syntax (e.g., x**2, Math.sin(x))</span>';
+            return;
+        }
+
         try {
-            // TODO: Implement Definite Integral Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Test the function
+            f(a);
+
+            const simpsonResult = simpsonsRule(f, a, b, n);
+            const trapezoidalResult = trapezoidalRule(f, a, b, n);
+
+            // Ensure n is even for display
+            const displayN = n % 2 === 0 ? n : n + 1;
+
+            outputEl.innerHTML = `
+                <div style="text-align: left; line-height: 1.8;">
+                    <strong>∫ Definite Integral Results:</strong><br>
+                    <strong>Function:</strong> f(x) = ${expr}<br>
+                    <strong>Bounds:</strong> [${formatNumber(a, 4)}, ${formatNumber(b, 4)}]<br>
+                    <strong>Intervals (n):</strong> ${displayN}<br>
+                    <br>
+                    <strong>Simpson's Rule Result:</strong> ${formatNumber(simpsonResult, 6)}<br>
+                    <strong>Trapezoidal Rule Result:</strong> ${formatNumber(trapezoidalResult, 6)}
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = '<span style="color: #ef4444;">Error evaluating function: ' + error.message + '</span>';
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        functionExprEl.value = '';
+        lowerBoundEl.value = '';
+        upperBoundEl.value = '';
+        intervalsEl.value = '10';
         outputEl.textContent = '-';
-        inputEl.focus();
+        functionExprEl.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') calculate();
+    };
+    functionExprEl.addEventListener('keypress', handleEnter);
+    lowerBoundEl.addEventListener('keypress', handleEnter);
+    upperBoundEl.addEventListener('keypress', handleEnter);
+    intervalsEl.addEventListener('keypress', handleEnter);
 });
