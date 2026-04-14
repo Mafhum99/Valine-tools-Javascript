@@ -226,55 +226,213 @@ function initTool(toolInfo) {
 
 /**
  * Gamma Function Calculator
- * Calculate the gamma function
+ * Calculate the Gamma function Γ(n) using the Lanczos approximation.
+ * Definition: Γ(n) = ∫(0 to ∞) t^(n-1) × e^(-t) dt
+ * Property: For positive integers, Γ(n) = (n-1)!
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Gamma Function Calculator', icon: 'Γ' });
-    
-    // Get elements
+
     const inputEl = $('#input');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    // Lanczos approximation coefficients (g=7, 15 terms)
+    // These coefficients provide high precision for the gamma function
+    const LANCZOS_G = 7;
+    const LANCZOS_COEFF = [
+        0.99999999999980993,
+        676.5203681218851,
+        -1259.1392167224028,
+        771.32342877765313,
+        -176.61502916214059,
+        12.507343278686905,
+        -0.13857109526572012,
+        9.9843695780195716e-6,
+        1.5056327351493116e-7
+    ];
+
+    /**
+     * Compute the Gamma function using the Lanczos approximation.
+     * Γ(z) = sqrt(2π) × (z + g - 0.5)^(z - 0.5) × e^(-(z+g-0.5)) × A_g(z)
+     * where A_g(z) is a sum of coefficients.
+     *
+     * @param {number} z - The input value (must not be 0 or a negative integer)
+     * @returns {number} The gamma function value Γ(z)
+     */
+    function gamma(z) {
+        // Handle reflection for negative values
+        // Γ(z) × Γ(1-z) = π / sin(πz)
+        if (z < 0.5) {
+            return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
+        }
+
+        // Shift z for Lanczos
+        z -= 1;
+
+        // Compute the Lanczos sum A_g(z)
+        let x = LANCZOS_COEFF[0];
+        for (let i = 1; i < LANCZOS_COEFF.length; i++) {
+            x += LANCZOS_COEFF[i] / (z + i);
+        }
+
+        // Compute t = z + g + 0.5
+        const t = z + LANCZOS_G + 0.5;
+
+        // Γ(z+1) = sqrt(2π) × t^(z+0.5) × e^(-t) × A_g(z)
+        return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+    }
+
+    /**
+     * Format large numbers with scientific notation when appropriate.
+     */
+    function formatGammaValue(value) {
+        if (!isFinite(value)) {
+            return 'Infinity';
+        }
+
+        const absValue = Math.abs(value);
+
+        // Use scientific notation for very large or very small numbers
+        if (absValue >= 1e15 || (absValue < 1e-10 && absValue > 0)) {
+            return value.toExponential(10);
+        }
+
+        // Determine decimal places based on magnitude
+        if (absValue >= 1e6) {
+            return formatNumber(value, 4);
+        } else if (absValue >= 1000) {
+            return formatNumber(value, 6);
+        } else if (absValue >= 1) {
+            return formatNumber(value, 10);
+        } else {
+            return formatNumber(value, 12);
+        }
+    }
+
+    /**
+     * Check if a number is effectively an integer (within floating-point tolerance).
+     */
+    function isInteger(n) {
+        return Math.abs(n - Math.round(n)) < 1e-10;
+    }
+
+    /**
+     * Compute factorial iteratively for positive integers.
+     */
+    function factorial(n) {
+        if (n < 0) return NaN;
+        if (n === 0 || n === 1) return 1;
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
+
+    /**
+     * Main calculation function.
+     */
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
+        const inputVal = inputEl.value.trim();
+
+        if (!inputVal) {
             outputEl.textContent = 'Please enter a value';
             return;
         }
-        
+
+        const n = parseFloat(inputVal);
+
+        if (isNaN(n)) {
+            outputEl.textContent = 'Error: Please enter a valid number';
+            return;
+        }
+
+        // Check range bounds
+        if (n <= -100 || n >= 200) {
+            outputEl.textContent = 'Error: Input must be in range -100 < n < 200';
+            return;
+        }
+
+        // Check for poles (non-positive integers: 0, -1, -2, ...)
+        if (isInteger(n) && n <= 0) {
+            const intN = Math.round(n);
+            outputEl.innerHTML = `<strong>Γ(${intN})</strong> is undefined (pole)\n\nThe Gamma function has poles at all non-positive integers: 0, -1, -2, -3, ...\n\nAs n approaches ${intN}, |Γ(n)| → ∞`;
+            return;
+        }
+
         try {
-            // TODO: Implement Gamma Function Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const result = gamma(n);
+            const roundedN = isInteger(n) ? Math.round(n) : n;
+
+            // Build output
+            let output = '';
+
+            // Main result
+            output += `Γ(${roundedN}) = ${formatGammaValue(result)}\n\n`;
+
+            // Definition reference
+            output += `Definition: Γ(n) = ∫(0 to ∞) t^(n-1) × e^(-t) dt\n`;
+            output += `Γ(${roundedN}) = ∫(0 to ∞) t^${roundedN - 1} × e^(-t) dt\n\n`;
+
+            // Factorial equivalence for positive integers
+            if (isInteger(n) && n > 0) {
+                const intN = Math.round(n);
+                const factVal = intN - 1;
+                const factResult = factorial(factVal);
+
+                output += `Factorial Equivalence:\n`;
+                output += `Γ(${intN}) = (${intN - 1})! = ${formatNumber(factResult)}\n\n`;
+                output += `Since ${intN} is a positive integer, Γ(${intN}) = (${intN} - 1)!`;
+
+                // Add the actual factorial expansion for small integers
+                if (factVal <= 20 && factVal > 0) {
+                    const factors = [];
+                    for (let i = factVal; i >= 1; i--) {
+                        factors.push(i);
+                    }
+                    output += ` = ${factors.join(' × ')}`;
+                }
+            } else if (n > 0) {
+                // For non-integer positive values, show relation to nearest integers
+                const floorN = Math.floor(n);
+                const ceilN = Math.ceil(n);
+                if (floorN !== ceilN) {
+                    output += `Note: Γ(${n}) is between Γ(${floorN}) = ${formatGammaValue(gamma(floorN))} and Γ(${ceilN}) = ${formatGammaValue(gamma(ceilN))}`;
+                }
+            } else {
+                // For negative non-integer values
+                output += `Note: The Gamma function is defined for negative non-integer values via reflection.`;
+            }
+
+            outputEl.textContent = output;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
+    /**
+     * Clear function.
+     */
     function clear() {
         inputEl.value = '';
         outputEl.textContent = '-';
         inputEl.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
     inputEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {

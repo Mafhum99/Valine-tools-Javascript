@@ -226,59 +226,328 @@ function initTool(toolInfo) {
 
 /**
  * Integral Calculator
- * Calculate definite and indefinite integrals
+ * Definite integrals via Simpson's Rule; indefinite integrals via symbolic rules
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Integral Calculator', icon: '∫' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+
+    const fxEl = $('#fx');
+    const modeEl = $('#mode');
+    const boundAEl = $('#bound-a');
+    const boundBEl = $('#bound-b');
+    const nEl = $('#n-intervals');
+    const definiteSection = $('#definite-section');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+    const outputEl = $('#output');
+
+    // Toggle definite/indefinite sections
+    function updateMode() {
+        if (modeEl.value === 'definite') {
+            definiteSection.style.display = 'block';
+        } else {
+            definiteSection.style.display = 'none';
+        }
+    }
+
+    modeEl.addEventListener('change', updateMode);
+
+    // Safe function parser: converts user input like "x^2 + 3*x" to a safe evaluable function
+    function parseFunction(expr) {
+        // Sanitize: only allow safe characters and math functions
+        const sanitized = expr
+            .replace(/\s+/g, '')
+            .replace(/\^/g, '**')
+            .replace(/sin\(/g, 'Math.sin(')
+            .replace(/cos\(/g, 'Math.cos(')
+            .replace(/tan\(/g, 'Math.tan(')
+            .replace(/asin\(/g, 'Math.asin(')
+            .replace(/acos\(/g, 'Math.acos(')
+            .replace(/atan\(/g, 'Math.atan(')
+            .replace(/sqrt\(/g, 'Math.sqrt(')
+            .replace(/abs\(/g, 'Math.abs(')
+            .replace(/log\(/g, 'Math.log10(')
+            .replace(/ln\(/g, 'Math.log(')
+            .replace(/exp\(/g, 'Math.exp(')
+            .replace(/pi/g, `(${Math.PI})`)
+            .replace(/(?<![a-zA-Z])e(?![a-zA-Z(])/g, `(${Math.E})`)
+            .replace(/floor\(/g, 'Math.floor(')
+            .replace(/ceil\(/g, 'Math.ceil(')
+            .replace(/round\(/g, 'Math.round(')
+            .replace(/pow\(/g, 'Math.pow(');
+
+        // Check for dangerous patterns
+        if (/[;{}[\]`$&|]/.test(sanitized)) {
+            throw new Error('Expression contains disallowed characters');
+        }
+        if (/window|document|eval|fetch|alert|import|require|process|global/.test(sanitized)) {
+            throw new Error('Expression contains disallowed keywords');
+        }
+
+        return function(x) {
+            // Build a function using only Math and the variable x
+            const fn = new Function('x', `return (${sanitized});`);
+            return fn(x);
+        };
+    }
+
+    // Simpson's Rule for definite integration
+    // integral ≈ (h/3) * [f(a) + 4*f(a+h) + 2*f(a+2h) + 4*f(a+3h) + ... + f(b)]
+    function simpsonsRule(f, a, b, n) {
+        // n must be even
+        if (n % 2 !== 0) n += 1;
+
+        const h = (b - a) / n;
+        let sum = f(a) + f(b);
+
+        for (let i = 1; i < n; i++) {
+            const x = a + i * h;
+            const coeff = (i % 2 === 0) ? 2 : 4;
+            sum += coeff * f(x);
+        }
+
+        return (h / 3) * sum;
+    }
+
+    // Symbolic indefinite integration rules for common functions
+    function symbolicIntegrate(expr) {
+        const cleaned = expr.replace(/\s+/g, '');
+        const lower = cleaned.toLowerCase();
+
+        // Direct pattern matching for common forms
+        const rules = [
+            // Power rule: x^n => x^(n+1)/(n+1)
+            { pattern: /^x\^(-?\d+(?:\.\d+)?)$/, apply: (m) => {
+                const n = parseFloat(m[1]);
+                if (n === -1) return 'ln|x| + C';
+                const np1 = n + 1;
+                return `(x^${np1})/${np1} + C`;
+            }},
+            // Simple x => x^2/2
+            { pattern: /^x$/, apply: () => '(x^2)/2 + C' },
+            // Constant: k => k*x
+            { pattern: /^(-?\d+(?:\.\d+)?)$/, apply: (m) => `${m[1]}*x + C` },
+            // k*x => k*x^2/2
+            { pattern: /^(-?\d+(?:\.\d+)?)\*x$/, apply: (m) => {
+                const k = parseFloat(m[1]);
+                return `${formatNumber(k / 2, 4)}*x^2 + C`;
+            }},
+            // sin(x) => -cos(x)
+            { pattern: /^sin\(x\)$/, apply: () => '-cos(x) + C' },
+            // cos(x) => sin(x)
+            { pattern: /^cos\(x\)$/, apply: () => 'sin(x) + C' },
+            // tan(x) => -ln|cos(x)|
+            { pattern: /^tan\(x\)$/, apply: () => '-ln|cos(x)| + C' },
+            // e^x => e^x
+            { pattern: /^e\^x$/, apply: () => 'e^x + C' },
+            // exp(x) => e^x
+            { pattern: /^exp\(x\)$/, apply: () => 'e^x + C' },
+            // 1/x or x^(-1) => ln|x|
+            { pattern: /^(?:1\/x|x\^-1)$/, apply: () => 'ln|x| + C' },
+            // sqrt(x) => (2/3)*x^(3/2)
+            { pattern: /^sqrt\(x\)$/, apply: () => '(2/3)*x^(3/2) + C' },
+            // ln(x) => x*ln(x) - x
+            { pattern: /^ln\(x\)$/, apply: () => 'x*ln(x) - x + C' },
+            // log(x) => (x*ln(x) - x)/ln(10)
+            { pattern: /^log\(x\)$/, apply: () => '(x*ln(x) - x)/ln(10) + C' },
+            // sec^2(x) => tan(x)
+            { pattern: /^sec\^2\(x\)$/, apply: () => 'tan(x) + C' },
+            // csc^2(x) => -cot(x)
+            { pattern: /^csc\^2\(x\)$/, apply: () => '-cot(x) + C' },
+            // sec(x)*tan(x) => sec(x)
+            { pattern: /^sec\(x\)\*tan\(x\)$/, apply: () => 'sec(x) + C' },
+            // csc(x)*cot(x) => -csc(x)
+            { pattern: /^csc\(x\)\*cot\(x\)$/, apply: () => '-csc(x) + C' },
+            // 1/(1+x^2) => atan(x)
+            { pattern: /^1\/\(1\+x\^2\)$/, apply: () => 'atan(x) + C' },
+            // 1/sqrt(1-x^2) => asin(x)
+            { pattern: /^1\/sqrt\(1-x\^2\)$/, apply: () => 'asin(x) + C' },
+            // a^x => a^x/ln(a)
+            { pattern: /^(\d+(?:\.\d+)?)\^x$/, apply: (m) => {
+                const a = parseFloat(m[1]);
+                if (a <= 0) throw new Error('Base must be positive');
+                return `${m[1]}^x/ln(${m[1]}) + C`;
+            }},
+        ];
+
+        for (const rule of rules) {
+            const match = lower.match(rule.pattern);
+            if (match) {
+                return rule.apply(match);
+            }
+        }
+
+        // Try to handle simple polynomial terms like ax^n
+        const polyMatch = lower.match(/^(-?\d+(?:\.\d+)?)\*x\^(-?\d+(?:\.\d+)?)$/);
+        if (polyMatch) {
+            const a = parseFloat(polyMatch[1]);
+            const n = parseFloat(polyMatch[2]);
+            if (n === -1) return `${formatNumber(a)}*ln|x| + C`;
+            const np1 = n + 1;
+            const coeff = a / np1;
+            return `${formatNumber(coeff, 4)}*x^${np1} + C`;
+        }
+
+        // Try sum of terms (simple case: split by + or - keeping operator)
+        const terms = cleaned.match(/[+-]?[^+-]+/g);
+        if (terms && terms.length > 1) {
+            const integratedTerms = [];
+            for (const term of terms) {
+                const trimmed = term.replace(/^\+/, '');
+                try {
+                    const result = symbolicIntegrate(trimmed);
+                    if (result) {
+                        integratedTerms.push(result.replace(/\s*\+\s*C\s*$/, ''));
+                    } else {
+                        return null;
+                    }
+                } catch {
+                    return null;
+                }
+            }
+            if (integratedTerms.length > 0) {
+                return integratedTerms.join(' + ') + ' + C';
+            }
+        }
+
+        return null; // No rule matched
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const expr = fxEl.value.trim();
+        if (!expr) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Please enter a function f(x)</p>';
             return;
         }
-        
-        try {
-            // TODO: Implement Integral Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        if (modeEl.value === 'definite') {
+            // Definite integral
+            const aStr = boundAEl.value.trim();
+            const bStr = boundBEl.value.trim();
+            const nStr = nEl.value.trim();
+
+            if (!aStr || !bStr) {
+                outputEl.innerHTML = '<p style="color:#ef4444;">Both bounds a and b are required</p>';
+                return;
+            }
+
+            const a = parseFloat(aStr);
+            const b = parseFloat(bStr);
+            const n = nStr ? parseInt(nStr) : 100;
+
+            if (isNaN(a) || isNaN(b)) {
+                outputEl.innerHTML = '<p style="color:#ef4444;">Bounds must be valid numbers</p>';
+                return;
+            }
+            if (isNaN(n) || n < 2) {
+                outputEl.innerHTML = '<p style="color:#ef4444;">Number of intervals must be >= 2</p>';
+                return;
+            }
+            if (a === b) {
+                outputEl.innerHTML = '<p style="color:#ef4444;">Bounds must be different (a cannot equal b)</p>';
+                return;
+            }
+
+            try {
+                const f = parseFunction(expr);
+
+                // Test evaluation at endpoints
+                const fa = f(a);
+                const fb = f(b);
+                if (!isFinite(fa) || !isFinite(fb)) {
+                    outputEl.innerHTML = '<p style="color:#ef4444;">Function is undefined at one or both bounds</p>';
+                    return;
+                }
+
+                const result = simpsonsRule(f, a, b, n);
+
+                if (!isFinite(result)) {
+                    outputEl.innerHTML = '<p style="color:#ef4444;">Integral diverges or function is not integrable over this interval</p>';
+                    return;
+                }
+
+                // Verify with a higher n for accuracy estimate
+                const resultFine = simpsonsRule(f, a, b, n * 2);
+                const error = Math.abs(resultFine - result);
+
+                outputEl.innerHTML = `
+                    <div style="text-align:center;margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;font-family:monospace;">∫[${formatNumber(a, 4)}, ${formatNumber(b, 4)}] ${expr} dx</div>
+                        <div style="font-size:2rem;font-weight:700;color:#22c55e;margin-top:0.5rem;">${formatNumber(result, 8)}</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;text-align:center;">
+                        <div style="padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;">Intervals</div>
+                            <div style="font-weight:600;font-size:1.125rem;margin-top:0.25rem;">${n}</div>
+                        </div>
+                        <div style="padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;">Method</div>
+                            <div style="font-weight:600;font-size:0.875rem;margin-top:0.25rem;">Simpson's Rule</div>
+                        </div>
+                        <div style="padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;">Est. Error</div>
+                            <div style="font-weight:600;font-size:0.875rem;margin-top:0.25rem;color:${error < 1e-6 ? '#22c55e' : '#f59e0b'};">${error < 1e-10 ? '< 1e-10' : formatNumber(error, 10)}</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                outputEl.innerHTML = `<p style="color:#ef4444;">Error parsing function: ${error.message}</p>`;
+            }
+        } else {
+            // Indefinite integral
+            try {
+                const result = symbolicIntegrate(expr);
+
+                if (result) {
+                    outputEl.innerHTML = `
+                        <div style="text-align:center;">
+                            <div style="font-size:0.75rem;color:#6b7280;font-family:monospace;">∫ ${expr} dx</div>
+                            <div style="font-size:1.5rem;font-weight:700;color:#3b82f6;margin-top:0.75rem;font-family:monospace;word-break:break-all;">${result}</div>
+                            <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.5rem;">+ C is the constant of integration</div>
+                        </div>
+                    `;
+                } else {
+                    outputEl.innerHTML = `
+                        <div style="text-align:center;">
+                            <div style="font-size:0.75rem;color:#6b7280;font-family:monospace;">∫ ${expr} dx</div>
+                            <p style="color:#f59e0b;margin-top:0.75rem;">No symbolic rule found for this function. Try definite mode for numerical integration.</p>
+                            <div style="margin-top:0.75rem;padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;font-size:0.75rem;text-align:left;">
+                                <div style="font-weight:600;margin-bottom:0.25rem;">Supported forms:</div>
+                                x^n, sin(x), cos(x), tan(x), e^x, sqrt(x), ln(x), 1/x, sec^2(x), csc^2(x), sec(x)*tan(x), csc(x)*cot(x), 1/(1+x^2), 1/sqrt(1-x^2), a^x
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                outputEl.innerHTML = `<p style="color:#ef4444;">Error: ${error.message}</p>`;
+            }
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+        fxEl.value = '';
+        modeEl.value = 'definite';
+        boundAEl.value = '';
+        boundBEl.value = '';
+        nEl.value = '';
+        definiteSection.style.display = 'block';
+        outputEl.innerHTML = '<p style="color:#9ca3af;">Enter f(x) and choose a mode</p>';
+        fxEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const text = `Integral Calculator\nf(x) = ${fxEl.value}\nMode: ${modeEl.value}\n${outputEl.textContent}`;
+            copyToClipboard(text);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

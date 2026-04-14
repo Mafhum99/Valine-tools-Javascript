@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Solve basic differential equations">
+    <meta name="description" content="Calculate numerical solutions to ODEs using Euler's method">
     <meta name="theme-color" content="#2563eb">
-    <title>📐 Differential Equation Solver - Mini Tools</title>
+    <title>📊 Euler's Method Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
-        <span class="tool-header-icon">📐</span>
-        <h1>Differential Equation Solver</h1>
+        <span class="tool-header-icon">📊</span>
+        <h1>Euler's Method Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Solve ODEs using Euler's method or RK4</p>
+            <p class="text-muted mb-2">Solve first-order ODEs numerically using Euler's method: y(n+1) = y(n) + h × f(t(n), y(n))</p>
 
             <div id="tool-content">
                 <div class="form-group">
                     <label class="form-label" for="ode-func">ODE Function f(t, y)</label>
-                    <input type="text" id="ode-func" class="form-input" placeholder="e.g., -2*t*y, t+y, t*y">
+                    <input type="text" id="ode-func" class="form-input" placeholder="e.g., t + y, -2*y, t*y, sin(t) + y">
                 </div>
 
                 <div class="form-group">
@@ -40,18 +40,9 @@
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="step-size">Step Size (h)</label>
-                        <input type="number" id="step-size" class="form-input" placeholder="0.1" step="any" value="0.1" min="0.0001">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="method">Method</label>
-                        <select id="method" class="form-select">
-                            <option value="euler">Euler's Method</option>
-                            <option value="rk4">Runge-Kutta 4th Order (RK4)</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label" for="step-size">Step Size (h)</label>
+                    <input type="number" id="step-size" class="form-input" placeholder="0.1" step="any" value="0.1" min="0.0001">
                 </div>
 
                 <div class="btn-group">
@@ -60,7 +51,8 @@
                 </div>
 
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Result Table</div>
+                    <div id="table-container" class="table-container"></div>
                     <pre id="output" class="result-content">-</pre>
                 </div>
 

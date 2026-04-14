@@ -1,0 +1,6 @@
+/* ---- Heron's Formula Calculator Styles ---- */
+#result { min-height: 80px; }
+#output { font-size: 1.25rem; font-weight: 600; color: var(--primary); white-space: pre-wrap; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+@media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+.result-content { white-space: pre-wrap; font-family: inherit; font-size: 1rem; }

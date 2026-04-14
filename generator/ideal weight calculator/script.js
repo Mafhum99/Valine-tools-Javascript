@@ -226,59 +226,183 @@ function initTool(toolInfo) {
 
 /**
  * Ideal Weight Calculator
- * Calculate ideal body weight
+ * Devine, Robinson, and Miller formulas
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Ideal Weight Calculator', icon: '⚖️' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+
+    const genderMaleEl = $('#gender-male');
+    const genderFemaleEl = $('#gender-female');
+    const heightEl = $('#height');
+    const unitEl = $('#unit');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+    const outputEl = $('#output');
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const heightStr = heightEl.value.trim();
+        const isMale = genderMaleEl.checked;
+        const isFemale = genderFemaleEl.checked;
+        const unit = unitEl.value; // 'cm' or 'in'
+
+        // Validate gender selection
+        if (!isMale && !isFemale) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Please select a gender</p>';
             return;
         }
-        
+
+        // Validate height
+        if (!heightStr) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Height is required</p>';
+            return;
+        }
+
+        let heightCm = parseFloat(heightStr);
+        if (isNaN(heightCm) || heightCm <= 0) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Height must be a positive number</p>';
+            return;
+        }
+
+        // Convert to inches if in cm
+        let heightIn = heightCm;
+        if (unit === 'cm') {
+            heightIn = heightCm / 2.54;
+        }
+
+        // Validate minimum height (must be over 5 feet = 60 inches)
+        if (heightIn < 60) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Height must be at least 5 feet (60 inches / 152.4 cm) for these formulas</p>';
+            return;
+        }
+
         try {
-            // TODO: Implement Ideal Weight Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Inches over 5 feet
+            const over5ft = heightIn - 60;
+
+            let devineKg, robinsonKg, millerKg;
+
+            if (isMale) {
+                // Devine: M = 50 + 2.3 * over5ft
+                devineKg = 50 + 2.3 * over5ft;
+                // Robinson: M = 52 + 1.9 * over5ft
+                robinsonKg = 52 + 1.9 * over5ft;
+                // Miller: M = 56.2 + 1.41 * over5ft
+                millerKg = 56.2 + 1.41 * over5ft;
+            } else {
+                // Devine: F = 45.5 + 2.3 * over5ft
+                devineKg = 45.5 + 2.3 * over5ft;
+                // Robinson: F = 49 + 1.7 * over5ft
+                robinsonKg = 49 + 1.7 * over5ft;
+                // Miller: F = 53.1 + 1.36 * over5ft
+                millerKg = 53.1 + 1.36 * over5ft;
+            }
+
+            // Convert kg to lbs (1 kg = 2.20462 lbs)
+            const kgToLbs = 2.20462;
+            const devineLbs = devineKg * kgToLbs;
+            const robinsonLbs = robinsonKg * kgToLbs;
+            const millerLbs = millerKg * kgToLbs;
+
+            // Average across all formulas
+            const avgKg = (devineKg + robinsonKg + millerKg) / 3;
+            const avgLbs = avgKg * kgToLbs;
+
+            const genderLabel = isMale ? 'Male' : 'Female';
+            const heightDisplay = unit === 'cm'
+                ? `${formatNumber(heightCm, 1)} cm`
+                : `${formatNumber(heightIn, 1)} inches`;
+
+            const formulas = [
+                {
+                    name: 'Devine',
+                    year: '1974',
+                    kg: devineKg,
+                    lbs: devineLbs,
+                    formula: isMale
+                        ? `50 + 2.3 * ${formatNumber(over5ft, 1)}`
+                        : `45.5 + 2.3 * ${formatNumber(over5ft, 1)}`,
+                    color: '#22c55e'
+                },
+                {
+                    name: 'Robinson',
+                    year: '1983',
+                    kg: robinsonKg,
+                    lbs: robinsonLbs,
+                    formula: isMale
+                        ? `52 + 1.9 * ${formatNumber(over5ft, 1)}`
+                        : `49 + 1.7 * ${formatNumber(over5ft, 1)}`,
+                    color: '#3b82f6'
+                },
+                {
+                    name: 'Miller',
+                    year: '1983',
+                    kg: millerKg,
+                    lbs: millerLbs,
+                    formula: isMale
+                        ? `56.2 + 1.41 * ${formatNumber(over5ft, 1)}`
+                        : `53.1 + 1.36 * ${formatNumber(over5ft, 1)}`,
+                    color: '#8b5cf6'
+                }
+            ];
+
+            const cards = formulas.map(f => `
+                <div style="padding:0.75rem;background:#f9fafb;border-radius:0.5rem;border-left:3px solid ${f.color};">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                        <div>
+                            <div style="font-weight:700;font-size:1rem;">${f.name}</div>
+                            <div style="font-size:0.625rem;color:#9ca3af;">${f.year}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-family:monospace;font-size:0.75rem;color:#6b7280;">${f.formula}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div style="font-size:1.25rem;font-weight:700;color:${f.color};">${formatNumber(f.kg, 1)} kg</div>
+                        <div style="font-size:1.125rem;font-weight:600;color:#6b7280;">${formatNumber(f.lbs, 1)} lbs</div>
+                    </div>
+                </div>
+            `).join('');
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;margin-bottom:1rem;">
+                    <div style="font-size:1rem;color:#6b7280;">${genderLabel} | Height: ${heightDisplay}</div>
+                    <div style="font-size:0.75rem;color:#9ca3af;">Over 5ft: ${formatNumber(over5ft, 1)} inches</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    ${cards}
+                </div>
+                <div style="margin-top:1rem;padding:0.75rem;background:#eff6ff;border-radius:0.5rem;text-align:center;">
+                    <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;">Average (All Formulas)</div>
+                    <div style="font-size:1.5rem;font-weight:700;color:#3b82f6;margin-top:0.25rem;">${formatNumber(avgKg, 1)} kg / ${formatNumber(avgLbs, 1)} lbs</div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+        genderMaleEl.checked = true;
+        genderFemaleEl.checked = false;
+        heightEl.value = '';
+        unitEl.value = 'cm';
+        outputEl.innerHTML = '<p style="color:#9ca3af;">Enter your gender and height to calculate ideal weight</p>';
+        heightEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const text = `Ideal Weight Calculator\n${outputEl.textContent}`;
+            copyToClipboard(text);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

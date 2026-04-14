@@ -226,59 +226,146 @@ function initTool(toolInfo) {
 
 /**
  * Differential Equation Solver
- * Solve basic differential equations
+ * Solve ODEs using Euler's method and RK4
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Differential Equation Solver', icon: '📐' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const odeFuncEl = $('#ode-func');
+    const initCondEl = $('#init-cond');
+    const startTimeEl = $('#start-time');
+    const endTimeEl = $('#end-time');
+    const stepSizeEl = $('#step-size');
+    const methodEl = $('#method');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    function parseFunction(funcStr) {
+        try {
+            const sanitized = funcStr.replace(/[^0-9tTy\s+\-*/().,^]/gi, (match) => {
+                if (match.toLowerCase() === 't' || match.toLowerCase() === 'y') return match;
+                if (['+', '-', '*', '/', '.', '(', ')', '^', ' ', ','].includes(match)) return match;
+                return '';
+            });
+            
+            const jsExpr = sanitized.replace(/\^/g, '**')
+                .replace(/(\d)([ty])/gi, '$1*$2')
+                .replace(/([ty])(\d)/gi, '$1*$2')
+                .replace(/([)])([ty])/gi, '$1*$2')
+                .replace(/([ty])([(])/gi, '$1*$2');
+            
+            return new Function('t', 'y', `return ${jsExpr};`);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function eulerMethod(f, t0, y0, h, steps) {
+        const results = [[t0, y0]];
+        let t = t0, y = y0;
+        for (let i = 1; i <= steps; i++) {
+            y = y + h * f(t, y);
+            t = t0 + i * h;
+            results.push([t, y]);
+        }
+        return results;
+    }
+
+    function rk4Method(f, t0, y0, h, steps) {
+        const results = [[t0, y0]];
+        let t = t0, y = y0;
+        for (let i = 1; i <= steps; i++) {
+            const k1 = h * f(t, y);
+            const k2 = h * f(t + h/2, y + k1/2);
+            const k3 = h * f(t + h/2, y + k2/2);
+            const k4 = h * f(t + h, y + k3);
+            y = y + (k1 + 2*k2 + 2*k3 + k4) / 6;
+            t = t0 + i * h;
+            results.push([t, y]);
+        }
+        return results;
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const funcStr = odeFuncEl.value.trim();
+        const y0 = parseFloat(initCondEl.value);
+        const t0 = parseFloat(startTimeEl.value);
+        const t1 = parseFloat(endTimeEl.value);
+        const h = parseFloat(stepSizeEl.value);
+        const method = methodEl.value;
+
+        if (!funcStr) {
+            outputEl.textContent = 'Please enter an ODE function';
             return;
         }
-        
-        try {
-            // TODO: Implement Differential Equation Solver logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+        if (isNaN(y0)) {
+            outputEl.textContent = 'Please enter a valid initial condition';
+            return;
         }
+        if (isNaN(t0) || isNaN(t1)) {
+            outputEl.textContent = 'Please enter valid time bounds';
+            return;
+        }
+        if (t0 >= t1) {
+            outputEl.textContent = 'Error: Start time must be less than end time';
+            return;
+        }
+        if (isNaN(h) || h <= 0) {
+            outputEl.textContent = 'Error: Step size must be positive';
+            return;
+        }
+
+        const f = parseFunction(funcStr);
+        if (!f) {
+            outputEl.textContent = 'Error: Invalid function syntax. Use format like: -2*t*y or t+y';
+            return;
+        }
+
+        const steps = Math.floor((t1 - t0) / h);
+        let results;
+        try {
+            results = method === 'rk4' ? rk4Method(f, t0, y0, h, steps) : eulerMethod(f, t0, y0, h, steps);
+        } catch (e) {
+            outputEl.textContent = 'Error during calculation: ' + e.message;
+            return;
+        }
+
+        const methodName = method === 'rk4' ? 'Runge-Kutta 4th Order' : "Euler's Method";
+        let output = `Method: ${methodName}\nODE: dy/dt = ${funcStr}\nInitial: y(${t0}) = ${y0}\n\n`;
+        output += 't\t\ty(t)\n';
+        output += '─'.repeat(40) + '\n';
+        results.forEach(([t, y]) => {
+            output += `${t.toFixed(4)}\t${y.toFixed(6)}\n`;
+        });
+
+        outputEl.textContent = output;
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        odeFuncEl.value = '';
+        initCondEl.value = '';
+        startTimeEl.value = '';
+        endTimeEl.value = '';
+        stepSizeEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        odeFuncEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    $$('.form-input, .form-select').forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
     });
 });

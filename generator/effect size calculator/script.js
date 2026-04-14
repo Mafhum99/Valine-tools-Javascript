@@ -226,59 +226,101 @@ function initTool(toolInfo) {
 
 /**
  * Effect Size Calculator
- * Calculate effect size (Cohen's d)
+ * Calculate Cohen's d effect size
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Effect Size Calculator', icon: '📏' });
-    
-    // Get elements
-    const inputEl = $('#input');
+
+    const mean1El = $('#mean1');
+    const mean2El = $('#mean2');
+    const sd1El = $('#sd1');
+    const sd2El = $('#sd2');
+    const n1El = $('#n1');
+    const n2El = $('#n2');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const mean1 = parseFloat(mean1El.value);
+        const mean2 = parseFloat(mean2El.value);
+        const sd1 = parseFloat(sd1El.value);
+        const sd2 = parseFloat(sd2El.value);
+        const n1 = parseFloat(n1El.value);
+        const n2 = parseFloat(n2El.value);
+
+        if (isNaN(mean1) || isNaN(mean2)) {
+            outputEl.textContent = 'Error: Please enter valid means';
             return;
         }
-        
-        try {
-            // TODO: Implement Effect Size Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+        if (isNaN(sd1) || isNaN(sd2)) {
+            outputEl.textContent = 'Error: Please enter valid standard deviations';
+            return;
         }
+        if (sd1 <= 0 || sd2 <= 0) {
+            outputEl.textContent = 'Error: Standard deviations must be positive';
+            return;
+        }
+        if (isNaN(n1) || isNaN(n2)) {
+            outputEl.textContent = 'Error: Please enter valid sample sizes';
+            return;
+        }
+        if (n1 < 2 || n2 < 2) {
+            outputEl.textContent = 'Error: Sample sizes must be >= 2';
+            return;
+        }
+
+        const pooledVariance = ((n1 - 1) * sd1 * sd1 + (n2 - 1) * sd2 * sd2) / (n1 + n2 - 2);
+        const pooledSD = Math.sqrt(pooledVariance);
+        const cohensD = (mean1 - mean2) / pooledSD;
+
+        let interpretation;
+        const absD = Math.abs(cohensD);
+        if (absD < 0.2) interpretation = 'Negligible effect';
+        else if (absD < 0.5) interpretation = 'Small effect';
+        else if (absD < 0.8) interpretation = 'Medium effect';
+        else interpretation = 'Large effect';
+
+        const direction = cohensD > 0 ? 'Group 1 > Group 2' : cohensD < 0 ? 'Group 2 > Group 1' : 'No difference';
+
+        let output = `Cohen's d: ${cohensD.toFixed(4)}\n\n`;
+        output += `Pooled SD: ${pooledSD.toFixed(4)}\n`;
+        output += `Mean Difference: ${(mean1 - mean2).toFixed(4)}\n`;
+        output += `Effect Size: ${interpretation}\n`;
+        output += `Direction: ${direction}\n\n`;
+        output += `Interpretation Guide:\n`;
+        output += `• Small: |d| ≈ 0.2\n`;
+        output += `• Medium: |d| ≈ 0.5\n`;
+        output += `• Large: |d| ≈ 0.8`;
+
+        outputEl.textContent = output;
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        mean1El.value = '';
+        mean2El.value = '';
+        sd1El.value = '';
+        sd2El.value = '';
+        n1El.value = '';
+        n2El.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        mean1El.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    $$('.form-input').forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
     });
 });

@@ -105,7 +105,7 @@ function percentageOf(percent, whole) { return (percent / 100) * whole; }
 function percentageChange(oldValue, newValue) { return ((newValue - oldValue) / Math.abs(oldValue)) * 100; }
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
 function lerp(start, end, t) { return start + (end - start) * t; }
-function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; }
+function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - inMin) / (inMax - inMin) + outMin; }
 
 // ========================================
 // String Utilities
@@ -226,59 +226,353 @@ function initTool(toolInfo) {
 
 /**
  * Matrix Multiplication Calculator
- * Multiply two matrices
+ * Matrix A: M×P, Matrix B: P×N with size selectors
+ * Validation: cols of A = rows of B
+ * C[i][j] = Σ(A[i][k] × B[k][j])
+ * Show matrices A, B, and result C in grid format
+ * Optional: show step for one element
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Matrix Multiplication Calculator', icon: '✖️' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
-    const calculateBtn = $('#calculate');
-    const clearBtn = $('#clear');
-    const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    const toolContent = $('#tool-content');
+    if (!toolContent) return;
+
+    let rowsA = parseInt(Storage.get('mult-rowsA', '3'));
+    let colsA = parseInt(Storage.get('mult-colsA', '3')); // must equal rowsB
+    let colsB = parseInt(Storage.get('mult-colsB', '3'));
+    let matrixAInputs = [];
+    let matrixBInputs = [];
+
+    // ---- Build UI ----
+    function buildUI() {
+        toolContent.innerHTML = '';
+
+        // Size selectors row
+        const sizeRow = createElement('div', {
+            style: 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;'
+        });
+
+        // Matrix A size
+        const sizeAGroup = createElement('div', { className: 'form-group' });
+        sizeAGroup.appendChild(createElement('label', { className: 'form-label', textContent: 'Matrix A (rows × cols)' }));
+        const aRowSelect = createElement('select', { className: 'form-select', id: 'a-rows' });
+        const aColSelect = createElement('select', { className: 'form-select', id: 'a-cols' });
+        [1, 2, 3, 4, 5].forEach(n => {
+            const o1 = createElement('option', { value: String(n), textContent: String(n) });
+            const o2 = createElement('option', { value: String(n), textContent: String(n) });
+            if (n === rowsA) o1.selected = true;
+            if (n === colsA) o2.selected = true;
+            aRowSelect.appendChild(o1);
+            aColSelect.appendChild(o2);
+        });
+        const aSizeRow = createElement('div', { style: 'display:flex;gap:0.5rem;align-items:center;' });
+        aSizeRow.appendChild(aRowSelect);
+        aSizeRow.appendChild(createElement('span', { textContent: '×', style: 'font-weight:700;color:#6b7280;' }));
+        aSizeRow.appendChild(aColSelect);
+        sizeAGroup.appendChild(aSizeRow);
+        sizeRow.appendChild(sizeAGroup);
+
+        // Matrix B size
+        const sizeBGroup = createElement('div', { className: 'form-group' });
+        sizeBGroup.appendChild(createElement('label', { className: 'form-label', textContent: 'Matrix B (rows × cols)' }));
+        const bRowSelect = createElement('select', { className: 'form-select', id: 'b-rows', disabled: true });
+        const bColSelect = createElement('select', { className: 'form-select', id: 'b-cols' });
+        [1, 2, 3, 4, 5].forEach(n => {
+            const o1 = createElement('option', { value: String(n), textContent: String(n) });
+            const o2 = createElement('option', { value: String(n), textContent: String(n) });
+            if (n === colsA) o1.selected = true;
+            if (n === colsB) o2.selected = true;
+            bRowSelect.appendChild(o1);
+            bColSelect.appendChild(o2);
+        });
+        const bSizeRow = createElement('div', { style: 'display:flex;gap:0.5rem;align-items:center;' });
+        bSizeRow.appendChild(bRowSelect);
+        bSizeRow.appendChild(createElement('span', { textContent: '×', style: 'font-weight:700;color:#6b7280;' }));
+        bSizeRow.appendChild(bColSelect);
+        sizeBGroup.appendChild(bSizeRow);
+        sizeRow.appendChild(sizeBGroup);
+
+        // Result size display
+        const resultSizeGroup = createElement('div', { className: 'form-group' });
+        resultSizeGroup.appendChild(createElement('label', { className: 'form-label', textContent: 'Result C' }));
+        const resultSizeDisplay = createElement('div', {
+            id: 'result-size',
+            textContent: `${rowsA} × ${colsB}`,
+            style: 'padding:0.75rem;background:#dbeafe;border-radius:0.375rem;text-align:center;font-weight:700;color:#1d4ed8;font-size:1.25rem;'
+        });
+        resultSizeGroup.appendChild(resultSizeDisplay);
+        sizeRow.appendChild(resultSizeGroup);
+
+        toolContent.appendChild(sizeRow);
+
+        // Matrix A grid
+        const aContainer = createElement('div', { id: 'matrix-a-container' });
+        aContainer.appendChild(createElement('div', {
+            style: 'font-weight:700;color:#2563eb;margin-bottom:0.5rem;',
+            textContent: 'Matrix A'
+        }));
+        aContainer.appendChild(buildMatrixGrid(rowsA, colsA, 'A'));
+        toolContent.appendChild(aContainer);
+
+        // Multiplication symbol
+        toolContent.appendChild(createElement('div', {
+            textContent: '×',
+            style: 'text-align:center;font-size:1.5rem;font-weight:700;color:#6b7280;margin:0.5rem 0;'
+        }));
+
+        // Matrix B grid
+        const bContainer = createElement('div', { id: 'matrix-b-container' });
+        bContainer.appendChild(createElement('div', {
+            style: 'font-weight:700;color:#7c3aed;margin-bottom:0.5rem;',
+            textContent: 'Matrix B'
+        }));
+        bContainer.appendChild(buildMatrixGrid(colsA, colsB, 'B'));
+        toolContent.appendChild(bContainer);
+
+        // Buttons
+        const btnGroup = createElement('div', { className: 'btn-group' });
+        const calcBtn = createElement('button', { id: 'calculate', className: 'btn btn-primary btn-block', textContent: 'Multiply' });
+        btnGroup.appendChild(calcBtn);
+        toolContent.appendChild(btnGroup);
+
+        const clearBtn = createElement('button', { id: 'clear', className: 'btn btn-secondary btn-block', textContent: 'Clear' });
+        toolContent.appendChild(clearBtn);
+
+        // Result box
+        const resultBox = createElement('div', { className: 'result-box', id: 'result' });
+        const resultLabel = createElement('div', { className: 'result-label', textContent: 'Result' });
+        const outputEl = createElement('div', { id: 'output', textContent: '-' });
+        resultBox.appendChild(resultLabel);
+        resultBox.appendChild(outputEl);
+        toolContent.appendChild(resultBox);
+
+        // Copy button
+        const copyGroup = createElement('div', { className: 'btn-group' });
+        const copyBtn = createElement('button', { id: 'copy', className: 'btn btn-secondary', textContent: '📋 Copy Result' });
+        copyGroup.appendChild(copyBtn);
+        toolContent.appendChild(copyGroup);
+
+        bindEvents();
+    }
+
+    function buildMatrixGrid(rows, cols, name) {
+        const container = createElement('div', {});
+        const grid = createElement('div', { className: `matrix-grid-${name.toLowerCase()}` });
+        grid.style.cssText = `display:grid;grid-template-columns:repeat(${cols},1fr);gap:0.5rem;max-width:${Math.min(cols * 90, 450)}px;margin:0.5rem auto 1rem;`;
+
+        const inputs = [];
+        for (let i = 0; i < rows; i++) {
+            inputs[i] = [];
+            for (let j = 0; j < cols; j++) {
+                const defaultVal = (name === 'A' && i === j) ? '1' : '0';
+                const input = createElement('input', {
+                    type: 'number',
+                    className: `matrix-cell-${name.toLowerCase()}`,
+                    value: defaultVal,
+                    style: 'width:100%;padding:0.5rem;border:2px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-size:1rem;font-family:monospace;transition:border-color 0.2s;',
+                    'data-row': String(i),
+                    'data-col': String(j)
+                });
+                input.addEventListener('focus', () => { input.style.borderColor = '#2563eb'; input.select(); });
+                input.addEventListener('blur', () => { input.style.borderColor = '#e5e7eb'; });
+                grid.appendChild(input);
+                inputs[i][j] = input;
+            }
+        }
+        container.appendChild(grid);
+
+        if (name === 'A') matrixAInputs = inputs;
+        else matrixBInputs = inputs;
+
+        return container;
+    }
+
+    function readMatrix(inputs, rows, cols) {
+        const matrix = [];
+        for (let i = 0; i < rows; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < cols; j++) {
+                const val = parseFloat(inputs[i][j].value);
+                if (isNaN(val)) {
+                    throw new Error(`Invalid number at row ${i + 1}, column ${j + 1}`);
+                }
+                matrix[i][j] = val;
+            }
+        }
+        return matrix;
+    }
+
+    // ---- Math functions ----
+    function multiplyMatrices(a, b, rowsA, colsA, colsB) {
+        const result = [];
+        for (let i = 0; i < rowsA; i++) {
+            result[i] = [];
+            for (let j = 0; j < colsB; j++) {
+                let sum = 0;
+                for (let k = 0; k < colsA; k++) {
+                    sum += a[i][k] * b[k][j];
+                }
+                result[i][j] = sum;
+            }
+        }
+        return result;
+    }
+
+    function elementStep(a, b, row, col, sharedDim) {
+        const terms = [];
+        let sum = 0;
+        for (let k = 0; k < sharedDim; k++) {
+            terms.push(`${fmt(a[row][k])} × ${fmt(b[k][col])} = ${fmt(a[row][k] * b[k][col])}`);
+            sum += a[row][k] * b[k][col];
+        }
+        return `C[${row + 1}][${col + 1}] = ${terms.join(' + ')} = ${fmt(sum)}`;
+    }
+
+    function fmt(v) {
+        if (Number.isInteger(v)) return String(v);
+        return parseFloat(v.toFixed(6)).toString();
+    }
+
+    function renderMatrixGrid(matrix, label, color) {
+        const rows = matrix.length;
+        const cols = matrix[0].length;
+        const wrapper = createElement('div', { style: 'margin:1rem 0;' });
+        wrapper.appendChild(createElement('div', {
+            style: `font-weight:700;color:${color};margin-bottom:0.5rem;`,
+            textContent: label
+        }));
+        const grid = createElement('div', {
+            style: `display:grid;grid-template-columns:repeat(${cols},1fr);gap:0.5rem;max-width:${Math.min(cols * 90, 450)}px;`
+        });
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const cell = createElement('div', {
+                    className: 'matrix-cell',
+                    textContent: fmt(matrix[i][j]),
+                    style: 'padding:0.5rem;border:1px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-family:monospace;font-size:0.875rem;background:#f9fafb;'
+                });
+                grid.appendChild(cell);
+            }
+        }
+        wrapper.appendChild(grid);
+        return wrapper;
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const p = colsA; // shared dimension
+        let matrixA, matrixB;
+        try {
+            matrixA = readMatrix(matrixAInputs, rowsA, p);
+            matrixB = readMatrix(matrixBInputs, p, colsB);
+        } catch (e) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">${e.message}</span>`;
             return;
         }
-        
-        try {
-            // TODO: Implement Matrix Multiplication Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        // Validate: cols of A == rows of B
+        if (colsA !== p) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">Error: Columns of A (${colsA}) must equal rows of B (${p})</span>`;
+            return;
+        }
+
+        const result = multiplyMatrices(matrixA, matrixB, rowsA, p, colsB);
+
+        const output = $('#output');
+        output.innerHTML = '';
+
+        output.appendChild(createElement('div', {
+            style: 'font-size:1rem;font-weight:700;color:#2563eb;margin-bottom:0.5rem;',
+            textContent: `C = A × B  [${rowsA}×${p}] × [${p}×${colsB}] = [${rowsA}×${colsB}]`
+        }));
+
+        output.appendChild(renderMatrixGrid(result, 'Result Matrix C:', '#2563eb'));
+
+        // Show step for C[1][1]
+        if (rowsA > 0 && colsB > 0) {
+            const stepDiv = createElement('div', {
+                style: 'margin-top:1rem;padding:0.75rem;background:#f9fafb;border-radius:0.375rem;border:1px solid #e5e7eb;white-space:pre-wrap;font-family:monospace;font-size:0.875rem;line-height:1.7;'
+            });
+            stepDiv.appendChild(createElement('div', {
+                style: 'font-weight:700;color:#374151;margin-bottom:0.5rem;',
+                textContent: 'Example step — element C[1][1]:'
+            }));
+            stepDiv.appendChild(createElement('div', {
+                textContent: elementStep(matrixA, matrixB, 0, 0, p)
+            }));
+            output.appendChild(stepDiv);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function clearAll() {
+        for (let i = 0; i < rowsA; i++) {
+            for (let j = 0; j < colsA; j++) {
+                matrixAInputs[i][j].value = (i === j) ? '1' : '0';
+            }
+        }
+        for (let i = 0; i < colsA; i++) {
+            for (let j = 0; j < colsB; j++) {
+                matrixBInputs[i][j].value = (i === j) ? '1' : '0';
+            }
+        }
+        $('#output').textContent = '-';
     }
-    
-    // Event listeners
-    calculateBtn.addEventListener('click', calculate);
-    clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+
+    function updateSizes() {
+        rowsA = parseInt($('#a-rows').value);
+        colsA = parseInt($('#a-cols').value);
+        colsB = parseInt($('#b-cols').value);
+
+        Storage.set('mult-rowsA', String(rowsA));
+        Storage.set('mult-colsA', String(colsA));
+        Storage.set('mult-colsB', String(colsB));
+
+        // Update B rows display
+        $('#b-rows').value = String(colsA);
+
+        // Update result size
+        const resultSize = $('#result-size');
+        if (resultSize) resultSize.textContent = `${rowsA} × ${colsB}`;
+
+        // Rebuild grids
+        const aContainer = $('#matrix-a-container');
+        if (aContainer) {
+            const label = aContainer.querySelector('div');
+            aContainer.innerHTML = '';
+            if (label) aContainer.appendChild(label);
+            aContainer.appendChild(buildMatrixGrid(rowsA, colsA, 'A'));
+        }
+
+        const bContainer = $('#matrix-b-container');
+        if (bContainer) {
+            const label = bContainer.querySelector('div');
+            bContainer.innerHTML = '';
+            if (label) bContainer.appendChild(label);
+            bContainer.appendChild(buildMatrixGrid(colsA, colsB, 'B'));
+        }
+
+        $('#output').textContent = '-';
+    }
+
+    function bindEvents() {
+        $('#a-rows').addEventListener('change', updateSizes);
+        $('#a-cols').addEventListener('change', updateSizes);
+        $('#b-cols').addEventListener('change', updateSizes);
+
+        $('#calculate').addEventListener('click', calculate);
+        $('#clear').addEventListener('click', clearAll);
+        $('#copy').addEventListener('click', () => {
+            const text = $('#output').textContent;
+            if (text && text !== '-') copyToClipboard(text);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.target.classList.contains('matrix-cell-a') || e.target.classList.contains('matrix-cell-b'))) {
+                calculate();
+            }
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+
+    buildUI();
 });

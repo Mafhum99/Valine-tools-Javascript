@@ -226,59 +226,119 @@ function initTool(toolInfo) {
 
 /**
  * Hyperbolic Function Calculator
- * Calculate sinh, cosh, tanh
+ * Calculate all six hyperbolic functions for a given value x
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Hyperbolic Function Calculator', icon: '📊' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    initTool({ name: 'Hyperbolic Function Calculator', icon: '📈' });
+
+    const xEl = $('#x-value');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+    const outputEl = $('#output');
+
+    // Format very large or very small numbers nicely
+    function formatValue(num, decimals = 6) {
+        if (num === null || num === undefined || isNaN(num)) return 'NaN';
+        if (!isFinite(num)) return num > 0 ? 'Infinity' : '-Infinity';
+        if (num === 0) return '0';
+
+        const absVal = Math.abs(num);
+        // Use scientific notation for very large or very small numbers
+        if (absVal >= 1e10 || (absVal < 1e-6 && absVal > 0)) {
+            return num.toExponential(decimals);
+        }
+        return Number(num).toFixed(decimals);
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const xStr = xEl.value.trim();
+
+        if (!xStr) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Please enter a value for x</p>';
             return;
         }
-        
+
+        const x = parseFloat(xStr);
+        if (isNaN(x)) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">x must be a valid number</p>';
+            return;
+        }
+
         try {
-            // TODO: Implement Hyperbolic Function Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Primary hyperbolic functions (using Math built-ins)
+            const sinh = Math.sinh(x);
+            const cosh = Math.cosh(x);
+            const tanh = Math.tanh(x);
+
+            // Reciprocal hyperbolic functions
+            // csch(x) = 1/sinh(x) - undefined when sinh(x) = 0 (i.e., x = 0)
+            // sech(x) = 1/cosh(x) - always defined since cosh(x) >= 1
+            // coth(x) = 1/tanh(x) - undefined when tanh(x) = 0 (i.e., x = 0)
+
+            const csch = (sinh === 0) ? null : 1 / sinh;
+            const sech = 1 / cosh;
+            const coth = (tanh === 0) ? null : 1 / tanh;
+
+            const results = [
+                { name: 'sinh(x)', value: sinh, formula: '(e^x - e^(-x)) / 2', color: '#22c55e' },
+                { name: 'cosh(x)', value: cosh, formula: '(e^x + e^(-x)) / 2', color: '#3b82f6' },
+                { name: 'tanh(x)', value: tanh, formula: 'sinh(x) / cosh(x)', color: '#8b5cf6' },
+                { name: 'csch(x)', value: csch, formula: '1 / sinh(x)', color: '#f59e0b' },
+                { name: 'sech(x)', value: sech, formula: '1 / cosh(x)', color: '#ef4444' },
+                { name: 'coth(x)', value: coth, formula: '1 / tanh(x)', color: '#ec4899' }
+            ];
+
+            const cards = results.map(r => {
+                const displayValue = r.value === null
+                    ? '<span style="color:#ef4444;font-size:0.75rem;">Undefined (div by zero)</span>'
+                    : formatValue(r.value, 8);
+                return `
+                    <div style="padding:0.75rem;background:#f9fafb;border-radius:0.5rem;border-left:3px solid ${r.color};">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-weight:700;font-size:1rem;color:${r.color};">${r.name}</div>
+                                <div style="font-size:0.625rem;color:#9ca3af;font-family:monospace;">${r.formula}</div>
+                            </div>
+                            <div style="font-family:monospace;font-size:0.875rem;font-weight:600;text-align:right;min-width:140px;">
+                                ${displayValue}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;margin-bottom:1rem;">
+                    <div style="font-size:1.125rem;font-weight:600;">x = ${x}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    ${cards}
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+        xEl.value = '';
+        outputEl.innerHTML = '<p style="color:#9ca3af;">Enter a value for x and click Calculate</p>';
+        xEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const text = `Hyperbolic Function Calculator\nx = ${xEl.value}\n${outputEl.textContent}`;
+            copyToClipboard(text);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

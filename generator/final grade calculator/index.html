@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate needed final exam score">
+    <meta name="description" content="Calculate the final exam score needed to achieve your desired course grade">
     <meta name="theme-color" content="#2563eb">
     <title>🎯 Final Grade Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
@@ -16,25 +16,41 @@
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate needed final exam score</p>
-            
+            <p class="text-muted mb-2">Calculate the final exam score needed to achieve your desired course grade.</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="current-grade">Current Grade (%)</label>
+                    <input type="number" id="current-grade" class="form-input" placeholder="e.g. 85" min="0" max="100" step="any">
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="weight-current">Weight of Current Grade (%)</label>
+                    <input type="number" id="weight-current" class="form-input" placeholder="e.g. 60" min="0" max="100" step="any">
+                    <small class="form-hint">Percentage of your overall grade earned so far</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="desired-grade">Desired Final Grade (%)</label>
+                    <input type="number" id="desired-grade" class="form-input" placeholder="e.g. 90" min="0" max="100" step="any">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="weight-final">Weight of Final Exam (%)</label>
+                    <input type="number" id="weight-final" class="form-input" placeholder="e.g. 40" min="0" max="100" step="any">
+                    <small class="form-hint">Remaining percentage of your overall grade</small>
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
                     <div class="result-label">Result</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

@@ -226,59 +226,189 @@ function initTool(toolInfo) {
 
 /**
  * Geometric Sequence Calculator
- * Calculate geometric sequences and sums
+ * Calculate geometric sequences, nth term, finite sum, and infinite sum
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Geometric Sequence Calculator', icon: '📊' });
-    
-    // Get elements
-    const inputEl = $('#input');
+    initTool({ name: 'Geometric Sequence Calculator', icon: '📐' });
+
+    const firstTermEl = $('#first-term');
+    const commonRatioEl = $('#common-ratio');
+    const numTermsEl = $('#num-terms');
+    const specificTermEl = $('#specific-term');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const aVal = firstTermEl.value;
+        const rVal = commonRatioEl.value;
+        const nVal = numTermsEl.value;
+        const kVal = specificTermEl.value;
+
+        if (aVal === '' || rVal === '') {
+            outputEl.textContent = 'First term (a) and common ratio (r) are required';
             return;
         }
-        
+
+        const a = Number(aVal);
+        const r = Number(rVal);
+
+        if (isNaN(a) || isNaN(r)) {
+            outputEl.textContent = 'First term and common ratio must be valid numbers';
+            return;
+        }
+
+        let n = null;
+        if (nVal !== '') {
+            n = Number(nVal);
+            if (!Number.isInteger(n) || n < 1) {
+                outputEl.textContent = 'Number of terms must be a positive integer';
+                return;
+            }
+            if (n > 1000) {
+                outputEl.textContent = 'Number of terms must be <= 1000';
+                return;
+            }
+        }
+
+        let k = null;
+        if (kVal !== '') {
+            k = Number(kVal);
+            if (!Number.isInteger(k) || k < 1) {
+                outputEl.textContent = 'Specific term must be a positive integer';
+                return;
+            }
+        }
+
         try {
-            // TODO: Implement Geometric Sequence Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let html = '<div style="text-align:left;">';
+
+            // Generate sequence terms (up to n, or default 10 if n not provided)
+            const termsToGenerate = n || 10;
+            const sequence = [];
+            for (let i = 1; i <= termsToGenerate; i++) {
+                sequence.push(a * Math.pow(r, i - 1));
+            }
+
+            // Display sequence
+            let sequenceStr;
+            if (termsToGenerate <= 50) {
+                sequenceStr = sequence.map(v => formatNumber(v, 4)).join(', ');
+            } else {
+                const shown = sequence.slice(0, 25).map(v => formatNumber(v, 4)).join(', ');
+                const tail = sequence.slice(-25).map(v => formatNumber(v, 4)).join(', ');
+                sequenceStr = `${shown}, ... (${termsToGenerate - 50} terms omitted) ..., ${tail}`;
+            }
+
+            html += `
+                <div style="margin-bottom:0.75rem;">
+                    <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;">Sequence (first ${termsToGenerate} terms)</div>
+                    <div style="font-size:0.875rem;word-break:break-word;line-height:1.6;">${sequenceStr}</div>
+                </div>
+            `;
+
+            // Specific term (k-th term)
+            if (k !== null) {
+                const kthTerm = a * Math.pow(r, k - 1);
+                html += `
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">k-th Term (a<sub>${k}</sub>)</div>
+                        <div style="font-weight:600;font-size:1.125rem;">${formatNumber(kthTerm, 4)}</div>
+                    </div>
+                `;
+            }
+
+            // n-th term (last term if n is provided)
+            if (n !== null) {
+                const nthTerm = a * Math.pow(r, n - 1);
+                html += `
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">n-th Term (a<sub>${n}</sub>)</div>
+                        <div style="font-weight:600;font-size:1.125rem;">${formatNumber(nthTerm, 4)}</div>
+                    </div>
+                `;
+            }
+
+            // Sum of first n terms
+            if (n !== null) {
+                let sum;
+                if (r === 1) {
+                    sum = a * n;
+                } else {
+                    sum = a * (1 - Math.pow(r, n)) / (1 - r);
+                }
+                html += `
+                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;">Sum of First ${n} Terms (S<sub>${n}</sub>)</div>
+                        <div style="font-weight:600;font-size:1.125rem;">${formatNumber(sum, 4)}</div>
+                    </div>
+                `;
+            }
+
+            // Infinite sum (convergent only if |r| < 1)
+            if (Math.abs(r) < 1) {
+                const infiniteSum = a / (1 - r);
+                html += `
+                    <div style="padding:0.5rem;background:#ecfdf5;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem;color:#065f46;font-weight:600;">Infinite Sum (S<sub>∞</sub>)</div>
+                        <div style="font-weight:600;font-size:1.125rem;color:#065f46;">${formatNumber(infiniteSum, 4)}</div>
+                        <div style="font-size:0.75rem;color:#065f46;margin-top:0.25rem;">Convergent (|r| &lt; 1)</div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="padding:0.5rem;background:#fef2f2;border-radius:0.375rem;margin-bottom:0.5rem;">
+                        <div style="font-size:0.75rem;color:#991b1b;font-weight:600;">Infinite Sum (S<sub>∞</sub>)</div>
+                        <div style="font-weight:600;font-size:0.875rem;color:#991b1b;">Divergent (|r| ≥ 1)</div>
+                    </div>
+                `;
+            }
+
+            // Formula display
+            html += `
+                <div style="font-size:0.75rem;color:#6b7280;margin-top:0.75rem;padding-top:0.5rem;border-top:1px solid #e5e7eb;">
+                    <div style="margin-bottom:0.25rem;"><strong>Formulas:</strong></div>
+                    <div>n-th term: a<sub>n</sub> = a × r<sup>(n-1)</sup></div>
+                    <div>Sum (r ≠ 1): S<sub>n</sub> = a × (1 - r<sup>n</sup>) / (1 - r)</div>
+                    <div>Infinite sum (|r| &lt; 1): S<sub>∞</sub> = a / (1 - r)</div>
+                </div>
+            `;
+
+            html += '</div>';
+            outputEl.innerHTML = html;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
-    // Clear function
+
     function clear() {
-        inputEl.value = '';
+        firstTermEl.value = '';
+        commonRatioEl.value = '';
+        numTermsEl.value = '';
+        specificTermEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        firstTermEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+
+    const allInputs = [firstTermEl, commonRatioEl, numTermsEl, specificTermEl];
+    allInputs.forEach((input, index) => {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculate();
+            } else if (e.key === 'ArrowDown' && index < allInputs.length - 1) {
+                allInputs[index + 1].focus();
+            }
+        });
     });
 });

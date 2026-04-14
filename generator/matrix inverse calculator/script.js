@@ -105,7 +105,7 @@ function percentageOf(percent, whole) { return (percent / 100) * whole; }
 function percentageChange(oldValue, newValue) { return ((newValue - oldValue) / Math.abs(oldValue)) * 100; }
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
 function lerp(start, end, t) { return start + (end - start) * t; }
-function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; }
+function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - inMin) / (inMax - inMin) + outMin; }
 
 // ========================================
 // String Utilities
@@ -226,59 +226,337 @@ function initTool(toolInfo) {
 
 /**
  * Matrix Inverse Calculator
- * Calculate the inverse of a matrix
+ * Size selector N×N (2–5), dynamic grid
+ * Gauss-Jordan elimination: [A|I] → [I|A⁻¹]
+ * Check determinant ≠ 0 before inverting
+ * If singular: show error message
+ * Output: inverse matrix grid, verify A×A⁻¹ ≈ I
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Matrix Inverse Calculator', icon: '🔃' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
-    const calculateBtn = $('#calculate');
-    const clearBtn = $('#clear');
-    const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    const toolContent = $('#tool-content');
+    if (!toolContent) return;
+
+    let currentSize = parseInt(Storage.get('inv-matrix-size', '3'));
+    let matrixInputs = [];
+    const EPSILON = 1e-10;
+
+    // ---- Build UI ----
+    function buildUI() {
+        toolContent.innerHTML = '';
+
+        const sizeGroup = createElement('div', { className: 'form-group' });
+        const sizeLabel = createElement('label', { className: 'form-label', textContent: 'Matrix Size' });
+        const sizeSelect = createElement('select', { className: 'form-select', id: 'matrix-size' });
+        [2, 3, 4, 5].forEach(n => {
+            const opt = createElement('option', { value: String(n), textContent: `${n}×${n}` });
+            if (n === currentSize) opt.selected = true;
+            sizeSelect.appendChild(opt);
+        });
+        sizeGroup.appendChild(sizeLabel);
+        sizeGroup.appendChild(sizeSelect);
+        toolContent.appendChild(sizeGroup);
+
+        const matrixContainer = createElement('div', { id: 'matrix-container' });
+        matrixContainer.appendChild(buildMatrixGrid(currentSize));
+        toolContent.appendChild(matrixContainer);
+
+        const btnGroup = createElement('div', { className: 'btn-group' });
+        const calcBtn = createElement('button', { id: 'calculate', className: 'btn btn-primary btn-block', textContent: 'Calculate Inverse' });
+        btnGroup.appendChild(calcBtn);
+        toolContent.appendChild(btnGroup);
+
+        const clearBtn = createElement('button', { id: 'clear', className: 'btn btn-secondary btn-block', textContent: 'Clear' });
+        toolContent.appendChild(clearBtn);
+
+        const resultBox = createElement('div', { className: 'result-box', id: 'result' });
+        const resultLabel = createElement('div', { className: 'result-label', textContent: 'Result' });
+        const outputEl = createElement('div', { id: 'output', textContent: '-' });
+        resultBox.appendChild(resultLabel);
+        resultBox.appendChild(outputEl);
+        toolContent.appendChild(resultBox);
+
+        const copyGroup = createElement('div', { className: 'btn-group' });
+        const copyBtn = createElement('button', { id: 'copy', className: 'btn btn-secondary', textContent: '📋 Copy Result' });
+        copyGroup.appendChild(copyBtn);
+        toolContent.appendChild(copyGroup);
+
+        bindEvents();
+    }
+
+    function buildMatrixGrid(n) {
+        const container = createElement('div', { className: 'matrix-grid-container' });
+        const grid = createElement('div', { className: 'matrix-grid', id: 'matrix-grid' });
+        grid.style.cssText = `display:grid;grid-template-columns:repeat(${n},1fr);gap:0.5rem;max-width:${Math.min(n * 90, 450)}px;margin:1rem auto;`;
+
+        matrixInputs = [];
+        for (let i = 0; i < n; i++) {
+            matrixInputs[i] = [];
+            for (let j = 0; j < n; j++) {
+                const defaultVal = (i === j) ? '1' : '0';
+                const input = createElement('input', {
+                    type: 'number',
+                    className: 'matrix-cell',
+                    value: defaultVal,
+                    style: 'width:100%;padding:0.5rem;border:2px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-size:1rem;font-family:monospace;transition:border-color 0.2s;',
+                    'data-row': String(i),
+                    'data-col': String(j)
+                });
+                input.addEventListener('focus', () => { input.style.borderColor = '#2563eb'; input.select(); });
+                input.addEventListener('blur', () => { input.style.borderColor = '#e5e7eb'; });
+                grid.appendChild(input);
+                matrixInputs[i][j] = input;
+            }
+        }
+        container.appendChild(grid);
+        return container;
+    }
+
+    function readMatrix(n) {
+        const matrix = [];
+        for (let i = 0; i < n; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < n; j++) {
+                const val = parseFloat(matrixInputs[i][j].value);
+                if (isNaN(val)) {
+                    throw new Error(`Invalid number at row ${i + 1}, column ${j + 1}`);
+                }
+                matrix[i][j] = val;
+            }
+        }
+        return matrix;
+    }
+
+    // ---- Math functions ----
+    function deepCopy(m) {
+        return m.map(row => [...row]);
+    }
+
+    function determinant(matrix) {
+        const n = matrix.length;
+        if (n === 1) return matrix[0][0];
+        if (n === 2) return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        let det = 0;
+        for (let j = 0; j < n; j++) {
+            const minor = matrix
+                .filter((_, i) => i !== 0)
+                .map(r => r.filter((_, k) => k !== j));
+            det += Math.pow(-1, j) * matrix[0][j] * determinant(minor);
+        }
+        return det;
+    }
+
+    function gaussJordanInverse(matrix) {
+        const n = matrix.length;
+        // Build augmented matrix [A | I]
+        const aug = [];
+        for (let i = 0; i < n; i++) {
+            aug[i] = [];
+            for (let j = 0; j < n; j++) {
+                aug[i][j] = matrix[i][j];
+            }
+            for (let j = 0; j < n; j++) {
+                aug[i][n + j] = (i === j) ? 1 : 0;
+            }
+        }
+
+        // Forward elimination with partial pivoting
+        for (let col = 0; col < n; col++) {
+            // Find pivot
+            let maxRow = col;
+            let maxVal = Math.abs(aug[col][col]);
+            for (let row = col + 1; row < n; row++) {
+                if (Math.abs(aug[row][col]) > maxVal) {
+                    maxVal = Math.abs(aug[row][col]);
+                    maxRow = row;
+                }
+            }
+
+            // Swap rows
+            if (maxRow !== col) {
+                [aug[col], aug[maxRow]] = [aug[maxRow], aug[col]];
+            }
+
+            // Check for singular matrix
+            if (Math.abs(aug[col][col]) < EPSILON) {
+                return null; // singular
+            }
+
+            // Scale pivot row
+            const pivot = aug[col][col];
+            for (let j = 0; j < 2 * n; j++) {
+                aug[col][j] /= pivot;
+            }
+
+            // Eliminate column in all other rows
+            for (let row = 0; row < n; row++) {
+                if (row === col) continue;
+                const factor = aug[row][col];
+                for (let j = 0; j < 2 * n; j++) {
+                    aug[row][j] -= factor * aug[col][j];
+                }
+            }
+        }
+
+        // Extract inverse from right half
+        const inverse = [];
+        for (let i = 0; i < n; i++) {
+            inverse[i] = [];
+            for (let j = 0; j < n; j++) {
+                inverse[i][j] = aug[i][n + j];
+            }
+        }
+        return inverse;
+    }
+
+    function multiplyMatrices(a, b) {
+        const n = a.length;
+        const result = [];
+        for (let i = 0; i < n; i++) {
+            result[i] = [];
+            for (let j = 0; j < n; j++) {
+                let sum = 0;
+                for (let k = 0; k < n; k++) {
+                    sum += a[i][k] * b[k][j];
+                }
+                result[i][j] = sum;
+            }
+        }
+        return result;
+    }
+
+    function isIdentity(matrix) {
+        const n = matrix.length;
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                const expected = (i === j) ? 1 : 0;
+                if (Math.abs(matrix[i][j] - expected) > EPSILON * 100) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function fmt(v) {
+        if (Math.abs(v) < EPSILON) return '0';
+        if (Number.isInteger(v)) return String(v);
+        return parseFloat(v.toFixed(6)).toString();
+    }
+
+    function renderMatrixGrid(matrix, label) {
+        const n = matrix.length;
+        const wrapper = createElement('div', { style: 'margin:1rem 0;' });
+        wrapper.appendChild(createElement('div', {
+            style: 'font-weight:700;color:#374151;margin-bottom:0.5rem;',
+            textContent: label
+        }));
+        const grid = createElement('div', {
+            style: `display:grid;grid-template-columns:repeat(${n},1fr);gap:0.5rem;max-width:${Math.min(n * 90, 450)}px;`
+        });
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                const cell = createElement('div', {
+                    className: 'matrix-cell',
+                    textContent: fmt(matrix[i][j]),
+                    style: 'padding:0.5rem;border:1px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-family:monospace;font-size:0.875rem;background:#f9fafb;'
+                });
+                grid.appendChild(cell);
+            }
+        }
+        wrapper.appendChild(grid);
+        return wrapper;
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const n = currentSize;
+        let matrix;
+        try {
+            matrix = readMatrix(n);
+        } catch (e) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">${e.message}</span>`;
             return;
         }
-        
-        try {
-            // TODO: Implement Matrix Inverse Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        // Check determinant
+        const det = determinant(matrix);
+        if (Math.abs(det) < EPSILON) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">Error: Matrix is singular (determinant = ${fmt(det)}). No inverse exists.</span>`;
+            return;
         }
+
+        const inverse = gaussJordanInverse(matrix);
+        if (!inverse) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">Error: Matrix is singular. Gauss-Jordan elimination failed.</span>`;
+            return;
+        }
+
+        // Verify: A × A⁻¹ ≈ I
+        const product = multiplyMatrices(matrix, inverse);
+        const verified = isIdentity(product);
+
+        const output = $('#output');
+        output.innerHTML = '';
+
+        output.appendChild(createElement('div', {
+            style: 'font-size:1.125rem;font-weight:700;color:#2563eb;margin-bottom:0.5rem;',
+            textContent: `Determinant = ${fmt(det)}`
+        }));
+
+        output.appendChild(renderMatrixGrid(inverse, 'Inverse Matrix (A⁻¹):'));
+
+        // Verification
+        const verifyDiv = createElement('div', {
+            style: 'margin-top:1rem;padding:0.75rem;background:#f0fdf4;border-radius:0.375rem;border:1px solid #bbf7d0;'
+        });
+        if (verified) {
+            verifyDiv.appendChild(createElement('div', {
+                style: 'color:#16a34a;font-weight:700;',
+                textContent: '✓ Verification: A × A⁻¹ = I (identity matrix)'
+            }));
+        } else {
+            verifyDiv.appendChild(createElement('div', {
+                style: 'color:#ca8a04;font-weight:700;',
+                textContent: 'Verification: A × A⁻¹ ≈ I (small numerical errors)'
+            }));
+            verifyDiv.appendChild(renderMatrixGrid(product, 'A × A⁻¹:'));
+        }
+        output.appendChild(verifyDiv);
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function clearAll() {
+        for (let i = 0; i < currentSize; i++) {
+            for (let j = 0; j < currentSize; j++) {
+                matrixInputs[i][j].value = (i === j) ? '1' : '0';
+            }
+        }
+        $('#output').textContent = '-';
     }
-    
-    // Event listeners
-    calculateBtn.addEventListener('click', calculate);
-    clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+
+    function bindEvents() {
+        $('#matrix-size').addEventListener('change', (e) => {
+            currentSize = parseInt(e.target.value);
+            Storage.set('inv-matrix-size', String(currentSize));
+            const container = $('#matrix-container');
+            if (container) container.replaceChild(buildMatrixGrid(currentSize), container.firstChild);
+            $('#output').textContent = '-';
+        });
+
+        $('#calculate').addEventListener('click', calculate);
+        $('#clear').addEventListener('click', clearAll);
+        $('#copy').addEventListener('click', () => {
+            const text = $('#output').textContent;
+            if (text && text !== '-') copyToClipboard(text);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('matrix-cell')) {
+                calculate();
+            }
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+
+    buildUI();
 });

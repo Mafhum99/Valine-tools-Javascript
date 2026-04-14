@@ -3,10 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate net present value of investment">
+    <meta name="description" content="Calculate Net Present Value (NPV) of an investment with multiple cash flows">
     <meta name="theme-color" content="#2563eb">
     <title>NPV Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #npv-cashflows { margin: 1rem 0; }
+        .npv-cf-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .npv-cf-row label { min-width: 70px; font-weight: 600; color: #374151; font-size: 0.875rem; }
+        .npv-cf-row .cf-value { flex: 1; }
+        .btn-remove { background: #ef4444; color: #fff; border: none; border-radius: 0.375rem; width: 2rem; height: 2rem; cursor: pointer; font-size: 0.875rem; display: flex; align-items: center; justify-content: center; }
+        .btn-remove:hover { background: #dc2626; }
+        .npv-result .result-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; margin-bottom: 0.75rem; }
+        .npv-result .result-card .label { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+        .npv-result .result-card .value { font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-top: 0.25rem; }
+        .npv-result .decision.success { border-left: 4px solid #22c55e; }
+        .npv-result .decision.error { border-left: 4px solid #ef4444; }
+        .npv-result .decision.warning { border-left: 4px solid #f59e0b; }
+        .npv-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-top: 0.5rem; }
+        .npv-table th, .npv-table td { padding: 0.5rem 0.75rem; border: 1px solid #e5e7eb; text-align: center; }
+        .npv-table th { background: #f3f4f6; font-weight: 600; }
+        .copy-actions { margin-top: 1rem; display: flex; gap: 0.5rem; }
+        .btn-copy { padding: 0.5rem 1rem; background: #e5e7eb; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.875rem; font-weight: 600; }
+        .btn-copy:hover { background: #d1d5db; }
+        #npv-result { margin-top: 1rem; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -15,31 +36,26 @@
     </header>
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate net present value of investment</p>
+            <p class="text-muted mb-2">Calculate Net Present Value of an investment with multiple cash flow periods</p>
             <div id="tool-content">
                 <div class="form-group">
-                    <label class="form-label" for="initial_investment">Initial Investment ($)</label>
-                    <input type="number" id="initial_investment" class="form-input" placeholder="e.g. 10000">
+                    <label class="form-label" for="npv-initial">Initial Investment ($)</label>
+                    <input type="number" id="npv-initial" class="form-input" placeholder="e.g. 10000" min="0" step="any">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="discount_rate">Discount Rate (%)</label>
-                    <input type="number" id="discount_rate" class="form-input" placeholder="e.g. 10">
+                    <label class="form-label" for="npv-rate">Discount Rate (%)</label>
+                    <input type="number" id="npv-rate" class="form-input" placeholder="e.g. 10" min="0" step="any">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="cash_flows">Cash Flows (comma-separated, per year)</label>
-                    <input type="text" id="cash_flows" class="form-input" placeholder="e.g. 3000,4000,5000">
+                    <label class="form-label">Cash Flows</label>
+                    <div id="npv-cashflows"></div>
                 </div>
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
-                    <button id="clear" class="btn btn-secondary">Clear</button>
+                    <button id="npv-calculate" class="btn btn-primary">Calculate</button>
+                    <button id="npv-add-cf" class="btn btn-secondary">+ Add Cash Flow</button>
+                    <button id="npv-clear" class="btn btn-secondary">Clear</button>
                 </div>
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
-                </div>
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
-                </div>
+                <div id="npv-result"></div>
             </div>
         </div>
     </main>
@@ -47,12 +63,8 @@
     <footer class="site-footer">
         <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
         <div class="footer-actions">
-            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
-                🐙 GitHub
-            </a>
-            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
-                ☕ Support me
-            </a>
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">☕ Support me</a>
         </div>
     </footer>
 </body>

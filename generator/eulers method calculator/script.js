@@ -225,161 +225,219 @@ function initTool(toolInfo) {
 // ========================================
 
 /**
- * Final Grade Calculator
- * Calculate the required final exam score to achieve your desired course grade.
- * Formula: Required Score = (Desired - Current * WeightCurrent) / WeightFinal
+ * Euler's Method Calculator
+ * Solve first-order ODEs numerically: y(n+1) = y(n) + h * f(t(n), y(n))
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Final Grade Calculator', icon: '\ud83c\udfaf' });
+    initTool({ name: "Euler's Method Calculator", icon: '📊' });
 
-    const currentGradeEl = $('#current-grade');
-    const weightCurrentEl = $('#weight-current');
-    const desiredGradeEl = $('#desired-grade');
-    const weightFinalEl = $('#weight-final');
+    const odeFuncEl = $('#ode-func');
+    const initCondEl = $('#init-cond');
+    const startTimeEl = $('#start-time');
+    const endTimeEl = $('#end-time');
+    const stepSizeEl = $('#step-size');
     const outputEl = $('#output');
+    const tableContainerEl = $('#table-container');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
 
-    function fmt(n) { return formatNumber(n, 2).replace(/\.?0+$/, ''); }
+    /**
+     * Parse a string representation of f(t, y) into a callable function.
+     * Supports basic math operations and common functions (sin, cos, exp, log, sqrt, etc.)
+     */
+    function parseFunction(funcStr) {
+        try {
+            const sanitized = funcStr
+                .replace(/sin/gi, 'Math.sin')
+                .replace(/cos/gi, 'Math.cos')
+                .replace(/tan/gi, 'Math.tan')
+                .replace(/exp/gi, 'Math.exp')
+                .replace(/log/gi, 'Math.log')
+                .replace(/sqrt/gi, 'Math.sqrt')
+                .replace(/abs/gi, 'Math.abs')
+                .replace(/pi/gi, 'Math.PI')
+                .replace(/e(?![a-zA-Z])/gi, 'Math.E')
+                .replace(/\^/g, '**');
 
-    function calculate() {
-        const currentGradeStr = currentGradeEl.value.trim();
-        const weightCurrentStr = weightCurrentEl.value.trim();
-        const desiredGradeStr = desiredGradeEl.value.trim();
-        const weightFinalStr = weightFinalEl.value.trim();
+            // Test the function with sample values
+            const testFn = new Function('t', 'y', `return ${sanitized};`);
+            testFn(0, 0); // Quick validation
 
-        // Validate required fields
-        if (!currentGradeStr) {
-            outputEl.textContent = 'Error: Current grade is required.';
-            return;
+            return new Function('t', 'y', `return ${sanitized};`);
+        } catch (e) {
+            return null;
         }
-        if (!weightCurrentStr) {
-            outputEl.textContent = 'Error: Weight of current grade is required.';
-            return;
-        }
-        if (!desiredGradeStr) {
-            outputEl.textContent = 'Error: Desired final grade is required.';
-            return;
-        }
-        if (!weightFinalStr) {
-            outputEl.textContent = 'Error: Weight of final exam is required.';
-            return;
-        }
-
-        const currentGrade = parseFloat(currentGradeStr);
-        const weightCurrent = parseFloat(weightCurrentStr);
-        const desiredGrade = parseFloat(desiredGradeStr);
-        const weightFinal = parseFloat(weightFinalStr);
-
-        // Validate numeric
-        if (isNaN(currentGrade)) {
-            outputEl.textContent = 'Error: Current grade must be a valid number.';
-            return;
-        }
-        if (isNaN(weightCurrent)) {
-            outputEl.textContent = 'Error: Weight of current grade must be a valid number.';
-            return;
-        }
-        if (isNaN(desiredGrade)) {
-            outputEl.textContent = 'Error: Desired final grade must be a valid number.';
-            return;
-        }
-        if (isNaN(weightFinal)) {
-            outputEl.textContent = 'Error: Weight of final exam must be a valid number.';
-            return;
-        }
-
-        // Validate range 0-100
-        if (currentGrade < 0 || currentGrade > 100) {
-            outputEl.textContent = 'Error: Current grade must be between 0 and 100.';
-            return;
-        }
-        if (weightCurrent < 0 || weightCurrent > 100) {
-            outputEl.textContent = 'Error: Weight of current grade must be between 0 and 100.';
-            return;
-        }
-        if (desiredGrade < 0 || desiredGrade > 100) {
-            outputEl.textContent = 'Error: Desired final grade must be between 0 and 100.';
-            return;
-        }
-        if (weightFinal < 0 || weightFinal > 100) {
-            outputEl.textContent = 'Error: Weight of final exam must be between 0 and 100.';
-            return;
-        }
-
-        // Validate weights are not zero for divisor
-        if (weightFinal === 0) {
-            outputEl.textContent = 'Error: Weight of final exam cannot be zero (division by zero).';
-            return;
-        }
-
-        // Validate weights sum to 100
-        const totalWeight = weightCurrent + weightFinal;
-        if (Math.abs(totalWeight - 100) > 0.01) {
-            outputEl.textContent = `Error: Weights must sum to 100%. Current total: ${fmt(totalWeight)}%`;
-            return;
-        }
-
-        // Calculate required final exam score
-        const requiredScore = (desiredGrade - currentGrade * (weightCurrent / 100)) / (weightFinal / 100);
-
-        let result = `Final Exam Score Required\n`;
-        result += `${'='.repeat(30)}\n\n`;
-        result += `Current Grade: ${fmt(currentGrade)}%\n`;
-        result += `Weight of Current Grade: ${fmt(weightCurrent)}%\n`;
-        result += `Desired Final Grade: ${fmt(desiredGrade)}%\n`;
-        result += `Weight of Final Exam: ${fmt(weightFinal)}%\n\n`;
-        result += `Formula: Required = (Desired - Current x WeightCurrent) / WeightFinal\n`;
-        result += `Step: (${fmt(desiredGrade)} - ${fmt(currentGrade)} x ${fmt(weightCurrent / 100)}) / ${fmt(weightFinal / 100)}\n`;
-        result += `Required Final Exam Score: ${fmt(requiredScore)}%\n\n`;
-
-        // Feasibility assessment
-        if (requiredScore < 0) {
-            result += `Status: Already Achieved!\n`;
-            result += `You can score 0% on the final exam and still exceed your desired grade.\n`;
-            result += `Your current grade already guarantees a final grade of ${fmt(currentGrade * weightCurrent / 100)}%.`;
-        } else if (requiredScore <= 100) {
-            result += `Status: Achievable!\n`;
-            if (requiredScore <= 50) {
-                result += `This is a very manageable score. You have a strong cushion from your current grade.`;
-            } else if (requiredScore <= 70) {
-                result += `This is a reasonable target. Focus your studying to secure this score.`;
-            } else if (requiredScore <= 85) {
-                result += `This requires solid preparation. Dedicate extra time to review key topics.`;
-            } else {
-                result += `This is a high target. Thorough preparation and practice will be essential.`;
-            }
-        } else {
-            result += `Status: Impossible!\n`;
-            result += `You would need ${fmt(requiredScore)}% on the final exam, which exceeds 100%.\n`;
-            result += `Even with a perfect score (100%), your maximum achievable final grade would be ${fmt(currentGrade * weightCurrent / 100 + 100 * weightFinal / 100)}%.`;
-        }
-
-        outputEl.textContent = result;
     }
 
-    function clear() {
-        currentGradeEl.value = '';
-        weightCurrentEl.value = '';
-        desiredGradeEl.value = '';
-        weightFinalEl.value = '';
+    /**
+     * Apply Euler's method: y(n+1) = y(n) + h * f(t(n), y(n))
+     */
+    function eulerMethod(f, t0, y0, h, steps) {
+        const results = [{ t: t0, y: y0, step: 0 }];
+        let t = t0, y = y0;
+        for (let i = 1; i <= steps; i++) {
+            const slope = f(t, y);
+            y = y + h * slope;
+            t = t0 + i * h;
+            results.push({ t, y, step: i, slope });
+        }
+        return results;
+    }
+
+    /**
+     * Validate all inputs before calculation
+     */
+    function validateInputs(funcStr, y0, t0, t1, h) {
+        if (!funcStr) {
+            return 'Please enter an ODE function f(t, y)';
+        }
+        if (isNaN(y0)) {
+            return 'Please enter a valid initial condition y₀';
+        }
+        if (isNaN(t0) || isNaN(t1)) {
+            return 'Please enter valid time bounds';
+        }
+        if (t0 >= t1) {
+            return 'Error: Start time (t₀) must be less than end time (t₁)';
+        }
+        if (isNaN(h) || h <= 0) {
+            return 'Error: Step size (h) must be a positive number';
+        }
+
+        // Check if (t1 - t0) is divisible by h (with floating point tolerance)
+        const range = t1 - t0;
+        const steps = range / h;
+        const tolerance = 1e-9;
+        if (Math.abs(steps - Math.round(steps)) > tolerance) {
+            const roundedSteps = Math.round(steps);
+            const suggestedH = range / roundedSteps;
+            return `Warning: (t₁ - t₀) is not evenly divisible by h. Steps: ${steps.toFixed(4)}. Use h = ${suggestedH.toPrecision(6)} for exactly ${roundedSteps} steps.`;
+        }
+
+        const f = parseFunction(funcStr);
+        if (!f) {
+            return 'Error: Invalid function syntax. Use format like: t + y, -2*y, t*y, sin(t) + y';
+        }
+
+        return null; // No errors
+    }
+
+    /**
+     * Render results as an HTML table
+     */
+    function renderTable(results) {
+        const table = createElement('table', { class: 'results-table' });
+        const thead = createElement('thead');
+        const headerRow = createElement('tr');
+
+        ['Step', 't', 'f(t, y)', 'y'].forEach(text => {
+            headerRow.appendChild(createElement('th', { textContent: text }));
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = createElement('tbody');
+        results.forEach((row) => {
+            const tr = createElement('tr');
+            tr.appendChild(createElement('td', { textContent: row.step.toString() }));
+            tr.appendChild(createElement('td', { textContent: row.t.toFixed(6) }));
+            tr.appendChild(createElement('td', { textContent: row.slope !== undefined ? row.slope.toFixed(6) : '-' }));
+            tr.appendChild(createElement('td', { textContent: row.y.toFixed(6) }));
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+
+        return table;
+    }
+
+    /**
+     * Format results as plain text for copy/display
+     */
+    function formatResultsText(funcStr, t0, y0, h, results) {
+        let output = `Euler's Method Results\n`;
+        output += `ODE: dy/dt = ${funcStr}\n`;
+        output += `Initial: y(${t0}) = ${y0}\n`;
+        output += `Step size (h): ${h}\n\n`;
+        output += 'Step\tt\t\tf(t,y)\t\ty\n';
+        output += '─'.repeat(55) + '\n';
+        results.forEach((row) => {
+            const slopeStr = row.slope !== undefined ? row.slope.toFixed(6) : '-';
+            output += `${row.step}\t${row.t.toFixed(6)}\t${slopeStr}\t${row.y.toFixed(6)}\n`;
+        });
+        return output;
+    }
+
+    function calculate() {
+        const funcStr = odeFuncEl.value.trim();
+        const y0 = parseFloat(initCondEl.value);
+        const t0 = parseFloat(startTimeEl.value);
+        const t1 = parseFloat(endTimeEl.value);
+        const h = parseFloat(stepSizeEl.value);
+
+        // Validate inputs
+        const error = validateInputs(funcStr, y0, t0, t1, h);
+        if (error) {
+            outputEl.textContent = error;
+            tableContainerEl.innerHTML = '';
+            return;
+        }
+
+        const f = parseFunction(funcStr);
+        if (!f) {
+            outputEl.textContent = 'Error: Unable to parse the function';
+            tableContainerEl.innerHTML = '';
+            return;
+        }
+
+        const range = t1 - t0;
+        const steps = Math.round(range / h);
+
+        let results;
+        try {
+            results = eulerMethod(f, t0, y0, h, steps);
+        } catch (e) {
+            outputEl.textContent = 'Error during calculation: ' + e.message;
+            tableContainerEl.innerHTML = '';
+            return;
+        }
+
+        // Render HTML table
+        tableContainerEl.innerHTML = '';
+        tableContainerEl.appendChild(renderTable(results));
+
+        // Set text output for copy
+        outputEl.textContent = formatResultsText(funcStr, t0, y0, h, results);
+    }
+
+    function clearAll() {
+        odeFuncEl.value = '';
+        initCondEl.value = '';
+        startTimeEl.value = '0';
+        endTimeEl.value = '1';
+        stepSizeEl.value = '0.1';
         outputEl.textContent = '-';
-        currentGradeEl.focus();
+        tableContainerEl.innerHTML = '';
+        odeFuncEl.focus();
     }
 
     calculateBtn.addEventListener('click', calculate);
-    clearBtn.addEventListener('click', clear);
+    clearBtn.addEventListener('click', clearAll);
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const text = outputEl.textContent;
+            if (text && text !== '-') {
+                copyToClipboard(text);
+            } else {
+                showToast('Nothing to copy');
+            }
         });
     }
 
-    // Enter key support for all inputs
-    [currentGradeEl, weightCurrentEl, desiredGradeEl, weightFinalEl].forEach((el) => {
+    // Allow Enter key to trigger calculation
+    $$('.form-input, .form-select').forEach(el => {
         el.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') calculate();
         });

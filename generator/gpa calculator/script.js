@@ -226,59 +226,314 @@ function initTool(toolInfo) {
 
 /**
  * GPA Calculator
- * Calculate grade point average
+ * Calculate grade point average from courses with letter grades and credit hours.
+ * Grade point mapping: A=4.0, A-=3.7, B+=3.3, B=3.0, B-=2.7, C+=2.3, C=2.0, C-=1.7, D+=1.3, D=1.0, F=0.0
+ * Formula: GPA = sum(grade_point * credits) / sum(credits)
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'GPA Calculator', icon: '🎓' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+
+    // Grade point mapping
+    const GRADE_POINTS = {
+        'A': 4.0,
+        'A-': 3.7,
+        'B+': 3.3,
+        'B': 3.0,
+        'B-': 2.7,
+        'C+': 2.3,
+        'C': 2.0,
+        'C-': 1.7,
+        'D+': 1.3,
+        'D': 1.0,
+        'F': 0.0
+    };
+
+    const VALID_GRADES = Object.keys(GRADE_POINTS);
+
+    // DOM references
+    const coursesContainer = $('#courses-container');
+    const addCourseBtn = $('#add-course');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+    const outputEl = $('#output');
+    const gradeBreakdownEl = $('#grade-breakdown');
+
+    // Course counter for unique IDs
+    let courseCount = 0;
+
+    /**
+     * Create a single course row with name, grade select, and credits input
+     */
+    function createCourseRow() {
+        courseCount++;
+        const id = courseCount;
+
+        const row = createElement('div', { className: 'course-row' }, [
+            createElement('div', { className: 'course-name' }, [
+                createElement('input', {
+                    type: 'text',
+                    className: 'form-input',
+                    placeholder: 'Course name',
+                    id: `course-name-${id}`
+                })
+            ]),
+            createElement('div', { className: 'course-grade' }, [
+                createElement('select', {
+                    className: 'form-select',
+                    id: `course-grade-${id}`
+                }, VALID_GRADES.map(grade => {
+                    return createElement('option', {
+                        value: grade,
+                        textContent: grade
+                    });
+                }))
+            ]),
+            createElement('div', { className: 'course-credits' }, [
+                createElement('input', {
+                    type: 'number',
+                    className: 'form-input',
+                    placeholder: 'Credits',
+                    id: `course-credits-${id}`,
+                    min: '0.5',
+                    step: '0.5'
+                })
+            ]),
+            createElement('div', { className: 'course-actions' }, [
+                createElement('button', {
+                    type: 'button',
+                    className: 'btn-remove',
+                    title: 'Remove course',
+                    onClick: () => {
+                        const allRows = $$('.course-row');
+                        if (allRows.length > 1) {
+                            row.remove();
+                        } else {
+                            showToast('At least one course is required');
+                        }
+                    }
+                }, ['Remove'])
+            ])
+        ]);
+
+        coursesContainer.appendChild(row);
+        return row;
+    }
+
+    /**
+     * Collect all course data from the DOM
+     */
+    function getCourses() {
+        const rows = $$('.course-row');
+        const courses = [];
+
+        rows.forEach((row, index) => {
+            const nameEl = row.querySelector(`[id^="course-name-"]`);
+            const gradeEl = row.querySelector(`[id^="course-grade-"]`);
+            const creditsEl = row.querySelector(`[id^="course-credits-"]`);
+
+            courses.push({
+                name: nameEl ? nameEl.value.trim() : '',
+                grade: gradeEl ? gradeEl.value : '',
+                credits: creditsEl ? parseFloat(creditsEl.value) : NaN,
+                index: index + 1
+            });
+        });
+
+        return courses;
+    }
+
+    /**
+     * Validate courses and return errors array
+     */
+    function validateCourses(courses) {
+        const errors = [];
+
+        if (courses.length === 0) {
+            errors.push('At least one course is required');
+            return errors;
+        }
+
+        courses.forEach(course => {
+            if (!course.name) {
+                errors.push(`Course ${course.index}: Name is required`);
+            }
+
+            if (!VALID_GRADES.includes(course.grade)) {
+                errors.push(`Course ${course.index}: Invalid letter grade`);
+            }
+
+            if (isNaN(course.credits) || course.credits <= 0) {
+                errors.push(`Course ${course.index}: Credits must be a positive number`);
+            }
+        });
+
+        return errors;
+    }
+
+    /**
+     * Calculate GPA from validated courses
+     */
+    function calculateGPA(courses) {
+        let totalQualityPoints = 0;
+        let totalCredits = 0;
+        const gradeBreakdown = {};
+
+        courses.forEach(course => {
+            const gradePoint = GRADE_POINTS[course.grade];
+            const qualityPoints = gradePoint * course.credits;
+            totalQualityPoints += qualityPoints;
+            totalCredits += course.credits;
+
+            // Track grade distribution
+            if (!gradeBreakdown[course.grade]) {
+                gradeBreakdown[course.grade] = { count: 0, credits: 0 };
+            }
+            gradeBreakdown[course.grade].count++;
+            gradeBreakdown[course.grade].credits += course.credits;
+        });
+
+        const gpa = totalCredits > 0 ? totalQualityPoints / totalCredits : 0;
+
+        return {
+            gpa,
+            totalCredits,
+            totalQualityPoints,
+            gradeBreakdown,
+            courseCount: courses.length
+        };
+    }
+
+    /**
+     * Render results to the output area
+     */
+    function renderResults(result, courses) {
+        // Format GPA with appropriate classification
+        let gpaClass = '';
+        if (result.gpa >= 3.5) gpaClass = 'gpa-excellent';
+        else if (result.gpa >= 3.0) gpaClass = 'gpa-good';
+        else if (result.gpa >= 2.0) gpaClass = 'gpa-average';
+        else gpaClass = 'gpa-below';
+
+        // Build output HTML
+        let outputHTML = '';
+        outputHTML += `<div class="gpa-display ${gpaClass}">`;
+        outputHTML += `<div class="gpa-value">${formatNumber(result.gpa, 3)}</div>`;
+        outputHTML += `<div class="gpa-label">Cumulative GPA</div>`;
+        outputHTML += `</div>`;
+        outputHTML += `<div class="gpa-stats">`;
+        outputHTML += `<div class="stat"><span class="stat-value">${result.courseCount}</span><span class="stat-label">Courses</span></div>`;
+        outputHTML += `<div class="stat"><span class="stat-value">${formatNumber(result.totalCredits, 1)}</span><span class="stat-label">Total Credits</span></div>`;
+        outputHTML += `<div class="stat"><span class="stat-value">${formatNumber(result.totalQualityPoints, 2)}</span><span class="stat-label">Quality Points</span></div>`;
+        outputHTML += `</div>`;
+
+        outputEl.innerHTML = outputHTML;
+
+        // Grade breakdown
+        let breakdownHTML = '<table class="breakdown-table"><thead><tr><th>Grade</th><th>Count</th><th>Credits</th><th>Points</th></tr></thead><tbody>';
+
+        // Sort grades in order
+        VALID_GRADES.forEach(grade => {
+            if (result.gradeBreakdown[grade]) {
+                const data = result.gradeBreakdown[grade];
+                const points = (GRADE_POINTS[grade] * data.credits).toFixed(2);
+                breakdownHTML += `<tr><td class="grade-cell">${grade}</td><td>${data.count}</td><td>${formatNumber(data.credits, 1)}</td><td>${points}</td></tr>`;
+            }
+        });
+
+        breakdownHTML += '</tbody></table>';
+
+        // Course summary table
+        breakdownHTML += '<table class="breakdown-table course-summary"><thead><tr><th>#</th><th>Course</th><th>Grade</th><th>Credits</th><th>Points</th></tr></thead><tbody>';
+
+        courses.forEach((course, index) => {
+            const points = (GRADE_POINTS[course.grade] * course.credits).toFixed(2);
+            breakdownHTML += `<tr><td>${index + 1}</td><td>${course.name || '-'}</td><td class="grade-cell">${course.grade}</td><td>${formatNumber(course.credits, 1)}</td><td>${points}</td></tr>`;
+        });
+
+        breakdownHTML += '</tbody></table>';
+
+        gradeBreakdownEl.innerHTML = breakdownHTML;
+    }
+
+    /**
+     * Main calculate handler
+     */
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const courses = getCourses();
+        const errors = validateCourses(courses);
+
+        if (errors.length > 0) {
+            outputEl.innerHTML = `<div class="error-list"><strong>Validation Errors:</strong><ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
+            gradeBreakdownEl.innerHTML = '';
             return;
         }
-        
+
         try {
-            // TODO: Implement GPA Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const result = calculateGPA(courses);
+            renderResults(result, courses);
+
+            // Save to localStorage
+            Storage.set('gpa-courses', courses);
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
+            gradeBreakdownEl.innerHTML = '';
         }
     }
-    
-    // Clear function
+
+    /**
+     * Clear all courses and reset
+     */
     function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+        coursesContainer.innerHTML = '';
+        courseCount = 0;
+        createCourseRow();
+        outputEl.innerHTML = '-';
+        gradeBreakdownEl.innerHTML = '';
     }
-    
+
+    /**
+     * Load saved courses from localStorage
+     */
+    function loadSavedCourses() {
+        const saved = Storage.get('gpa-courses', null);
+        if (saved && saved.length > 0) {
+            saved.forEach(course => {
+                const row = createCourseRow();
+                const nameEl = row.querySelector(`[id^="course-name-"]`);
+                const gradeEl = row.querySelector(`[id^="course-grade-"]`);
+                const creditsEl = row.querySelector(`[id^="course-credits-"]`);
+
+                if (nameEl) nameEl.value = course.name;
+                if (gradeEl) gradeEl.value = course.grade;
+                if (creditsEl) creditsEl.value = course.credits;
+            });
+        } else {
+            // Add one empty course row by default
+            createCourseRow();
+        }
+    }
+
+    // Initialize
+    loadSavedCourses();
+
     // Event listeners
+    addCourseBtn.addEventListener('click', () => {
+        createCourseRow();
+    });
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const gpaValue = outputEl.querySelector('.gpa-value');
+            if (gpaValue) {
+                copyToClipboard(`GPA: ${gpaValue.textContent}, Total Credits: ${outputEl.querySelector('.stat-value')?.textContent || ''}`);
+            } else {
+                copyToClipboard(outputEl.textContent);
+            }
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
 });

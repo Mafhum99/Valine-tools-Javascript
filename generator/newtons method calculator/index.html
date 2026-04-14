@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Find roots of equations using Newton's Method with iteration table">
+    <meta name="theme-color" content="#2563eb">
+    <title>Newton's Method Calculator - Mini Tools</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .iteration-table-container { margin-top: 1.5rem; overflow-x: auto; }
+        .iteration-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .iteration-table th, .iteration-table td { padding: 0.5rem 0.75rem; border: 1px solid #e5e7eb; text-align: center; font-family: monospace; }
+        .iteration-table th { background: #f3f4f6; font-weight: 600; color: #374151; }
+        .iteration-table .converged-row { background: #f0fdf4; }
+        .iteration-table .diverged-row { background: #fef2f2; }
+        .status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .status-badge.status-convergent { background: #dcfce7; color: #16a34a; }
+        .status-badge.status-divergent { background: #fef2f2; color: #dc2626; }
+        .status-badge.status-zero-deriv { background: #fef3c7; color: #d97706; }
+        .status-badge.status-max-iter { background: #fef3c7; color: #d97706; }
+    </style>
+</head>
+<body>
+    <header class="tool-header">
+        <span class="tool-header-icon">📐</span>
+        <h1>Newton's Method Calculator</h1>
+    </header>
+    <main class="tool-container">
+        <div class="tool-card">
+            <p class="text-muted mb-2">Find roots using xₙ₊₁ = xₙ − f(xₙ)/f'(xₙ). Leave f'(x) empty for numerical derivative.</p>
+            <div id="tool-content">
+                <div class="form-group">
+                    <label class="form-label" for="func-input">f(x)</label>
+                    <input type="text" id="func-input" class="form-input" placeholder="e.g. x^2 - 4, sin(x) - x/2, x^3 - 2*x + 1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="deriv-input">f'(x) <span style="color: #6b7280; font-weight: 400;">(leave empty for numerical derivative)</span></label>
+                    <input type="text" id="deriv-input" class="form-input" placeholder="e.g. 2*x, cos(x) - 0.5, 3*x^2 - 2">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="initial-guess">Initial Guess (x₀)</label>
+                    <input type="number" id="initial-guess" class="form-input" placeholder="e.g. 1" value="1" step="any">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="tolerance">Tolerance</label>
+                    <input type="text" id="tolerance" class="form-input" placeholder="e.g. 1e-6" value="1e-6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="max-iterations">Max Iterations</label>
+                    <input type="number" id="max-iterations" class="form-input" placeholder="e.g. 100" value="100" min="1" max="1000">
+                </div>
+                <div class="btn-group">
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear" class="btn btn-secondary">Clear</button>
+                </div>
+                <div class="result-box" id="result">
+                    <div class="result-label">Result</div>
+                    <div id="output">-</div>
+                </div>
+                <div id="iteration-table-container"></div>
+                <div class="btn-group">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <div class="footer-actions">
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">☕ Support me</a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -226,59 +226,212 @@ function initTool(toolInfo) {
 
 /**
  * Fourier Transform Calculator
- * Calculate discrete Fourier transform
+ * Calculate discrete Fourier transform (DFT)
+ * DFT: X(k) = Σ(n=0 to N-1) x(n) × e^(-2πikn/N)
  */
 
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Fourier Transform Calculator', icon: '📊' });
-    
+
     // Get elements
     const inputEl = $('#input');
+    const samplingRateEl = $('#samplingRate');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    // ========================================
+    // Parse input signal
+    // ========================================
+    function parseInput(str) {
+        return str.split(',').map(s => s.trim()).filter(s => s !== '').map(Number);
+    }
+
+    // ========================================
+    // Format complex number
+    // ========================================
+    function fmtComplex(real, imag, decimals = 4) {
+        const r = formatNumber(real, decimals);
+        const i = formatNumber(Math.abs(imag), decimals);
+        const sign = imag >= 0 ? '+' : '-';
+        return `${r} ${sign} ${i}i`;
+    }
+
+    // ========================================
+    // Compute DFT
+    // X(k) = Σ(n=0 to N-1) x(n) × e^(-2πikn/N)
+    //      = Σ(n=0 to N-1) x(n) × [cos(2πkn/N) - i×sin(2πkn/N)]
+    // ========================================
+    function computeDFT(signal, N) {
+        const result = [];
+        const twoPi = 2 * Math.PI;
+
+        for (let k = 0; k < N; k++) {
+            let realSum = 0;
+            let imagSum = 0;
+
+            for (let n = 0; n < N; n++) {
+                const angle = twoPi * k * n / N;
+                realSum += signal[n] * Math.cos(angle);
+                imagSum += signal[n] * (-Math.sin(angle));
+            }
+
+            result.push({ real: realSum, imag: imagSum });
+        }
+
+        return result;
+    }
+
+    // ========================================
+    // Compute magnitude
+    // ========================================
+    function magnitude(real, imag) {
+        return Math.sqrt(real * real + imag * imag);
+    }
+
+    // ========================================
+    // Compute phase (in radians and degrees)
+    // ========================================
+    function phase(real, imag) {
+        return Math.atan2(imag, real);
+    }
+
+    // ========================================
     // Main calculation function
+    // ========================================
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const rawInput = inputEl.value.trim();
+        const rawSamplingRate = samplingRateEl.value.trim();
+
+        // Validate input signal
+        if (!rawInput) {
+            outputEl.textContent = 'Please enter an input signal (comma-separated numbers).';
             return;
         }
-        
-        try {
-            // TODO: Implement Fourier Transform Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        const signal = parseInput(rawInput);
+
+        if (signal.length === 0) {
+            outputEl.textContent = 'No valid numbers found in the input signal.';
+            return;
         }
+
+        if (signal.some(isNaN)) {
+            outputEl.textContent = 'Error: Invalid value in input signal. Please enter only numbers separated by commas.';
+            return;
+        }
+
+        const N = signal.length;
+
+        if (N < 2) {
+            outputEl.textContent = 'Error: Input signal must have at least 2 values (N >= 2).';
+            return;
+        }
+
+        // Validate sampling rate
+        let samplingRate = 1;
+        if (rawSamplingRate !== '') {
+            samplingRate = parseFloat(rawSamplingRate);
+            if (isNaN(samplingRate) || samplingRate <= 0) {
+                outputEl.textContent = 'Error: Sampling rate must be a positive number.';
+                return;
+            }
+        }
+
+        // Compute DFT
+        const dftResult = computeDFT(signal, N);
+
+        // Calculate frequency resolution
+        const freqResolution = samplingRate / N;
+
+        // Build output
+        let result = '';
+        result += 'Discrete Fourier Transform (DFT)\n';
+        result += '='.repeat(45) + '\n\n';
+        result += `Input Signal: [${signal.join(', ')}]\n`;
+        result += `Signal Length (N): ${N}\n`;
+        result += `Sampling Rate (Fs): ${samplingRate} Hz\n`;
+        result += `Frequency Resolution: ${formatNumber(freqResolution, 6)} Hz\n`;
+        result += `\nFormula: X(k) = Σ(n=0 to N-1) x(n) × e^(-2πikn/N)\n`;
+
+        result += '\n' + '-'.repeat(45) + '\n';
+        result += 'Frequency Components:\n';
+        result += '-'.repeat(45) + '\n\n';
+
+        for (let k = 0; k < N; k++) {
+            const freq = k * freqResolution;
+            const { real, imag } = dftResult[k];
+            const mag = magnitude(real, imag);
+            const phaseRad = phase(real, imag);
+            const phaseDeg = phaseRad * (180 / Math.PI);
+
+            result += `Bin k=${k}:\n`;
+            result += `  Frequency: ${formatNumber(freq, 6)} Hz\n`;
+            result += `  Complex:   ${fmtComplex(real, imag)}\n`;
+            result += `  Magnitude: ${formatNumber(mag)}\n`;
+            result += `  Phase:     ${formatNumber(phaseRad)} rad (${formatNumber(phaseDeg)}°)\n`;
+            result += '\n';
+        }
+
+        // Summary table
+        result += '-'.repeat(45) + '\n';
+        result += 'Summary:\n';
+        result += '-'.repeat(45) + '\n\n';
+        result += `  k  |  Frequency(Hz)  |  Magnitude  |  Phase(rad)\n`;
+        result += `  ${'-'.repeat(50)}\n`;
+
+        for (let k = 0; k < N; k++) {
+            const freq = k * freqResolution;
+            const { real, imag } = dftResult[k];
+            const mag = magnitude(real, imag);
+            const phaseRad = phase(real, imag);
+            result += `  ${k.toString().padStart(2)} |  ${formatNumber(freq, 6).padStart(13)}  |  ${formatNumber(mag).padStart(9)}  |  ${formatNumber(phaseRad).padStart(9)}\n`;
+        }
+
+        // DC and Nyquist info
+        result += '\n' + '-'.repeat(45) + '\n';
+        result += 'Notes:\n';
+        result += '-'.repeat(45) + '\n';
+        result += `  DC Component (k=0): ${formatNumber(magnitude(dftResult[0].real, dftResult[0].imag))}\n`;
+
+        if (N % 2 === 0) {
+            const nyquistIdx = N / 2;
+            result += `  Nyquist (k=${nyquistIdx}): ${formatNumber(magnitude(dftResult[nyquistIdx].real, dftResult[nyquistIdx].imag))} at ${formatNumber(samplingRate / 2, 6)} Hz\n`;
+        }
+
+        result += `  Max Magnitude: Bin k=${dftResult.reduce((maxIdx, entry, idx, arr) => magnitude(entry.real, entry.imag) > magnitude(arr[maxIdx].real, arr[maxIdx].imag) ? idx : maxIdx, 0)}, value = ${formatNumber(Math.max(...dftResult.map(e => magnitude(e.real, e.imag))))}\n`;
+
+        outputEl.textContent = result;
     }
-    
+
+    // ========================================
     // Clear function
+    // ========================================
     function clear() {
         inputEl.value = '';
+        samplingRateEl.value = '1';
         outputEl.textContent = '-';
         inputEl.focus();
     }
-    
+
+    // ========================================
     // Event listeners
+    // ========================================
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') calculate();
+    };
+    inputEl.addEventListener('keypress', handleEnter);
+    samplingRateEl.addEventListener('keypress', handleEnter);
 });

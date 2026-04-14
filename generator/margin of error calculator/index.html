@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate margin of error for surveys">
+    <meta name="description" content="Calculate margin of error for surveys and studies">
     <meta name="theme-color" content="#2563eb">
-    <title>🎯 Margin of Error Calculator - Mini Tools</title>
+    <title>Margin of Error Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,46 +13,65 @@
         <span class="tool-header-icon">🎯</span>
         <h1>Margin of Error Calculator</h1>
     </header>
-
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate margin of error for surveys</p>
-            
+            <p class="text-muted mb-2">Calculate margin of error for means or proportions</p>
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="sample-size">Sample Size (n)</label>
+                    <input type="number" id="sample-size" class="form-input" placeholder="e.g. 100" min="1" step="1">
                 </div>
-                
+                <div class="form-group">
+                    <label class="form-label" for="mode">Mode</label>
+                    <select id="mode" class="form-select">
+                        <option value="mean">Mean</option>
+                        <option value="proportion">Proportion</option>
+                    </select>
+                </div>
+                <div class="form-group" id="std-dev-group">
+                    <label class="form-label" for="std-dev">Standard Deviation (sigma)</label>
+                    <input type="number" id="std-dev" class="form-input" placeholder="e.g. 15" step="any">
+                </div>
+                <div class="form-group hidden" id="proportion-group">
+                    <label class="form-label" for="proportion">Sample Proportion (p-hat)</label>
+                    <input type="number" id="proportion" class="form-input" placeholder="e.g. 0.5" min="0" max="1" step="any">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confidence-level">Confidence Level</label>
+                    <select id="confidence-level" class="form-select">
+                        <option value="90">90%</option>
+                        <option value="95" selected>95%</option>
+                        <option value="99">99%</option>
+                        <option value="99.9">99.9%</option>
+                    </select>
+                </div>
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
                 <div class="result-box" id="result">
                     <div class="result-label">Result</div>
                     <div id="output">-</div>
                 </div>
-                
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
             </div>
         </div>
     </main>
-
     <script src="script.js"></script>
     <footer class="site-footer">
         <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
         <div class="footer-actions">
-            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
-                🐙 GitHub
-            </a>
-            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
-                ☕ Support me
-            </a>
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">☕ Support me</a>
         </div>
     </footer>
+    <script>
+        document.getElementById('mode').addEventListener('change', function() {
+            document.getElementById('std-dev-group').classList.toggle('hidden', this.value === 'proportion');
+            document.getElementById('proportion-group').classList.toggle('hidden', this.value === 'mean');
+        });
+    </script>
 </body>
 </html>

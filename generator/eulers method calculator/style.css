@@ -141,6 +141,13 @@ body {
     font-family: monospace;
 }
 
+/* ---- Form Row ---- */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
 /* ---- Buttons ---- */
 .btn {
     padding: 0.75rem 1.5rem;
@@ -167,16 +174,7 @@ body {
 .btn-success { background: var(--success); color: var(--white); }
 .btn-success:hover { background: #059669; }
 
-.btn-danger { background: var(--danger); color: var(--white); }
-.btn-danger:hover { background: #dc2626; }
-
 .btn-block { width: 100%; }
-
-.btn-sm {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.875rem;
-    min-height: 36px;
-}
 
 .btn-group {
     display: flex;
@@ -205,6 +203,46 @@ body {
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
     font-weight: 600;
+}
+
+/* ---- Results Table ---- */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.results-table thead {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.results-table th {
+    padding: 0.625rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.results-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.results-table tbody tr:hover {
+    background: var(--primary-light);
+}
+
+.results-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* ---- Utility Classes ---- */
@@ -243,6 +281,7 @@ body {
     .tool-header { flex-wrap: wrap; justify-content: center; text-align: center; }
     .tool-header-icon { margin-bottom: 0.5rem; }
     .tool-header h1 { width: 100%; font-size: 1.2rem; }
+    .form-row { grid-template-columns: 1fr; gap: 0; }
     .btn-group { flex-direction: column; }
     .btn-group .btn { width: 100%; }
     .footer-actions { flex-direction: column; align-items: stretch; }
@@ -330,377 +369,14 @@ body {
 }
 
 
-/* ---- GPA Calculator Custom Styles ---- */
+/* ---- Custom Tool Styles ---- */
+/* Euler's Method Calculator - Custom Styles */
 
-/* Grade Scale Reference */
-.grade-scale-ref {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.grade-scale-header {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
-}
-
-.grade-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.grade-item {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--gray-700);
-    white-space: nowrap;
-}
-
-/* Courses Section */
-.courses-section {
-    margin-bottom: 1rem;
-}
-
-.courses-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--gray-200);
-}
-
-.courses-header span {
-    font-weight: 600;
-    color: var(--gray-700);
-    font-size: 0.875rem;
-}
-
-/* Column Headers */
-.column-headers {
-    display: grid;
-    grid-template-columns: 2fr 1fr 0.8fr 0.7fr;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.col-name { text-align: left; }
-.col-grade { text-align: center; }
-.col-credits { text-align: center; }
-.col-actions { text-align: center; }
-
-/* Course Rows */
-#courses-container {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    background: var(--gray-50);
-}
-
-.course-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 0.8fr 0.7fr;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--gray-200);
-    align-items: center;
-    transition: var(--transition);
-}
-
-.course-row:last-child {
-    border-bottom: none;
-}
-
-.course-row:hover {
-    background: var(--gray-100);
-}
-
-.course-name input {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.course-grade select {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-    text-align: center;
-    cursor: pointer;
-}
-
-.course-credits input {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-    text-align: center;
-    width: 100%;
-}
-
-.course-credits input[type="number"]::-webkit-inner-spin-button,
-.course-credits input[type="number"]::-webkit-outer-spin-button {
-    opacity: 1;
-}
-
-.course-actions {
-    display: flex;
-    justify-content: center;
-}
-
-.btn-remove {
-    background: transparent;
-    border: 1px solid var(--danger);
-    color: var(--danger);
-    padding: 0.35rem 0.6rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    white-space: nowrap;
-}
-
-.btn-remove:hover {
-    background: var(--danger);
-    color: var(--white);
-}
-
-/* GPA Display */
-.gpa-display {
-    text-align: center;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    margin-bottom: 1rem;
-}
-
-.gpa-excellent {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: var(--white);
-}
-
-.gpa-good {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: var(--white);
-}
-
-.gpa-average {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: var(--white);
-}
-
-.gpa-below {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: var(--white);
-}
-
-.gpa-value {
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 0.25rem;
-}
-
-.gpa-label {
-    font-size: 0.875rem;
-    opacity: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-/* GPA Stats */
-.gpa-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.stat {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 0.75rem;
-    text-align: center;
-}
-
-.stat-value {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.stat-label {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.25rem;
-}
-
-/* Breakdown Table */
-.breakdown-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: inherit;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-}
-
-.breakdown-table th,
-.breakdown-table td {
-    padding: 0.5rem;
-    text-align: center;
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.breakdown-table th {
-    background: var(--gray-100);
-    font-weight: 600;
-    color: var(--gray-700);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.breakdown-table tbody tr:hover {
-    background: var(--gray-50);
-}
-
-.breakdown-table .grade-cell {
-    font-weight: 600;
-    color: var(--primary);
-}
-
-.course-summary td:nth-child(2) {
-    text-align: left;
-}
-
-/* Error List */
-.error-list {
-    font-family: inherit;
-    color: var(--danger);
-}
-
-.error-list strong {
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.error-list ul {
-    margin-left: 1.25rem;
-}
-
-.error-list li {
-    margin-bottom: 0.25rem;
-}
-
-/* Result box override for GPA calculator */
 #result {
-    min-height: auto;
-    font-family: inherit;
+    min-height: 80px;
 }
 
-#grade-breakdown-container {
-    min-height: auto;
-}
-
-#grade-breakdown {
-    font-family: inherit;
-}
-
-/* Scrollbar for courses container */
-#courses-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-#courses-container::-webkit-scrollbar-track {
-    background: var(--gray-100);
-    border-radius: var(--radius-sm);
-}
-
-#courses-container::-webkit-scrollbar-thumb {
-    background: var(--gray-300);
-    border-radius: var(--radius-sm);
-}
-
-#courses-container::-webkit-scrollbar-thumb:hover {
-    background: var(--gray-400);
-}
-
-/* Mobile responsive for course rows */
-@media (max-width: 640px) {
-    .column-headers {
-        display: none;
-    }
-
-    .course-row {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        margin-bottom: 0.5rem;
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius);
-        background: var(--white);
-    }
-
-    .course-row:hover {
-        background: var(--white);
-    }
-
-    .course-name input,
-    .course-grade select,
-    .course-credits input {
-        width: 100%;
-    }
-
-    .course-actions {
-        justify-content: flex-start;
-        padding-top: 0.5rem;
-    }
-
-    .btn-remove {
-        width: 100%;
-    }
-
-    .gpa-value {
-        font-size: 2.5rem;
-    }
-
-    .gpa-stats {
-        grid-template-columns: 1fr;
-    }
-
-    .breakdown-table {
-        font-size: 0.8rem;
-    }
-
-    .breakdown-table th,
-    .breakdown-table td {
-        padding: 0.4rem 0.25rem;
-    }
-
-    .grade-items {
-        gap: 0.35rem;
-    }
-
-    .grade-item {
-        font-size: 0.75rem;
-        padding: 0.2rem 0.4rem;
-    }
+#output {
+    font-size: 0.85rem;
+    color: var(--gray-700);
 }

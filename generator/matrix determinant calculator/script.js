@@ -105,7 +105,7 @@ function percentageOf(percent, whole) { return (percent / 100) * whole; }
 function percentageChange(oldValue, newValue) { return ((newValue - oldValue) / Math.abs(oldValue)) * 100; }
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
 function lerp(start, end, t) { return start + (end - start) * t; }
-function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; }
+function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - inMin) / (inMax - inMin) + outMin; }
 
 // ========================================
 // String Utilities
@@ -226,59 +226,256 @@ function initTool(toolInfo) {
 
 /**
  * Matrix Determinant Calculator
- * Calculate the determinant of a matrix
+ * Size selector N×N (2–5), dynamic grid
+ * 2×2: ad−bc; 3×3: Sarrus rule; NxN: cofactor expansion recursive
+ * Shows steps for 2×2 and 3×3
+ * Output: determinant value
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Matrix Determinant Calculator', icon: '🔢' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
-    const calculateBtn = $('#calculate');
-    const clearBtn = $('#clear');
-    const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    const toolContent = $('#tool-content');
+    if (!toolContent) return;
+
+    let currentSize = parseInt(Storage.get('det-matrix-size', '3'));
+    let matrixInputs = [];
+
+    // ---- Build UI ----
+    function buildUI() {
+        toolContent.innerHTML = '';
+
+        const sizeGroup = createElement('div', { className: 'form-group' });
+        const sizeLabel = createElement('label', { className: 'form-label', textContent: 'Matrix Size' });
+        const sizeSelect = createElement('select', { className: 'form-select', id: 'matrix-size' });
+        [2, 3, 4, 5].forEach(n => {
+            const opt = createElement('option', { value: String(n), textContent: `${n}×${n}` });
+            if (n === currentSize) opt.selected = true;
+            sizeSelect.appendChild(opt);
+        });
+        sizeGroup.appendChild(sizeLabel);
+        sizeGroup.appendChild(sizeSelect);
+        toolContent.appendChild(sizeGroup);
+
+        const matrixContainer = createElement('div', { id: 'matrix-container' });
+        matrixContainer.appendChild(buildMatrixGrid(currentSize));
+        toolContent.appendChild(matrixContainer);
+
+        const btnGroup = createElement('div', { className: 'btn-group' });
+        const calcBtn = createElement('button', { id: 'calculate', className: 'btn btn-primary btn-block', textContent: 'Calculate Determinant' });
+        btnGroup.appendChild(calcBtn);
+        toolContent.appendChild(btnGroup);
+
+        const clearBtn = createElement('button', { id: 'clear', className: 'btn btn-secondary btn-block', textContent: 'Clear' });
+        toolContent.appendChild(clearBtn);
+
+        const resultBox = createElement('div', { className: 'result-box', id: 'result' });
+        const resultLabel = createElement('div', { className: 'result-label', textContent: 'Result' });
+        const outputEl = createElement('div', { id: 'output', textContent: '-' });
+        resultBox.appendChild(resultLabel);
+        resultBox.appendChild(outputEl);
+        toolContent.appendChild(resultBox);
+
+        const copyGroup = createElement('div', { className: 'btn-group' });
+        const copyBtn = createElement('button', { id: 'copy', className: 'btn btn-secondary', textContent: '📋 Copy Result' });
+        copyGroup.appendChild(copyBtn);
+        toolContent.appendChild(copyGroup);
+
+        bindEvents();
+    }
+
+    function buildMatrixGrid(n) {
+        const container = createElement('div', { className: 'matrix-grid-container' });
+        const grid = createElement('div', { className: 'matrix-grid', id: 'matrix-grid' });
+        grid.style.cssText = `display:grid;grid-template-columns:repeat(${n},1fr);gap:0.5rem;max-width:${Math.min(n * 90, 450)}px;margin:1rem auto;`;
+
+        matrixInputs = [];
+        for (let i = 0; i < n; i++) {
+            matrixInputs[i] = [];
+            for (let j = 0; j < n; j++) {
+                const input = createElement('input', {
+                    type: 'number',
+                    className: 'matrix-cell',
+                    value: '0',
+                    style: 'width:100%;padding:0.5rem;border:2px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-size:1rem;font-family:monospace;transition:border-color 0.2s;',
+                    'data-row': String(i),
+                    'data-col': String(j)
+                });
+                input.addEventListener('focus', () => { input.style.borderColor = '#2563eb'; input.select(); });
+                input.addEventListener('blur', () => { input.style.borderColor = '#e5e7eb'; });
+                grid.appendChild(input);
+                matrixInputs[i][j] = input;
+            }
+        }
+        container.appendChild(grid);
+        return container;
+    }
+
+    function readMatrix(n) {
+        const matrix = [];
+        for (let i = 0; i < n; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < n; j++) {
+                const val = parseFloat(matrixInputs[i][j].value);
+                if (isNaN(val)) {
+                    throw new Error(`Invalid number at row ${i + 1}, column ${j + 1}`);
+                }
+                matrix[i][j] = val;
+            }
+        }
+        return matrix;
+    }
+
+    // ---- Determinant calculations ----
+    function det2x2(m) {
+        return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+    }
+
+    function det3x3(m) {
+        return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+             - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+             + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+    }
+
+    function minor(matrix, row, col) {
+        return matrix
+            .filter((_, i) => i !== row)
+            .map(r => r.filter((_, j) => j !== col));
+    }
+
+    function determinant(matrix) {
+        const n = matrix.length;
+        if (n === 1) return matrix[0][0];
+        if (n === 2) return det2x2(matrix);
+        let det = 0;
+        for (let j = 0; j < n; j++) {
+            det += Math.pow(-1, j) * matrix[0][j] * determinant(minor(matrix, 0, j));
+        }
+        return det;
+    }
+
+    function fmt(v) {
+        if (Number.isInteger(v)) return String(v);
+        return parseFloat(v.toFixed(6)).toString();
+    }
+
+    function steps2x2(m) {
+        const a = m[0][0], b = m[0][1], c = m[1][0], d = m[1][1];
+        const ad = a * d, bc = b * c, det = ad - bc;
+        return [
+            'Formula: det = ad − bc',
+            '',
+            `a = ${fmt(a)},  b = ${fmt(b)}`,
+            `c = ${fmt(c)},  d = ${fmt(d)}`,
+            '',
+            `ad = ${fmt(a)} × ${fmt(d)} = ${fmt(ad)}`,
+            `bc = ${fmt(b)} × ${fmt(c)} = ${fmt(bc)}`,
+            '',
+            `det = ${fmt(ad)} − ${fmt(bc)} = ${fmt(det)}`
+        ].join('\n');
+    }
+
+    function steps3x3(m) {
+        const lines = [];
+        lines.push('Sarrus Rule (cofactor expansion along row 1):');
+        lines.push('');
+        lines.push('det = a₁₁(a₂₂a₃₃ − a₂₃a₃₂) − a₁₂(a₂₀a₃₃ − a₂₃a₃₀) + a₁₃(a₂₀a₃₂ − a₂₁a₃₀)');
+        lines.push('');
+
+        const a = m[0][0], b = m[0][1], c = m[0][2];
+        const d = m[1][0], e = m[1][1], f = m[1][2];
+        const g = m[2][0], h = m[2][1], i = m[2][2];
+
+        const m11 = e * i - f * h;
+        const m12 = d * i - f * g;
+        const m13 = d * h - e * g;
+
+        lines.push(`Cofactor of a₁₁: (${fmt(e)}×${fmt(i)}) − (${fmt(f)}×${fmt(h)}) = ${fmt(e*i)} − ${fmt(f*h)} = ${fmt(m11)}`);
+        lines.push(`Cofactor of a₁₂: (${fmt(d)}×${fmt(i)}) − (${fmt(f)}×${fmt(g)}) = ${fmt(d*i)} − ${fmt(f*g)} = ${fmt(m12)}`);
+        lines.push(`Cofactor of a₁₃: (${fmt(d)}×${fmt(h)}) − (${fmt(e)}×${fmt(g)}) = ${fmt(d*h)} − ${fmt(e*g)} = ${fmt(m13)}`);
+        lines.push('');
+        lines.push(`det = ${fmt(a)}×(${fmt(m11)}) − ${fmt(b)}×(${fmt(m12)}) + ${fmt(c)}×(${fmt(m13)})`);
+        lines.push(`det = ${fmt(a * m11)} − ${fmt(b * m12)} + ${fmt(c * m13)}`);
+        lines.push(`det = ${fmt(a * m11 - b * m12 + c * m13)}`);
+
+        return lines.join('\n');
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const n = currentSize;
+        let matrix;
+        try {
+            matrix = readMatrix(n);
+        } catch (e) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">${e.message}</span>`;
             return;
         }
-        
-        try {
-            // TODO: Implement Matrix Determinant Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        const det = determinant(matrix);
+        const output = $('#output');
+
+        if (n === 2) {
+            output.textContent = `Determinant = ${fmt(det)}`;
+            const stepsDiv = createElement('div', {
+                style: 'margin-top:1rem;padding:0.75rem;background:#f9fafb;border-radius:0.375rem;border:1px solid #e5e7eb;white-space:pre-wrap;font-family:monospace;font-size:0.875rem;line-height:1.7;'
+            });
+            stepsDiv.textContent = steps2x2(matrix);
+            output.appendChild(createElement('br'));
+            output.appendChild(createElement('br'));
+            output.appendChild(createElement('div', {
+                style: 'font-weight:700;color:#374151;margin-bottom:0.5rem;',
+                textContent: 'Steps:'
+            }));
+            output.appendChild(stepsDiv);
+        } else if (n === 3) {
+            output.textContent = `Determinant = ${fmt(det)}`;
+            const stepsDiv = createElement('div', {
+                style: 'margin-top:1rem;padding:0.75rem;background:#f9fafb;border-radius:0.375rem;border:1px solid #e5e7eb;white-space:pre-wrap;font-family:monospace;font-size:0.875rem;line-height:1.7;'
+            });
+            stepsDiv.textContent = steps3x3(matrix);
+            output.appendChild(createElement('br'));
+            output.appendChild(createElement('br'));
+            output.appendChild(createElement('div', {
+                style: 'font-weight:700;color:#374151;margin-bottom:0.5rem;',
+                textContent: 'Steps:'
+            }));
+            output.appendChild(stepsDiv);
+        } else {
+            output.textContent = `Determinant = ${fmt(det)}\n(Method: cofactor expansion along first row)`;
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function clearAll() {
+        for (let i = 0; i < currentSize; i++) {
+            for (let j = 0; j < currentSize; j++) {
+                matrixInputs[i][j].value = '0';
+            }
+        }
+        $('#output').textContent = '-';
     }
-    
-    // Event listeners
-    calculateBtn.addEventListener('click', calculate);
-    clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+
+    function bindEvents() {
+        $('#matrix-size').addEventListener('change', (e) => {
+            currentSize = parseInt(e.target.value);
+            Storage.set('det-matrix-size', String(currentSize));
+            const container = $('#matrix-container');
+            if (container) container.replaceChild(buildMatrixGrid(currentSize), container.firstChild);
+            $('#output').textContent = '-';
+        });
+
+        $('#calculate').addEventListener('click', calculate);
+        $('#clear').addEventListener('click', clearAll);
+        $('#copy').addEventListener('click', () => {
+            const text = $('#output').textContent;
+            if (text && text !== '-') copyToClipboard(text);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('matrix-cell')) {
+                calculate();
+            }
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+
+    buildUI();
 });

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate linear regression equation">
+    <meta name="description" content="Calculate linear regression from data points">
     <meta name="theme-color" content="#2563eb">
-    <title>📈 Linear Regression Calculator - Mini Tools</title>
+    <title>Linear Regression Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,45 +13,38 @@
         <span class="tool-header-icon">📈</span>
         <h1>Linear Regression Calculator</h1>
     </header>
-
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate linear regression equation</p>
-            
+            <p class="text-muted mb-2">Enter x,y data points (one per line) and optionally predict y for a given x</p>
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="data-points">Data Points (x,y per line)</label>
+                    <textarea id="data-points" class="form-textarea" placeholder="1,2&#10;2,4&#10;3,5&#10;4,4&#10;5,5" rows="6"></textarea>
                 </div>
-                
+                <div class="form-group">
+                    <label class="form-label" for="prediction-x">Predict y for x (optional)</label>
+                    <input type="number" id="prediction-x" class="form-input" placeholder="e.g. 6" step="any">
+                </div>
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
                 <div class="result-box" id="result">
                     <div class="result-label">Result</div>
                     <div id="output">-</div>
                 </div>
-                
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
             </div>
         </div>
     </main>
-
     <script src="script.js"></script>
     <footer class="site-footer">
         <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
         <div class="footer-actions">
-            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
-                🐙 GitHub
-            </a>
-            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">
-                ☕ Support me
-            </a>
+            <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
+            <a class="footer-btn footer-saweria" href="https://saweria.co/mafhum" target="_blank" rel="noopener noreferrer">☕ Support me</a>
         </div>
     </footer>
 </body>

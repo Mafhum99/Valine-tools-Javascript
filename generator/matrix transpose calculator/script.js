@@ -105,7 +105,7 @@ function percentageOf(percent, whole) { return (percent / 100) * whole; }
 function percentageChange(oldValue, newValue) { return ((newValue - oldValue) / Math.abs(oldValue)) * 100; }
 function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
 function lerp(start, end, t) { return start + (end - start) * t; }
-function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; }
+function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - inMin) / (inMax - inMin) + outMin; }
 
 // ========================================
 // String Utilities
@@ -226,59 +226,286 @@ function initTool(toolInfo) {
 
 /**
  * Matrix Transpose Calculator
- * Calculate the transpose of a matrix
+ * Matrix M×N with dynamic grid
+ * Aᵀ[i][j] = A[j][i]
+ * Output: transposed matrix grid (N×M)
+ * Show property: (Aᵀ)ᵀ = A
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Matrix Transpose Calculator', icon: '🔄' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
-    const calculateBtn = $('#calculate');
-    const clearBtn = $('#clear');
-    const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    const toolContent = $('#tool-content');
+    if (!toolContent) return;
+
+    let rows = parseInt(Storage.get('trans-rows', '3'));
+    let cols = parseInt(Storage.get('trans-cols', '3'));
+    let matrixInputs = [];
+
+    // ---- Build UI ----
+    function buildUI() {
+        toolContent.innerHTML = '';
+
+        // Size selectors row
+        const sizeRow = createElement('div', {
+            style: 'display:flex;gap:0.75rem;margin-bottom:1rem;align-items:flex-end;flex-wrap:wrap;'
+        });
+
+        const rowsGroup = createElement('div', { className: 'form-group', style: 'flex:1;min-width:120px;' });
+        rowsGroup.appendChild(createElement('label', { className: 'form-label', textContent: 'Rows (M)' }));
+        const rowsSelect = createElement('select', { className: 'form-select', id: 'matrix-rows' });
+        [1, 2, 3, 4, 5, 6].forEach(n => {
+            const opt = createElement('option', { value: String(n), textContent: String(n) });
+            if (n === rows) opt.selected = true;
+            rowsSelect.appendChild(opt);
+        });
+        rowsGroup.appendChild(rowsSelect);
+        sizeRow.appendChild(rowsGroup);
+
+        const colsGroup = createElement('div', { className: 'form-group', style: 'flex:1;min-width:120px;' });
+        colsGroup.appendChild(createElement('label', { className: 'form-label', textContent: 'Columns (N)' }));
+        const colsSelect = createElement('select', { className: 'form-select', id: 'matrix-cols' });
+        [1, 2, 3, 4, 5, 6].forEach(n => {
+            const opt = createElement('option', { value: String(n), textContent: String(n) });
+            if (n === cols) opt.selected = true;
+            colsSelect.appendChild(opt);
+        });
+        colsGroup.appendChild(colsSelect);
+        sizeRow.appendChild(colsGroup);
+
+        const dimDisplay = createElement('div', { className: 'form-group', style: 'flex:1;min-width:120px;' });
+        dimDisplay.appendChild(createElement('label', { className: 'form-label', textContent: 'Dimensions' }));
+        const dimText = createElement('div', {
+            id: 'dim-display',
+            textContent: `${rows}×${cols} → ${cols}×${rows}`,
+            style: 'padding:0.75rem;background:#dbeafe;border-radius:0.375rem;text-align:center;font-weight:700;color:#1d4ed8;font-size:1rem;'
+        });
+        dimDisplay.appendChild(dimText);
+        sizeRow.appendChild(dimDisplay);
+
+        toolContent.appendChild(sizeRow);
+
+        // Original matrix grid
+        const matrixContainer = createElement('div', { id: 'matrix-container' });
+        matrixContainer.appendChild(createElement('div', {
+            style: 'font-weight:700;color:#2563eb;margin-bottom:0.5rem;',
+            textContent: 'Original Matrix A'
+        }));
+        matrixContainer.appendChild(buildMatrixGrid(rows, cols));
+        toolContent.appendChild(matrixContainer);
+
+        // Buttons
+        const btnGroup = createElement('div', { className: 'btn-group' });
+        const calcBtn = createElement('button', { id: 'calculate', className: 'btn btn-primary btn-block', textContent: 'Calculate Transpose' });
+        btnGroup.appendChild(calcBtn);
+        toolContent.appendChild(btnGroup);
+
+        const clearBtn = createElement('button', { id: 'clear', className: 'btn btn-secondary btn-block', textContent: 'Clear' });
+        toolContent.appendChild(clearBtn);
+
+        // Result box
+        const resultBox = createElement('div', { className: 'result-box', id: 'result' });
+        const resultLabel = createElement('div', { className: 'result-label', textContent: 'Result' });
+        const outputEl = createElement('div', { id: 'output', textContent: '-' });
+        resultBox.appendChild(resultLabel);
+        resultBox.appendChild(outputEl);
+        toolContent.appendChild(resultBox);
+
+        // Copy button
+        const copyGroup = createElement('div', { className: 'btn-group' });
+        const copyBtn = createElement('button', { id: 'copy', className: 'btn btn-secondary', textContent: '📋 Copy Result' });
+        copyGroup.appendChild(copyBtn);
+        toolContent.appendChild(copyGroup);
+
+        bindEvents();
+    }
+
+    function buildMatrixGrid(r, c) {
+        const container = createElement('div', {});
+        const grid = createElement('div', { className: 'matrix-grid' });
+        grid.style.cssText = `display:grid;grid-template-columns:repeat(${c},1fr);gap:0.5rem;max-width:${Math.min(c * 90, 540)}px;margin:0.5rem auto 1rem;`;
+
+        matrixInputs = [];
+        for (let i = 0; i < r; i++) {
+            matrixInputs[i] = [];
+            for (let j = 0; j < c; j++) {
+                const input = createElement('input', {
+                    type: 'number',
+                    className: 'matrix-cell',
+                    value: '0',
+                    style: 'width:100%;padding:0.5rem;border:2px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-size:1rem;font-family:monospace;transition:border-color 0.2s;',
+                    'data-row': String(i),
+                    'data-col': String(j)
+                });
+                input.addEventListener('focus', () => { input.style.borderColor = '#2563eb'; input.select(); });
+                input.addEventListener('blur', () => { input.style.borderColor = '#e5e7eb'; });
+                grid.appendChild(input);
+                matrixInputs[i][j] = input;
+            }
+        }
+        container.appendChild(grid);
+        return container;
+    }
+
+    function readMatrix(r, c) {
+        const matrix = [];
+        for (let i = 0; i < r; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < c; j++) {
+                const val = parseFloat(matrixInputs[i][j].value);
+                if (isNaN(val)) {
+                    throw new Error(`Invalid number at row ${i + 1}, column ${j + 1}`);
+                }
+                matrix[i][j] = val;
+            }
+        }
+        return matrix;
+    }
+
+    // ---- Math functions ----
+    function transpose(matrix) {
+        const r = matrix.length;
+        const c = matrix[0].length;
+        const result = [];
+        for (let j = 0; j < c; j++) {
+            result[j] = [];
+            for (let i = 0; i < r; i++) {
+                result[j][i] = matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    function fmt(v) {
+        if (Number.isInteger(v)) return String(v);
+        return parseFloat(v.toFixed(6)).toString();
+    }
+
+    function renderMatrixGrid(matrix, label, color) {
+        const r = matrix.length;
+        const c = matrix[0].length;
+        const wrapper = createElement('div', { style: 'margin:1rem 0;' });
+        wrapper.appendChild(createElement('div', {
+            style: `font-weight:700;color:${color};margin-bottom:0.5rem;`,
+            textContent: label
+        }));
+        const grid = createElement('div', {
+            style: `display:grid;grid-template-columns:repeat(${c},1fr);gap:0.5rem;max-width:${Math.min(c * 90, 540)}px;`
+        });
+        for (let i = 0; i < r; i++) {
+            for (let j = 0; j < c; j++) {
+                const cell = createElement('div', {
+                    className: 'matrix-cell',
+                    textContent: fmt(matrix[i][j]),
+                    style: 'padding:0.5rem;border:1px solid #e5e7eb;border-radius:0.375rem;text-align:center;font-family:monospace;font-size:0.875rem;background:#f9fafb;'
+                });
+                grid.appendChild(cell);
+            }
+        }
+        wrapper.appendChild(grid);
+        return wrapper;
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        let matrix;
+        try {
+            matrix = readMatrix(rows, cols);
+        } catch (e) {
+            $('#output').innerHTML = `<span style="color:#ef4444;">${e.message}</span>`;
             return;
         }
-        
-        try {
-            // TODO: Implement Matrix Transpose Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        const transposed = transpose(matrix);
+        const doubleTransposed = transpose(transposed);
+
+        const output = $('#output');
+        output.innerHTML = '';
+
+        output.appendChild(createElement('div', {
+            style: 'font-size:1rem;font-weight:700;color:#2563eb;margin-bottom:0.5rem;',
+            textContent: `Aᵀ  [${rows}×${cols}] → [${cols}×${rows}]`
+        }));
+
+        output.appendChild(renderMatrixGrid(transposed, 'Transposed Matrix Aᵀ:', '#7c3aed'));
+
+        // Verify property: (Aᵀ)ᵀ = A
+        let matches = true;
+        for (let i = 0; i < rows && matches; i++) {
+            for (let j = 0; j < cols && matches; j++) {
+                if (Math.abs(doubleTransposed[i][j] - matrix[i][j]) > 1e-10) {
+                    matches = false;
+                }
+            }
         }
+
+        const propertyDiv = createElement('div', {
+            style: `margin-top:1rem;padding:0.75rem;border-radius:0.375rem;border:1px solid ${matches ? '#bbf7d0' : '#fecaca'};background:${matches ? '#f0fdf4' : '#fef2f2'};`
+        });
+        if (matches) {
+            propertyDiv.appendChild(createElement('div', {
+                style: 'color:#16a34a;font-weight:700;',
+                textContent: '✓ Property verified: (Aᵀ)ᵀ = A'
+            }));
+            propertyDiv.appendChild(createElement('div', {
+                style: 'color:#16a34a;font-size:0.875rem;margin-top:0.25rem;',
+                textContent: 'Transposing twice returns the original matrix.'
+            }));
+        } else {
+            propertyDiv.appendChild(createElement('div', {
+                style: 'color:#dc2626;font-weight:700;',
+                textContent: '✗ Property check failed — this should not happen!'
+            }));
+        }
+        output.appendChild(propertyDiv);
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function clearAll() {
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                matrixInputs[i][j].value = '0';
+            }
+        }
+        $('#output').textContent = '-';
     }
-    
-    // Event listeners
-    calculateBtn.addEventListener('click', calculate);
-    clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+
+    function updateSizes() {
+        rows = parseInt($('#matrix-rows').value);
+        cols = parseInt($('#matrix-cols').value);
+
+        Storage.set('trans-rows', String(rows));
+        Storage.set('trans-cols', String(cols));
+
+        const dimText = $('#dim-display');
+        if (dimText) dimText.textContent = `${rows}×${cols} → ${cols}×${rows}`;
+
+        const container = $('#matrix-container');
+        if (container) {
+            const label = container.querySelector('div');
+            container.innerHTML = '';
+            if (label) container.appendChild(label);
+            container.appendChild(buildMatrixGrid(rows, cols));
+        }
+
+        $('#output').textContent = '-';
+    }
+
+    function bindEvents() {
+        $('#matrix-rows').addEventListener('change', updateSizes);
+        $('#matrix-cols').addEventListener('change', updateSizes);
+
+        $('#calculate').addEventListener('click', calculate);
+        $('#clear').addEventListener('click', clearAll);
+        $('#copy').addEventListener('click', () => {
+            const text = $('#output').textContent;
+            if (text && text !== '-') copyToClipboard(text);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('matrix-cell')) {
+                calculate();
+            }
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+
+    buildUI();
 });

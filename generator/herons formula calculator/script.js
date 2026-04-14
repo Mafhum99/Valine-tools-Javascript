@@ -225,264 +225,143 @@ function initTool(toolInfo) {
 // ========================================
 
 /**
- * Grade Calculator
- * Calculate weighted grade with letter grade and per-assignment breakdown
+ * Heron's Formula Calculator
+ * Calculate triangle area from three side lengths
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Grade Calculator', icon: '📊' });
+    initTool({ name: "Heron's Formula Calculator", icon: '📐' });
 
-    const assignmentsContainer = $('#assignments-container');
-    const addRowBtn = $('#add-row');
+    const sideAEl = $('#side-a');
+    const sideBEl = $('#side-b');
+    const sideCEl = $('#side-c');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     const outputEl = $('#output');
-    const weightSummaryEl = $('#weight-summary');
 
-    let rowCounter = 0;
-
-    // Create a new assignment row
-    function createRow(name = '', score = '', maxScore = '100', weight = '') {
-        rowCounter++;
-        const rowId = `row-${rowCounter}`;
-
-        const row = createElement('div', { class: 'assignment-row', id: rowId, style: 'display:flex;gap:0.5rem;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap;' });
-
-        const nameInput = createElement('input', {
-            type: 'text',
-            placeholder: 'Assignment name',
-            value: name,
-            class: 'assignment-name',
-            style: 'flex:2;min-width:120px;padding:0.5rem;border:1px solid #d1d5db;border-radius:0.375rem;font-size:0.875rem;'
-        });
-
-        const scoreInput = createElement('input', {
-            type: 'number',
-            placeholder: 'Score',
-            value: score,
-            min: '0',
-            class: 'assignment-score',
-            style: 'flex:1;min-width:80px;padding:0.5rem;border:1px solid #d1d5db;border-radius:0.375rem;font-size:0.875rem;'
-        });
-
-        const maxScoreInput = createElement('input', {
-            type: 'number',
-            placeholder: 'Max',
-            value: maxScore,
-            min: '1',
-            class: 'assignment-max',
-            style: 'flex:1;min-width:80px;padding:0.5rem;border:1px solid #d1d5db;border-radius:0.375rem;font-size:0.875rem;'
-        });
-
-        const weightInput = createElement('input', {
-            type: 'number',
-            placeholder: 'Weight %',
-            value: weight,
-            min: '0',
-            max: '100',
-            class: 'assignment-weight',
-            style: 'flex:1;min-width:80px;padding:0.5rem;border:1px solid #d1d5db;border-radius:0.375rem;font-size:0.875rem;'
-        });
-
-        const removeBtn = createElement('button', {
-            type: 'button',
-            class: 'remove-row',
-            style: 'background:#ef4444;color:#fff;border:none;border-radius:0.375rem;padding:0.5rem 0.75rem;cursor:pointer;font-size:0.875rem;line-height:1;',
-            textContent: 'Remove'
-        });
-
-        row.appendChild(nameInput);
-        row.appendChild(scoreInput);
-        row.appendChild(maxScoreInput);
-        row.appendChild(weightInput);
-        row.appendChild(removeBtn);
-
-        removeBtn.addEventListener('click', () => {
-            const rows = $$('.assignment-row');
-            if (rows.length <= 1) {
-                showToast('At least 1 assignment is required');
-                return;
-            }
-            row.remove();
-            updateRemoveButtons();
-        });
-
-        return row;
+    // Validate triangle inequality theorem
+    function validateTriangle(a, b, c) {
+        const errors = [];
+        if (a + b <= c) errors.push(`Side a (${formatNumber(a)}) + Side b (${formatNumber(b)}) must be greater than Side c (${formatNumber(c)})`);
+        if (a + c <= b) errors.push(`Side a (${formatNumber(a)}) + Side c (${formatNumber(c)}) must be greater than Side b (${formatNumber(b)})`);
+        if (b + c <= a) errors.push(`Side b (${formatNumber(b)}) + Side c (${formatNumber(c)}) must be greater than Side a (${formatNumber(a)})`);
+        return errors;
     }
 
-    // Update remove button visibility (disable if only 1 row)
-    function updateRemoveButtons() {
-        const rows = $$('.assignment-row');
-        const removeBtns = $$('.remove-row');
-        removeBtns.forEach(btn => {
-            btn.style.opacity = rows.length <= 1 ? '0.5' : '1';
-            btn.style.pointerEvents = rows.length <= 1 ? 'none' : 'auto';
-        });
-    }
-
-    // Add row button handler
-    addRowBtn.addEventListener('click', () => {
-        assignmentsContainer.appendChild(createRow());
-        updateRemoveButtons();
-        // Focus the name field of the new row
-        const newRow = assignmentsContainer.lastElementChild;
-        const nameInput = newRow.querySelector('.assignment-name');
-        if (nameInput) nameInput.focus();
-    });
-
-    // Calculate weighted grade
     function calculate() {
-        const rows = $$('.assignment-row');
+        const aStr = sideAEl.value.trim();
+        const bStr = sideBEl.value.trim();
+        const cStr = sideCEl.value.trim();
 
-        if (rows.length === 0) {
-            outputEl.innerHTML = '<p style="color:#ef4444;">Add at least 1 assignment</p>';
+        if (!aStr || !bStr || !cStr) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">All three side lengths are required</p>';
             return;
         }
 
-        let totalWeight = 0;
-        let weightedSum = 0;
-        let breakdown = [];
-        let errors = [];
+        const a = parseFloat(aStr);
+        const b = parseFloat(bStr);
+        const c = parseFloat(cStr);
 
-        rows.forEach((row, index) => {
-            const name = row.querySelector('.assignment-name').value.trim() || `Assignment ${index + 1}`;
-            const scoreStr = row.querySelector('.assignment-score').value.trim();
-            const maxStr = row.querySelector('.assignment-max').value.trim();
-            const weightStr = row.querySelector('.assignment-weight').value.trim();
+        if (isNaN(a) || isNaN(b) || isNaN(c)) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">All side lengths must be valid numbers</p>';
+            return;
+        }
 
-            if (!scoreStr) {
-                errors.push(`"${name}" score is required`);
-                return;
-            }
-            if (!weightStr) {
-                errors.push(`"${name}" weight is required`);
-                return;
-            }
+        if (a <= 0 || b <= 0 || c <= 0) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">All side lengths must be greater than zero</p>';
+            return;
+        }
 
-            const score = parseFloat(scoreStr);
-            const maxScore = parseFloat(maxStr) || 100;
-            const weight = parseFloat(weightStr);
-
-            if (isNaN(score) || score < 0) {
-                errors.push(`"${name}" score must be >= 0`);
-                return;
-            }
-            if (isNaN(maxScore) || maxScore <= 0) {
-                errors.push(`"${name}" max score must be > 0`);
-                return;
-            }
-            if (score > maxScore) {
-                errors.push(`"${name}" score (${score}) cannot exceed max score (${maxScore})`);
-                return;
-            }
-            if (isNaN(weight) || weight < 0) {
-                errors.push(`"${name}" weight must be >= 0`);
-                return;
-            }
-
-            totalWeight += weight;
-            const pct = (score / maxScore) * 100;
-            const contribution = pct * (weight / 100);
-            weightedSum += contribution;
-
-            breakdown.push({
-                name,
-                score,
-                maxScore,
-                weight,
-                pct,
-                contribution
-            });
-        });
-
+        // Validate triangle inequality
+        const errors = validateTriangle(a, b, c);
         if (errors.length > 0) {
             outputEl.innerHTML = errors.map(e => `<p style="color:#ef4444;">${e}</p>`).join('');
             return;
         }
 
-        // Validate weights sum to approximately 100
-        const weightDiff = Math.abs(totalWeight - 100);
-        if (weightDiff > 0.5) {
-            outputEl.innerHTML = `<p style="color:#ef4444;">Weights must sum to approximately 100% (currently ${formatNumber(totalWeight, 1)}%). Difference: ${formatNumber(weightDiff, 1)}%</p>`;
-            return;
-        }
+        try {
+            // Heron's formula: s = (a+b+c)/2, Area = sqrt(s*(s-a)*(s-b)*(s-c))
+            const s = (a + b + c) / 2;
+            const radicand = s * (s - a) * (s - b) * (s - c);
 
-        // Determine letter grade
-        let letterGrade, gradeColor;
-        if (weightedSum >= 90) { letterGrade = 'A'; gradeColor = '#22c55e'; }
-        else if (weightedSum >= 80) { letterGrade = 'B'; gradeColor = '#3b82f6'; }
-        else if (weightedSum >= 70) { letterGrade = 'C'; gradeColor = '#f59e0b'; }
-        else if (weightedSum >= 60) { letterGrade = 'D'; gradeColor = '#f97316'; }
-        else { letterGrade = 'F'; gradeColor = '#ef4444'; }
+            if (radicand < 0) {
+                outputEl.innerHTML = '<p style="color:#ef4444;">Invalid triangle: the given sides cannot form a real triangle</p>';
+                return;
+            }
 
-        // Build breakdown rows
-        const breakdownRows = breakdown.map(b =>
-            `<tr style="border-bottom:1px solid #e5e7eb;">
-                <td style="padding:0.5rem;font-size:0.875rem;">${b.name}</td>
-                <td style="padding:0.5rem;font-size:0.875rem;text-align:center;">${formatNumber(b.score, 1)} / ${formatNumber(b.maxScore, 1)}</td>
-                <td style="padding:0.5rem;font-size:0.875rem;text-align:center;">${formatNumber(b.pct, 1)}%</td>
-                <td style="padding:0.5rem;font-size:0.875rem;text-align:center;">${formatNumber(b.weight, 1)}%</td>
-                <td style="padding:0.5rem;font-size:0.875rem;text-align:center;color:${b.contribution >= 0 ? '#22c55e' : '#ef4444'};">${formatNumber(b.contribution, 2)}%</td>
-            </tr>`
-        ).join('');
+            const area = Math.sqrt(radicand);
 
-        outputEl.innerHTML = `
-            <div style="text-align:center;margin-bottom:1rem;">
-                <div style="font-size:2.5rem;font-weight:700;color:${gradeColor};">${formatNumber(weightedSum, 1)}%</div>
-                <div style="font-size:1.25rem;font-weight:700;color:${gradeColor};margin-top:0.25rem;">Grade: ${letterGrade}</div>
-            </div>
-            <div style="overflow-x:auto;">
-                <table style="width:100%;border-collapse:collapse;">
-                    <thead>
-                        <tr style="background:#f3f4f6;">
-                            <th style="padding:0.5rem;font-size:0.75rem;text-transform:uppercase;text-align:left;color:#6b7280;">Assignment</th>
-                            <th style="padding:0.5rem;font-size:0.75rem;text-transform:uppercase;text-align:center;color:#6b7280;">Score</th>
-                            <th style="padding:0.5rem;font-size:0.75rem;text-transform:uppercase;text-align:center;color:#6b7280;">%</th>
-                            <th style="padding:0.5rem;font-size:0.75rem;text-transform:uppercase;text-align:center;color:#6b7280;">Weight</th>
-                            <th style="padding:0.5rem;font-size:0.75rem;text-transform:uppercase;text-align:center;color:#6b7280;">Contrib.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${breakdownRows}
-                    </tbody>
-                </table>
-            </div>
-        `;
+            // Additional properties
+            const perimeter = a + b + c;
 
-        if (weightSummaryEl) {
-            weightSummaryEl.textContent = `Total weight: ${formatNumber(totalWeight, 1)}%`;
+            // Calculate angles using law of cosines
+            const angleA = Math.acos((b * b + c * c - a * a) / (2 * b * c)) * (180 / Math.PI);
+            const angleB = Math.acos((a * a + c * c - b * b) / (2 * a * c)) * (180 / Math.PI);
+            const angleC = Math.acos((a * a + b * b - c * c) / (2 * a * b)) * (180 / Math.PI);
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:2.5rem;font-weight:700;color:#22c55e;">${formatNumber(area, 4)}</div>
+                    <div style="font-size:0.875rem;color:#6b7280;margin-top:0.25rem;">Area (square units)</div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem;text-align:left;">
+                        <div style="padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;">Semi-perimeter (s)</div>
+                            <div style="font-weight:600;font-size:1.125rem;margin-top:0.25rem;">${formatNumber(s, 4)}</div>
+                        </div>
+                        <div style="padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;">
+                            <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;">Perimeter</div>
+                            <div style="font-weight:600;font-size:1.125rem;margin-top:0.25rem;">${formatNumber(perimeter, 4)}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:1rem;padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;text-align:left;">
+                        <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;margin-bottom:0.5rem;">Sides</div>
+                        <div style="display:flex;gap:1rem;font-size:0.875rem;">
+                            <span>a = ${formatNumber(a, 4)}</span>
+                            <span>b = ${formatNumber(b, 4)}</span>
+                            <span>c = ${formatNumber(c, 4)}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:1rem;padding:0.75rem;background:#f3f4f6;border-radius:0.375rem;text-align:left;">
+                        <div style="font-size:0.625rem;text-transform:uppercase;color:#6b7280;font-weight:600;margin-bottom:0.5rem;">Angles</div>
+                        <div style="display:flex;gap:1rem;font-size:0.875rem;">
+                            <span>A = ${formatNumber(angleA, 2)}deg</span>
+                            <span>B = ${formatNumber(angleB, 2)}deg</span>
+                            <span>C = ${formatNumber(angleC, 2)}deg</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:1rem;padding:0.75rem;background:#eff6ff;border-radius:0.375rem;text-align:left;font-family:monospace;font-size:0.75rem;">
+                        <div style="color:#6b7280;font-weight:600;margin-bottom:0.25rem;">Formula</div>
+                        s = (a + b + c) / 2 = ${formatNumber(s, 4)}<br>
+                        Area = sqrt(s * (s-a) * (s-b) * (s-c))<br>
+                        Area = sqrt(${formatNumber(s, 4)} * ${formatNumber(s-a, 4)} * ${formatNumber(s-b, 4)} * ${formatNumber(s-c, 4)})<br>
+                        Area = sqrt(${formatNumber(radicand, 6)}) = ${formatNumber(area, 4)}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            outputEl.textContent = 'Error: ' + error.message;
         }
     }
 
     function clear() {
-        assignmentsContainer.innerHTML = '';
-        rowCounter = 0;
-        assignmentsContainer.appendChild(createRow());
-        updateRemoveButtons();
-        outputEl.innerHTML = '<p style="color:#9ca3af;">Enter your assignment grades and click Calculate</p>';
-        if (weightSummaryEl) weightSummaryEl.textContent = '';
+        sideAEl.value = '';
+        sideBEl.value = '';
+        sideCEl.value = '';
+        outputEl.innerHTML = '<p style="color:#9ca3af;">Enter the three side lengths and click Calculate</p>';
+        sideAEl.focus();
     }
-
-    // Initialize with one row
-    assignmentsContainer.appendChild(createRow());
-    updateRemoveButtons();
 
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            const rows = $$('.assignment-row');
-            let text = 'Grade Calculator Results\n';
-            rows.forEach((row, i) => {
-                const name = row.querySelector('.assignment-name').value.trim() || `Assignment ${i + 1}`;
-                const score = row.querySelector('.assignment-score').value;
-                const max = row.querySelector('.assignment-max').value || '100';
-                const weight = row.querySelector('.assignment-weight').value;
-                text += `${name}: ${score}/${max} (${weight}%)\n`;
-            });
-            text += outputEl.textContent;
+            const text = `Heron's Formula Calculator\nSide a: ${sideAEl.value}\nSide b: ${sideBEl.value}\nSide c: ${sideCEl.value}\n${outputEl.textContent}`;
             copyToClipboard(text);
         });
     }

@@ -21,20 +21,25 @@
             <div id="tool-content">
                 <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="input">Input Signal (comma-separated numbers)</label>
+                    <input type="text" id="input" class="form-input" placeholder="e.g., 1, 2, 3, 4, 5">
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="samplingRate">Sampling Rate (optional)</label>
+                    <input type="text" id="samplingRate" class="form-input" placeholder="1" value="1">
+                </div>
+
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
                     <div class="result-label">Result</div>
                     <div id="output">-</div>
                 </div>
-                
+
                 <div class="btn-group">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>

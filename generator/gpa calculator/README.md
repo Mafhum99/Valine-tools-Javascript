@@ -5,15 +5,34 @@
 > **Folder**: `841_gpa-calculator`
 
 ## 📝 Description
-**How it works:** Calculates Grade Point Average (GPA) from course grades and credit hours.
+**How it works:** Calculates Grade Point Average (GPA) from course grades and credit hours. Add courses dynamically with name, letter grade (A through F), and credit hours. The GPA is computed using the formula: GPA = sum(grade_point x credits) / sum(credits).
+
+**Grade Point Mapping:**
+- A = 4.0, A- = 3.7
+- B+ = 3.3, B = 3.0, B- = 2.7
+- C+ = 2.3, C = 2.0, C- = 1.7
+- D+ = 1.3, D = 1.0
+- F = 0.0
 
 
 ## 🚀 How to Use
 1. Open `index.html` in your browser
-2. Enter the required values or parameters
-3. Click Calculate button
-4. View results instantly with step-by-step solution
-5. Copy results if needed
+2. Click "+ Add Course" to add as many courses as needed
+3. Enter course name, select letter grade, and input credit hours
+4. Click Calculate GPA button
+5. View cumulative GPA, total credits, quality points, and grade breakdown
+6. Copy results if needed
+
+## Features
+- Dynamic course addition/removal
+- Cumulative GPA calculation with color-coded display
+- Total credits and quality points summary
+- Grade distribution breakdown table
+- Per-course summary with points
+- Input validation (at least one course, positive credits, valid grades)
+- LocalStorage persistence of course data
+- Mobile responsive design
+- Copy results to clipboard
 
 ## 📁 File Structure
 ```

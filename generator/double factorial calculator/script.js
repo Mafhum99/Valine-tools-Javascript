@@ -229,56 +229,83 @@ function initTool(toolInfo) {
  * Calculate double factorial n!!
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Double Factorial Calculator', icon: '❗' });
-    
-    // Get elements
+
     const inputEl = $('#input');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
-    // Main calculation function
+
+    function doubleFactorial(n) {
+        if (n === 0 || n === 1) return BigInt(1);
+        let result = BigInt(1);
+        for (let i = n; i > 0; i -= 2) {
+            result *= BigInt(i);
+        }
+        return result;
+    }
+
+    function getComputationSteps(n) {
+        if (n === 0 || n === 1) return '1';
+        const terms = [];
+        for (let i = n; i > 0; i -= 2) {
+            terms.push(i);
+        }
+        return terms.join(' × ');
+    }
+
     function calculate() {
         const input = inputEl.value.trim();
-        
+
         if (!input) {
-            outputEl.textContent = 'Please enter a value';
+            outputEl.textContent = 'Please enter a non-negative integer';
             return;
         }
-        
-        try {
-            // TODO: Implement Double Factorial Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+
+        const n = parseInt(input);
+        if (isNaN(n) || n < 0) {
+            outputEl.textContent = 'Error: n must be a non-negative integer';
+            return;
         }
+        if (n > 100) {
+            outputEl.textContent = 'Error: n must be <= 100 to avoid overflow';
+            return;
+        }
+        if (!Number.isInteger(n)) {
+            outputEl.textContent = 'Error: n must be an integer';
+            return;
+        }
+
+        const result = doubleFactorial(n);
+        const steps = getComputationSteps(n);
+        const parity = n % 2 === 0 ? 'even' : 'odd';
+
+        let output = `${n}!! = ${result.toString()}\n\n`;
+        output += `Definition: n!! for ${parity} n\n`;
+        output += `Computation: ${steps}\n`;
+        output += `Result: ${result.toLocaleString()}`;
+
+        outputEl.textContent = output;
     }
-    
-    // Clear function
+
     function clear() {
         inputEl.value = '';
         outputEl.textContent = '-';
         inputEl.focus();
     }
-    
-    // Event listeners
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
-    // Enter key support
+
     inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+        if (e.key === 'Enter') calculate();
     });
 });

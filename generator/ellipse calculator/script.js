@@ -221,62 +221,128 @@ function initTool(toolInfo) {
 }
 
 // ========================================
-// TOOL LOGIC BELOW
+// Ellipse Calculator
+// Calculate area, perimeter, eccentricity, and focal distance of an ellipse
 // ========================================
 
-/**
- * Ellipse Calculator
- * Calculate ellipse area and perimeter
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Ellipse Calculator', icon: '🔵' });
-    
+    initTool({ name: 'Ellipse Calculator', icon: '⬮' });
+
     // Get elements
-    const inputEl = $('#input');
+    const semiMajorInput = $('#semi-major');
+    const semiMinorInput = $('#semi-minor');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const aStr = semiMajorInput.value.trim();
+        const bStr = semiMinorInput.value.trim();
+
+        if (!aStr || !bStr) {
+            outputEl.textContent = 'Please enter both semi-major axis (a) and semi-minor axis (b)';
             return;
         }
-        
+
         try {
-            // TODO: Implement Ellipse Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let a = parseFloat(aStr);
+            let b = parseFloat(bStr);
+
+            if (isNaN(a) || isNaN(b)) {
+                throw new Error('Please enter valid numbers');
+            }
+
+            if (a <= 0 || b <= 0) {
+                throw new Error('Both axes must be greater than 0');
+            }
+
+            // Swap if a < b so that a is always the semi-major axis
+            let swapped = false;
+            if (a < b) {
+                [a, b] = [b, a];
+                swapped = true;
+            }
+
+            // Calculate area: A = pi * a * b
+            const area = Math.PI * a * b;
+
+            // Calculate perimeter using Ramanujan's approximation:
+            // h = ((a - b)^2) / ((a + b)^2)
+            // P ~= pi * (a + b) * (1 + 3h / (10 + sqrt(4 - 3h)))
+            const h = Math.pow(a - b, 2) / Math.pow(a + b, 2);
+            const perimeter = Math.PI * (a + b) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
+
+            // Calculate eccentricity: e = sqrt(1 - b^2/a^2)
+            const eccentricity = Math.sqrt(1 - Math.pow(b, 2) / Math.pow(a, 2));
+
+            // Calculate focal distance: c = sqrt(a^2 - b^2)
+            const focalDistance = Math.sqrt(Math.pow(a, 2) - Math.pow(b, 2));
+
+            // Build result HTML
+            const swapNote = swapped ? '<div style="font-size:0.75rem;color:#6b7280;margin-bottom:0.75rem;font-style:italic;">Note: Inputs were swapped so that a >= b</div>' : '';
+
+            const resultHTML = `
+                ${swapNote}
+                <div style="text-align:left;">
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Semi-Major Axis (a)</div>
+                        <div style="font-size:1.25rem;font-weight:600;color:var(--primary);">${formatNumber(a, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Semi-Minor Axis (b)</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(b, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Area</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(area, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: A = pi * a * b = pi * ${formatNumber(a, 4)} * ${formatNumber(b, 4)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Perimeter (Ramanujan)</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(perimeter, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: P ~= pi*(a+b)*(1 + 3h/(10+sqrt(4-3h))), h=${formatNumber(h, 6)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Eccentricity</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(eccentricity, 6)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: e = sqrt(1 - b^2/a^2) = ${formatNumber(eccentricity, 6)}</div>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Focal Distance</div>
+                        <div style="font-size:1.25rem;font-weight:600;">${formatNumber(focalDistance, 4)}</div>
+                        <div style="font-size:0.75rem;color:#6b7280;margin-top:0.25rem;">Formula: c = sqrt(a^2 - b^2) = sqrt(${formatNumber(a, 4)}^2 - ${formatNumber(b, 4)}^2)</div>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = resultHTML;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
     }
-    
+
     // Clear function
     function clear() {
-        inputEl.value = '';
+        semiMajorInput.value = '';
+        semiMinorInput.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        semiMajorInput.focus();
     }
-    
+
     // Event listeners
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
+
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
             copyToClipboard(outputEl.textContent);
         });
     }
-    
+
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             calculate();
         }
