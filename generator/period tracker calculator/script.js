@@ -229,40 +229,176 @@ function initTool(toolInfo) {
  * Track and predict menstrual cycles
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Period Tracker Calculator', icon: '📅' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const lastPeriodDateEl = $('#lastPeriodDate');
+    const cycleLengthEl = $('#cycleLength');
+    const periodDurationEl = $('#periodDuration');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
+    // Set today's date as default for lastPeriodDate
+    const today = new Date();
+    lastPeriodDateEl.value = formatDate(today, 'YYYY-MM-DD');
     
-    // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
+        const lastDateVal = lastPeriodDateEl.value;
+        const cycleLength = parseInt(cycleLengthEl.value);
+        const periodDuration = parseInt(periodDurationEl.value);
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        // Reset
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        // Validation
+        if (!lastDateVal) {
+            showError('Please select the first day of your last period.');
             return;
         }
-        
+
+        if (isNaN(cycleLength) || cycleLength < 20 || cycleLength > 45) {
+            showError('Average cycle length must be between 20 and 45 days.');
+            return;
+        }
+
+        if (isNaN(periodDuration) || periodDuration < 2 || periodDuration > 7) {
+            showError('Period duration must be between 2 and 7 days.');
+            return;
+        }
+
         try {
-            // TODO: Implement Period Tracker Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const lastDate = new Date(lastDateVal);
+            const nextPeriodDate = addDays(lastDate, cycleLength);
+            const ovulationDate = addDays(nextPeriodDate, -14);
+            const fertileStart = addDays(ovulationDate, -5);
+            const fertileEnd = addDays(ovulationDate, 1);
+
+            let html = `
+                <div class="period-results">
+                    <div class="result-item">
+                        <span class="result-label">Next Period Starts:</span>
+                        <span class="result-value">${formatDate(nextPeriodDate, 'DD MMM YYYY')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Predicted Ovulation:</span>
+                        <span class="result-value">${formatDate(ovulationDate, 'DD MMM YYYY')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Fertile Window:</span>
+                        <span class="result-value">${formatDate(fertileStart, 'DD MMM')} - ${formatDate(fertileEnd, 'DD MMM YYYY')}</span>
+                    </div>
+                </div>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">${formatDate(nextPeriodDate, 'MMMM YYYY')}</div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day header">S</div>
+                        <div class="calendar-day header">M</div>
+                        <div class="calendar-day header">T</div>
+                        <div class="calendar-day header">W</div>
+                        <div class="calendar-day header">T</div>
+                        <div class="calendar-day header">F</div>
+                        <div class="calendar-day header">S</div>
+                        ${generateCalendarDays(nextPeriodDate, lastDate, cycleLength, periodDuration)}
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-color" style="background: #ef4444;"></div> Period</div>
+                        <div class="legend-item"><div class="legend-color" style="background: #22c55e;"></div> Fertile</div>
+                        <div class="legend-item"><div class="legend-color" style="background: #a855f7;"></div> Ovulation</div>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('An error occurred during calculation: ' + error.message);
         }
     }
+
+    function generateCalendarDays(referenceDate, lastDate, cycleLength, periodDuration) {
+        const year = referenceDate.getFullYear();
+        const month = referenceDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        const startingDay = firstDay.getDay(); // 0-6 (Sun-Sat)
+        const totalDays = lastDay.getDate();
+        
+        let daysHtml = '';
+        
+        // Empty slots for previous month
+        for (let i = 0; i < startingDay; i++) {
+            daysHtml += '<div class="calendar-day"></div>';
+        }
+        
+        const todayStr = formatDate(new Date(), 'YYYY-MM-DD');
+
+        // Predicted dates
+        // We need to calculate for the current month shown in the calendar
+        // Period can repeat multiple times if the cycle is short
+        
+        for (let day = 1; day <= totalDays; day++) {
+            const currentDate = new Date(year, month, day);
+            const currentDateStr = formatDate(currentDate, 'YYYY-MM-DD');
+            let classes = ['calendar-day'];
+            
+            if (currentDateStr === todayStr) classes.push('today');
+
+            // Find if this date is part of any period or fertile window
+            // Check multiple cycles around the reference date
+            const cycleDays = [0, cycleLength, cycleLength * 2, -cycleLength];
+            
+            let isPeriod = false;
+            let isFertile = false;
+            let isOvulation = false;
+
+            for (let offset of cycleDays) {
+                const pStart = addDays(lastDate, offset);
+                const pEnd = addDays(pStart, periodDuration - 1);
+                const nextPStart = addDays(pStart, cycleLength);
+                const ovDate = addDays(nextPStart, -14);
+                const fStart = addDays(ovDate, -5);
+                const fEnd = addDays(ovDate, 1);
+
+                if (currentDate >= pStart && currentDate <= pEnd) isPeriod = true;
+                if (currentDate >= fStart && currentDate <= fEnd) isFertile = true;
+                if (currentDate.getTime() === ovDate.getTime()) isOvulation = true;
+            }
+
+            if (isPeriod) classes.push('menstruation');
+            else if (isOvulation) classes.push('ovulation');
+            else if (isFertile) classes.push('fertile');
+
+            daysHtml += `<div class="${classes.join(' ')}">${day}</div>`;
+        }
+        
+        return daysHtml;
+    }
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
+    }
     
-    // Clear function
     function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+        lastPeriodDateEl.value = formatDate(new Date(), 'YYYY-MM-DD');
+        cycleLengthEl.value = 28;
+        periodDurationEl.value = 5;
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
     }
     
     // Event listeners
@@ -271,14 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const text = outputEl.innerText;
+            copyToClipboard(text);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
-    });
+
+    // Auto-calculate on init
+    calculate();
 });

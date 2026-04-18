@@ -7,6 +7,16 @@
     <meta name="theme-color" content="#2563eb">
     <title>📐 Prism Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .result-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+        .result-label { font-weight: 600; color: #475569; }
+        .result-value { color: #1e293b; font-weight: 500; }
+        .bg-light { background-color: #f8fafc; }
+        .p-3 { padding: 0.75rem; }
+        .rounded { border-radius: 0.5rem; }
+        .small { font-size: 0.875rem; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -19,24 +29,83 @@
             <p class="text-muted mb-2">Calculate prism volume and surface area</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="prismType">Prism Type</label>
+                    <select id="prismType" class="form-input">
+                        <option value="rectangular">Rectangular Prism</option>
+                        <option value="triangular">Triangular Prism</option>
+                        <option value="square">Square Prism (Cuboid)</option>
+                        <option value="n-gonal">Regular n-gonal Prism</option>
+                    </select>
+                </div>
+
+                <div id="rectangularInputs" class="prism-inputs">
+                    <div class="form-group">
+                        <label class="form-label" for="rectLength">Length (l)</label>
+                        <input type="number" id="rectLength" class="form-input" min="0.000001" step="any" placeholder="e.g. 5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="rectWidth">Width (w)</label>
+                        <input type="number" id="rectWidth" class="form-input" min="0.000001" step="any" placeholder="e.g. 3">
+                    </div>
+                </div>
+
+                <div id="triangularInputs" class="prism-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="triBase">Triangle Base (a)</label>
+                        <input type="number" id="triBase" class="form-input" min="0.000001" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="triHeight">Triangle Height (h_t)</label>
+                        <input type="number" id="triHeight" class="form-input" min="0.000001" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="triSideB">Side B</label>
+                        <input type="number" id="triSideB" class="form-input" min="0.000001" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="triSideC">Side C</label>
+                        <input type="number" id="triSideC" class="form-input" min="0.000001" step="any">
+                    </div>
+                </div>
+
+                <div id="squareInputs" class="prism-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="squareSide">Base Side (s)</label>
+                        <input type="number" id="squareSide" class="form-input" min="0.000001" step="any">
+                    </div>
+                </div>
+
+                <div id="n-gonalInputs" class="prism-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="nSides">Number of Sides (n)</label>
+                        <input type="number" id="nSides" class="form-input" min="3" step="1" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="sideLength">Side Length (s)</label>
+                        <input type="number" id="sideLength" class="form-input" min="0.000001" step="any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="prismHeight">Prism Height (H)</label>
+                    <input type="number" id="prismHeight" class="form-input" min="0.000001" step="any" placeholder="e.g. 10">
                 </div>
                 
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-bottom: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Results</div>
+                    <div id="output"></div>
                 </div>
                 
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

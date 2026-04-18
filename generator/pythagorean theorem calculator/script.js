@@ -229,56 +229,130 @@ function initTool(toolInfo) {
  * Calculate sides of right triangles
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Pythagorean Theorem Calculator', icon: '📐' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const sideAEl = $('#sideA');
+    const sideBEl = $('#sideB');
+    const sideCEl = $('#sideC');
+    
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
     function calculate() {
-        const input = inputEl.value.trim();
+        const aVal = sideAEl.value;
+        const bVal = sideBEl.value;
+        const cVal = sideCEl.value;
+
+        const a = aVal ? parseFloat(aVal) : NaN;
+        const b = bVal ? parseFloat(bVal) : NaN;
+        const c = cVal ? parseFloat(cVal) : NaN;
+
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        const inputs = [aVal, bVal, cVal].filter(v => v !== '');
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        if (inputs.length < 2) {
+            showError('Please enter at least two sides.');
             return;
         }
-        
+
+        if (inputs.length === 3) {
+            showError('Please leave one side blank to calculate.');
+            return;
+        }
+
         try {
-            // TODO: Implement Pythagorean Theorem Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let resultValue = 0;
+            let label = '';
+            let step = '';
+
+            if (isNaN(c)) {
+                // Calculate hypotenuse: c = sqrt(a^2 + b^2)
+                if (a <= 0 || b <= 0) {
+                    showError('Sides a and b must be positive numbers.');
+                    return;
+                }
+                resultValue = Math.sqrt(a * a + b * b);
+                label = 'Hypotenuse (c)';
+                step = `c = √(${a}² + ${b}²) = √(${a*a} + ${b*b}) = √${a*a + b*b}`;
+            } else if (isNaN(a)) {
+                // Calculate side a: a = sqrt(c^2 - b^2)
+                if (c <= 0 || b <= 0) {
+                    showError('Side b and hypotenuse c must be positive.');
+                    return;
+                }
+                if (c <= b) {
+                    showError('Hypotenuse c must be greater than side b.');
+                    return;
+                }
+                resultValue = Math.sqrt(c * c - b * b);
+                label = 'Side (a)';
+                step = `a = √(${c}² - ${b}²) = √(${c*c} - ${b*b}) = √${c*c - b*b}`;
+            } else if (isNaN(b)) {
+                // Calculate side b: b = sqrt(c^2 - a^2)
+                if (c <= 0 || a <= 0) {
+                    showError('Side a and hypotenuse c must be positive.');
+                    return;
+                }
+                if (c <= a) {
+                    showError('Hypotenuse c must be greater than side a.');
+                    return;
+                }
+                resultValue = Math.sqrt(c * c - a * a);
+                label = 'Side (b)';
+                step = `b = √(${c}² - ${a}²) = √(${c*c} - ${a*a}) = √${c*c - a*a}`;
+            }
+
+            let html = `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">${label}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">
+                        ${formatNumber(resultValue, 4)}
+                    </div>
+                    <div class="p-3 bg-light rounded small text-muted">
+                        <strong>Calculation:</strong><br>
+                        ${step}<br>
+                        = ${formatNumber(resultValue, 6)}
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        sideAEl.value = '';
+        sideBEl.value = '';
+        sideCEl.value = '';
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
     });
 });

@@ -229,56 +229,199 @@ function initTool(toolInfo) {
  * Calculate Poisson distribution probabilities
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Poisson Distribution Calculator', icon: '📊' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const lambdaEl = $('#lambda');
+    const kValueEl = $('#kValue');
+    const modeEl = $('#mode');
+    const rangeInputs = $('#rangeInputs');
+    const aValueEl = $('#aValue');
+    const bValueEl = $('#bValue');
+    
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
+    // Toggle range inputs
+    modeEl.addEventListener('change', () => {
+        if (modeEl.value === 'range') {
+            rangeInputs.style.display = 'block';
+            $('#kValue').closest('.form-group').style.display = 'none';
+        } else {
+            rangeInputs.style.display = 'none';
+            $('#kValue').closest('.form-group').style.display = 'block';
+        }
+    });
+
+    function factorial(n) {
+        if (n < 0) return 0;
+        if (n === 0 || n === 1) return 1;
+        let res = 1;
+        for (let i = 2; i <= n; i++) res *= i;
+        return res;
+    }
+
+    function lnFactorial(n) {
+        if (n < 2) return 0;
+        let res = 0;
+        for (let i = 2; i <= n; i++) res += Math.log(i);
+        return res;
+    }
+
+    function poissonPMF(k, lambda) {
+        if (k < 0) return 0;
+        // P(X=k) = exp(k * ln(lambda) - lambda - lnFactorial(k))
+        return Math.exp(k * Math.log(lambda) - lambda - lnFactorial(k));
+    }
+
+    function poissonCDF(k, lambda) {
+        let sum = 0;
+        for (let i = 0; i <= k; i++) {
+            sum += poissonPMF(i, lambda);
+        }
+        return sum;
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
+        const lambda = parseFloat(lambdaEl.value);
+        const mode = modeEl.value;
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        if (isNaN(lambda) || lambda <= 0) {
+            showError('Average rate (λ) must be greater than 0.');
             return;
         }
-        
+
+        let resultProb = 0;
+        let label = '';
+
         try {
-            // TODO: Implement Poisson Distribution Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            if (mode === 'range') {
+                const a = parseInt(aValueEl.value);
+                const b = parseInt(bValueEl.value);
+                if (isNaN(a) || isNaN(b) || a < 0 || b < 0 || a > b) {
+                    showError('Please enter valid range [a, b] where 0 ≤ a ≤ b.');
+                    return;
+                }
+                for (let i = a; i <= b; i++) {
+                    resultProb += poissonPMF(i, lambda);
+                }
+                label = `P(${a} ≤ X ≤ ${b})`;
+            } else {
+                const k = parseInt(kValueEl.value);
+                if (isNaN(k) || k < 0) {
+                    showError('Number of events (k) must be a non-negative integer.');
+                    return;
+                }
+
+                if (mode === 'exactly') {
+                    resultProb = poissonPMF(k, lambda);
+                    label = `P(X = ${k})`;
+                } else if (mode === 'lessThanEqual') {
+                    resultProb = poissonCDF(k, lambda);
+                    label = `P(X ≤ ${k})`;
+                } else if (mode === 'greaterThan') {
+                    resultProb = 1 - poissonCDF(k, lambda);
+                    label = `P(X > ${k})`;
+                }
+            }
+
+            const mean = lambda;
+            const stdDev = Math.sqrt(lambda);
+
+            let html = `
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="font-size: 1.25rem; font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">
+                        ${label} = ${formatNumber(resultProb, 6)} (${formatPercent(resultProb, 4)})
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Mean (E[X])</div>
+                            <div class="font-weight-bold">${formatNumber(mean, 4)}</div>
+                        </div>
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Std Dev (σ)</div>
+                            <div class="font-weight-bold">${formatNumber(stdDev, 4)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <div class="font-weight-bold mb-2">Probability Distribution Table (k = 0 to ${Math.max(10, Math.ceil(lambda * 2))})</div>
+                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 0.5rem;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead style="background: #f8fafc; position: sticky; top: 0;">
+                                <tr>
+                                    <th style="padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">k</th>
+                                    <th style="padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">P(X = k)</th>
+                                    <th style="padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">P(X ≤ k)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+            const maxTableK = Math.max(10, Math.ceil(lambda * 2));
+            let cumulative = 0;
+            for (let i = 0; i <= maxTableK; i++) {
+                const pmf = poissonPMF(i, lambda);
+                cumulative += pmf;
+                html += `
+                    <tr>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid #f1f5f9;">${i}</td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid #f1f5f9;">${formatNumber(pmf, 6)}</td>
+                        <td style="padding: 0.5rem; border-bottom: 1px solid #f1f5f9;">${formatNumber(cumulative, 6)}</td>
+                    </tr>
+                `;
+                if (cumulative > 0.99999 && i > lambda) break;
+            }
+
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        lambdaEl.value = '';
+        kValueEl.value = '';
+        aValueEl.value = 0;
+        bValueEl.value = 5;
+        modeEl.value = 'exactly';
+        rangeInputs.style.display = 'none';
+        $('#kValue').closest('.form-group').style.display = 'block';
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
     });
 });

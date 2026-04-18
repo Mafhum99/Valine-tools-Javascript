@@ -7,6 +7,12 @@
     <meta name="theme-color" content="#2563eb">
     <title>🔺 Pyramid Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .result-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+        .result-label { font-weight: 600; color: #475569; }
+        .result-value { color: #1e293b; font-weight: 500; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -19,24 +25,59 @@
             <p class="text-muted mb-2">Calculate pyramid volume and surface area</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="pyramidType">Pyramid Type</label>
+                    <select id="pyramidType" class="form-input">
+                        <option value="square">Square Pyramid</option>
+                        <option value="triangular">Triangular Pyramid (Regular)</option>
+                        <option value="n-gonal">Regular n-gonal Pyramid</option>
+                    </select>
+                </div>
+
+                <div id="squareInputs" class="pyramid-inputs">
+                    <div class="form-group">
+                        <label class="form-label" for="squareSide">Base Side (s)</label>
+                        <input type="number" id="squareSide" class="form-input" min="0.000001" step="any" placeholder="e.g. 6">
+                    </div>
+                </div>
+
+                <div id="triangularInputs" class="pyramid-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="triBase">Base Side (a)</label>
+                        <input type="number" id="triBase" class="form-input" min="0.000001" step="any">
+                    </div>
+                </div>
+
+                <div id="n-gonalInputs" class="pyramid-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="nSides">Number of Base Sides (n)</label>
+                        <input type="number" id="nSides" class="form-input" min="3" step="1" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="sideLength">Side Length (s)</label>
+                        <input type="number" id="sideLength" class="form-input" min="0.000001" step="any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="pyramidHeight">Pyramid Height (H)</label>
+                    <input type="number" id="pyramidHeight" class="form-input" min="0.000001" step="any" placeholder="e.g. 10">
                 </div>
                 
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-bottom: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Results</div>
+                    <div id="output"></div>
                 </div>
                 
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

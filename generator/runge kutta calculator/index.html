@@ -3,10 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Solve ODEs using Runge-Kutta method">
+    <meta name="description" content="Solve Ordinary Differential Equations (ODEs) using the 4th Order Runge-Kutta method (RK4).">
     <meta name="theme-color" content="#2563eb">
     <title>📊 Runge-Kutta Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid var(--gray-200);
+            padding: 0.5rem;
+            text-align: left;
+        }
+        .result-table th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+        }
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+        }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -16,22 +40,44 @@
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Solve ODEs using Runge-Kutta method</p>
+            <p class="text-muted mb-2">Solve dy/dx = f(x, y) using the 4th Order Runge-Kutta (RK4) method.</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="function">Function f(x, y)</label>
+                    <input type="text" id="function" class="form-input" placeholder="e.g., x + y or x * Math.exp(y)" value="x + y">
+                    <small class="text-muted">Use JavaScript syntax (e.g., Math.sin(x), Math.pow(x, 2))</small>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="x0">Initial x (x₀)</label>
+                        <input type="number" id="x0" class="form-input" placeholder="0" value="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="y0">Initial y (y₀)</label>
+                        <input type="number" id="y0" class="form-input" placeholder="0" value="1" step="any">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="h">Step Size (h)</label>
+                        <input type="number" id="h" class="form-input" placeholder="0.1" value="0.1" step="any" min="0.000001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="steps">Number of Steps</label>
+                        <input type="number" id="steps" class="form-input" placeholder="10" value="10" min="1" max="1000">
+                    </div>
                 </div>
                 
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate RK4</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
                 
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Result (x and y values)</div>
                     <div id="output">-</div>
                 </div>
                 
@@ -42,7 +88,6 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
         <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
         <div class="footer-actions">
@@ -54,5 +99,6 @@
             </a>
         </div>
     </footer>
+    <script src="script.js" defer></script>
 </body>
 </html>

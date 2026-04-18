@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate area of a circular sector">
+    <meta name="description" content="Calculate area and arc length of a circular sector">
     <meta name="theme-color" content="#2563eb">
     <title>🥧 Sector Area Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
@@ -16,13 +16,25 @@
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate area of a circular sector</p>
+            <p class="text-muted mb-2">Calculate area and arc length of a circular sector based on radius and central angle.</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="radius">Radius (r)</label>
+                    <input type="number" id="radius" class="form-input" placeholder="Enter radius..." step="any" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="angle">Central Angle (θ)</label>
+                    <input type="number" id="angle" class="form-input" placeholder="Enter angle..." step="any">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="unit">Angle Unit</label>
+                    <select id="unit" class="form-select">
+                        <option value="degrees">Degrees (°)</option>
+                        <option value="radians">Radians (rad)</option>
+                    </select>
                 </div>
                 
                 <div class="btn-group">
@@ -42,7 +54,6 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
         <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
         <div class="footer-actions">
@@ -54,5 +65,6 @@
             </a>
         </div>
     </footer>
+    <script src="script.js" defer></script>
 </body>
 </html>

@@ -229,56 +229,71 @@ function initTool(toolInfo) {
  * Convert radians to degrees
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Radian to Degree Converter', icon: '🔄' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const radianInputEl = $('#radianInput');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
+    // Preset buttons
+    $$('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            radianInputEl.value = btn.dataset.value;
+            calculate();
+        });
+    });
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const radians = parseFloat(radianInputEl.value);
+
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        if (isNaN(radians)) {
+            showError('Please enter a valid number for radians.');
             return;
         }
-        
+
         try {
-            // TODO: Implement Radian to Degree Converter logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const degrees = radians * (180 / Math.PI);
+            outputEl.textContent = formatNumber(degrees, 4) + '°';
+            
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Conversion error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        radianInputEl.value = '';
+        outputEl.textContent = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.textContent);
+    });
+
+    radianInputEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
 });

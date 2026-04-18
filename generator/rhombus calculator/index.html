@@ -7,6 +7,13 @@
     <meta name="theme-color" content="#2563eb">
     <title>🔷 Rhombus Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .result-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+        .result-label { font-weight: 600; color: #475569; }
+        .result-value { color: #1e293b; font-weight: 500; }
+        .info-text { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -16,27 +23,38 @@
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate rhombus area and perimeter</p>
+            <p class="text-muted mb-2">Calculate rhombus area, perimeter, and missing properties</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="rhoSide">Side (s)</label>
+                    <input type="number" id="rhoSide" class="form-input" step="any" min="0" placeholder="Optional">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="rhoDiag1">Diagonal 1 (d1)</label>
+                    <input type="number" id="rhoDiag1" class="form-input" step="any" min="0" placeholder="Required for area">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="rhoDiag2">Diagonal 2 (d2)</label>
+                    <input type="number" id="rhoDiag2" class="form-input" step="any" min="0" placeholder="Required for area">
                 </div>
                 
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-top: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Results</div>
+                    <div id="output"></div>
                 </div>
                 
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

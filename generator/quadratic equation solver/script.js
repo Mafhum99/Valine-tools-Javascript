@@ -226,59 +226,129 @@ function initTool(toolInfo) {
 
 /**
  * Quadratic Equation Solver
- * Solve quadratic equations (ax²+bx+c=0)
+ * Solve quadratic equations (ax² + bx + c = 0)
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Quadratic Equation Solver', icon: '📊' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const coeffAEl = $('#coeffA');
+    const coeffBEl = $('#coeffB');
+    const coeffCEl = $('#coeffC');
+    
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const a = parseFloat(coeffAEl.value);
+        const b = parseFloat(coeffBEl.value);
+        const c = parseFloat(coeffCEl.value);
+
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        if (isNaN(a) || isNaN(b) || isNaN(c)) {
+            showError('Please enter all coefficients (a, b, and c).');
             return;
         }
-        
+
+        if (a === 0) {
+            showError('Coefficient "a" cannot be zero in a quadratic equation.');
+            return;
+        }
+
         try {
-            // TODO: Implement Quadratic Equation Solver logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const D = b * b - 4 * a * c;
+            let resultHtml = '';
+            let roots = '';
+
+            resultHtml += `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">Equation</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 1rem;">
+                        ${a}x² ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}x ${c >= 0 ? '+ ' + c : '- ' + Math.abs(c)} = 0
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Discriminant (D):</span>
+                        <span class="result-value">${formatNumber(D, 4)}</span>
+                    </div>
+            `;
+
+            if (D > 0) {
+                const x1 = (-b + Math.sqrt(D)) / (2 * a);
+                const x2 = (-b - Math.sqrt(D)) / (2 * a);
+                roots = `x₁ = ${formatNumber(x1, 4)}, x₂ = ${formatNumber(x2, 4)}`;
+                resultHtml += `
+                    <div class="result-item">
+                        <span class="result-label">Type of Roots:</span>
+                        <span class="result-value">Two distinct real roots</span>
+                    </div>
+                `;
+            } else if (D === 0) {
+                const x = -b / (2 * a);
+                roots = `x = ${formatNumber(x, 4)} (Repeated)`;
+                resultHtml += `
+                    <div class="result-item">
+                        <span class="result-label">Type of Roots:</span>
+                        <span class="result-value">One repeated real root</span>
+                    </div>
+                `;
+            } else {
+                const realPart = -b / (2 * a);
+                const imagPart = Math.sqrt(-D) / (2 * a);
+                roots = `x₁ = ${formatNumber(realPart, 4)} + ${formatNumber(imagPart, 4)}i<br>x₂ = ${formatNumber(realPart, 4)} - ${formatNumber(imagPart, 4)}i`;
+                resultHtml += `
+                    <div class="result-item">
+                        <span class="result-label">Type of Roots:</span>
+                        <span class="result-value">Two complex roots</span>
+                    </div>
+                `;
+            }
+
+            resultHtml += `
+                    <div style="margin-top: 1rem;">
+                        <div style="font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">Roots</div>
+                        <div style="font-size: 1.25rem; font-weight: bold;">
+                            ${roots}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = resultHtml;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        coeffAEl.value = '';
+        coeffBEl.value = '';
+        coeffCEl.value = '';
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
     });
 });

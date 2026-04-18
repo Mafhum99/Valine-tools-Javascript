@@ -229,56 +229,237 @@ function initTool(toolInfo) {
  * Calculate event probabilities
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Probability Calculator', icon: '🎲' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const distTypeEl = $('#distributionType');
+    const probModeEl = $('#probMode');
+    
+    // Input groups
+    const distInputs = {
+        normal: $('#normalInputs'),
+        binomial: $('#binomialInputs'),
+        poisson: $('#poissonInputs'),
+        uniform: $('#uniformInputs')
+    };
+
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
+    // Toggle inputs
+    distTypeEl.addEventListener('change', () => {
+        const selected = distTypeEl.value;
+        Object.keys(distInputs).forEach(key => {
+            distInputs[key].style.display = (key === selected) ? 'block' : 'none';
+        });
+        
+        // Adjust probability modes based on distribution (continuous vs discrete)
+        const isContinuous = ['normal', 'uniform'].includes(selected);
+        if (isContinuous) {
+            // For continuous distributions, P(X=x) is 0
+            Array.from(probModeEl.options).forEach(opt => {
+                if (opt.value === 'equal') opt.disabled = true;
+            });
+            if (probModeEl.value === 'equal') probModeEl.value = 'lessEqual';
+        } else {
+            Array.from(probModeEl.options).forEach(opt => {
+                opt.disabled = false;
+            });
+        }
+    });
+
+    // Math functions
+    function erf(x) {
+        // Abramowitz and Stegun approximation
+        const a1 =  0.254829592;
+        const a2 = -0.284496736;
+        const a3 =  1.421413741;
+        const a4 = -1.453152027;
+        const a5 =  1.061405429;
+        const p  =  0.3275911;
+
+        const sign = (x < 0) ? -1 : 1;
+        x = Math.abs(x);
+
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+        return sign * y;
+    }
+
+    function normalCDF(x, mean, std) {
+        return 0.5 * (1 + erf((x - mean) / (std * Math.sqrt(2))));
+    }
+
+    function nCr(n, r) {
+        if (r < 0 || r > n) return 0;
+        if (r === 0 || r === n) return 1;
+        if (r > n / 2) r = n - r;
+        let res = 1;
+        for (let i = 1; i <= r; i++) {
+            res = res * (n - i + 1) / i;
+        }
+        return res;
+    }
+
+    function binomialPMF(k, n, p) {
+        return nCr(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    }
+
+    function binomialCDF(k, n, p) {
+        let sum = 0;
+        for (let i = 0; i <= k; i++) sum += binomialPMF(i, n, p);
+        return sum;
+    }
+
+    function factorial(n) {
+        if (n < 2) return 1;
+        let res = 1;
+        for (let i = 2; i <= n; i++) res *= i;
+        return res;
+    }
+
+    function poissonPMF(k, lambda) {
+        return Math.exp(-lambda) * Math.pow(lambda, k) / factorial(k);
+    }
+
+    function poissonCDF(k, lambda) {
+        let sum = 0;
+        for (let i = 0; i <= k; i++) sum += poissonPMF(i, lambda);
+        return sum;
+    }
+
     function calculate() {
-        const input = inputEl.value.trim();
+        const dist = distTypeEl.value;
+        const mode = probModeEl.value;
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
-            return;
-        }
-        
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        let prob = 0;
+        let mean = 0;
+        let variance = 0;
+        let distName = '';
+        let xVal = 0;
+
         try {
-            // TODO: Implement Probability Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            if (dist === 'normal') {
+                const mu = parseFloat($('#normMean').value);
+                const sigma = parseFloat($('#normStd').value);
+                xVal = parseFloat($('#normX').value);
+                if (isNaN(mu) || isNaN(sigma) || isNaN(xVal) || sigma <= 0) {
+                    showError('Please enter valid Normal parameters (σ > 0).');
+                    return;
+                }
+                const cdf = normalCDF(xVal, mu, sigma);
+                prob = (mode === 'lessEqual') ? cdf : (1 - cdf);
+                mean = mu;
+                variance = sigma * sigma;
+                distName = `Normal Distribution (μ=${mu}, σ=${sigma})`;
+            } else if (dist === 'binomial') {
+                const n = parseInt($('#binN').value);
+                const p = parseFloat($('#binP').value);
+                xVal = parseInt($('#binK').value);
+                if (isNaN(n) || isNaN(p) || isNaN(xVal) || n < 1 || p < 0 || p > 1 || xVal < 0 || xVal > n) {
+                    showError('Please enter valid Binomial parameters (0 ≤ p ≤ 1, 0 ≤ k ≤ n).');
+                    return;
+                }
+                if (mode === 'equal') prob = binomialPMF(xVal, n, p);
+                else if (mode === 'lessEqual') prob = binomialCDF(xVal, n, p);
+                else prob = 1 - binomialCDF(xVal, n, p);
+                mean = n * p;
+                variance = n * p * (1 - p);
+                distName = `Binomial Distribution (n=${n}, p=${p})`;
+            } else if (dist === 'poisson') {
+                const lambda = parseFloat($('#poiLambda').value);
+                xVal = parseInt($('#poiK').value);
+                if (isNaN(lambda) || isNaN(xVal) || lambda <= 0 || xVal < 0) {
+                    showError('Please enter valid Poisson parameters (λ > 0, k ≥ 0).');
+                    return;
+                }
+                if (mode === 'equal') prob = poissonPMF(xVal, lambda);
+                else if (mode === 'lessEqual') prob = poissonCDF(xVal, lambda);
+                else prob = 1 - poissonCDF(xVal, lambda);
+                mean = lambda;
+                variance = lambda;
+                distName = `Poisson Distribution (λ=${lambda})`;
+            } else if (dist === 'uniform') {
+                const a = parseFloat($('#uniA').value);
+                const b = parseFloat($('#uniB').value);
+                xVal = parseFloat($('#uniX').value);
+                if (isNaN(a) || isNaN(b) || isNaN(xVal) || a >= b) {
+                    showError('Please enter valid Uniform parameters (a < b).');
+                    return;
+                }
+                let cdf = 0;
+                if (xVal < a) cdf = 0;
+                else if (xVal > b) cdf = 1;
+                else cdf = (xVal - a) / (b - a);
+                prob = (mode === 'lessEqual') ? cdf : (1 - cdf);
+                mean = (a + b) / 2;
+                variance = Math.pow(b - a, 2) / 12;
+                distName = `Uniform Distribution [${a}, ${b}]`;
+            }
+
+            let modeLabel = '';
+            if (mode === 'equal') modeLabel = `P(X = ${xVal})`;
+            else if (mode === 'lessEqual') modeLabel = `P(X ≤ ${xVal})`;
+            else modeLabel = `P(X > ${xVal})`;
+
+            let html = `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">${distName}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+                        ${modeLabel} = ${formatNumber(prob, 6)}
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Mean</div>
+                            <div class="font-weight-bold">${formatNumber(mean, 4)}</div>
+                        </div>
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Variance</div>
+                            <div class="font-weight-bold">${formatNumber(variance, 4)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        $$('.dist-inputs input').forEach(input => {
+            const defaultValue = input.getAttribute('value');
+            input.value = defaultValue !== null ? defaultValue : '';
+        });
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
     });
 });

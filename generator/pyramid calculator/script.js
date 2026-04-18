@@ -229,56 +229,141 @@ function initTool(toolInfo) {
  * Calculate pyramid volume and surface area
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Pyramid Calculator', icon: '🔺' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const pyramidTypeEl = $('#pyramidType');
+    const pyramidHeightEl = $('#pyramidHeight');
+    
+    // Input groups
+    const inputGroups = {
+        square: $('#squareInputs'),
+        triangular: $('#triangularInputs'),
+        'n-gonal': $('#n-gonalInputs')
+    };
+
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
+    // Toggle inputs
+    pyramidTypeEl.addEventListener('change', () => {
+        const selected = pyramidTypeEl.value;
+        Object.keys(inputGroups).forEach(key => {
+            inputGroups[key].style.display = (key === selected) ? 'block' : 'none';
+        });
+    });
+
     function calculate() {
-        const input = inputEl.value.trim();
+        const type = pyramidTypeEl.value;
+        const H = parseFloat(pyramidHeightEl.value);
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        if (isNaN(H) || H <= 0) {
+            showError('Pyramid height must be a positive number.');
             return;
         }
-        
+
+        let baseArea = 0;
+        let basePerimeter = 0;
+        let apothem = 0;
+        let typeLabel = '';
+
         try {
-            // TODO: Implement Pyramid Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            if (type === 'square') {
+                const s = parseFloat($('#squareSide').value);
+                if (isNaN(s) || s <= 0) {
+                    showError('Base side must be a positive number.');
+                    return;
+                }
+                baseArea = s * s;
+                basePerimeter = 4 * s;
+                apothem = s / 2;
+                typeLabel = 'Square Pyramid';
+            } else if (type === 'triangular') {
+                const s = parseFloat($('#triBase').value);
+                if (isNaN(s) || s <= 0) {
+                    showError('Base side must be a positive number.');
+                    return;
+                }
+                baseArea = (Math.sqrt(3) / 4) * s * s;
+                basePerimeter = 3 * s;
+                apothem = s / (2 * Math.sqrt(3));
+                typeLabel = 'Regular Triangular Pyramid';
+            } else if (type === 'n-gonal') {
+                const n = parseInt($('#nSides').value);
+                const s = parseFloat($('#sideLength').value);
+                if (isNaN(n) || n < 3 || isNaN(s) || s <= 0) {
+                    showError('Sides must be ≥ 3 and side length must be positive.');
+                    return;
+                }
+                baseArea = (n * s * s) / (4 * Math.tan(Math.PI / n));
+                basePerimeter = n * s;
+                apothem = s / (2 * Math.tan(Math.PI / n));
+                typeLabel = `Regular ${n}-gonal Pyramid`;
+            }
+
+            const volume = (1/3) * baseArea * H;
+            const slantHeight = Math.sqrt(H * H + apothem * apothem);
+            const lateralArea = 0.5 * basePerimeter * slantHeight;
+            const surfaceArea = baseArea + lateralArea;
+
+            let html = `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">${typeLabel}</div>
+                    <div class="result-item">
+                        <span class="result-label">Volume:</span>
+                        <span class="result-value">${formatNumber(volume, 4)} units³</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Surface Area:</span>
+                        <span class="result-value">${formatNumber(surfaceArea, 4)} units²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Slant Height:</span>
+                        <span class="result-value">${formatNumber(slantHeight, 4)} units</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Base Area:</span>
+                        <span class="result-value">${formatNumber(baseArea, 4)} units²</span>
+                    </div>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        pyramidHeightEl.value = '';
+        $$('.pyramid-inputs input').forEach(input => input.value = '');
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
     });
 });

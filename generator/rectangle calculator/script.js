@@ -229,56 +229,86 @@ function initTool(toolInfo) {
  * Calculate rectangle properties
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Rectangle Calculator', icon: '▬' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const lengthEl = $('#rectLength');
+    const widthEl = $('#rectWidth');
+    
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const l = parseFloat(lengthEl.value);
+        const w = parseFloat(widthEl.value);
+
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        if (isNaN(l) || isNaN(w) || l <= 0 || w <= 0) {
+            showError('Please enter valid positive numbers for length and width.');
             return;
         }
-        
+
         try {
-            // TODO: Implement Rectangle Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const area = l * w;
+            const perimeter = 2 * (l + w);
+            const diagonal = Math.sqrt(l * l + w * w);
+
+            let html = `
+                <div class="result-item">
+                    <span class="result-label">Area:</span>
+                    <span class="result-value">${formatNumber(area, 4)} units²</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Perimeter:</span>
+                    <span class="result-value">${formatNumber(perimeter, 4)} units</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Diagonal:</span>
+                    <span class="result-value">${formatNumber(diagonal, 4)} units</span>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        lengthEl.value = '';
+        widthEl.value = '';
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
+    });
+
+    [lengthEl, widthEl].forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
         });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
     });
 });

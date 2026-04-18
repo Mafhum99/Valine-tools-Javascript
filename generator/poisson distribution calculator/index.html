@@ -7,6 +7,17 @@
     <meta name="theme-color" content="#2563eb">
     <title>📊 Poisson Distribution Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .result-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+        .result-label { font-weight: 600; color: #475569; }
+        .result-value { color: #1e293b; font-weight: 500; }
+        .bg-light { background-color: #f8fafc; }
+        .p-3 { padding: 0.75rem; }
+        .rounded { border-radius: 0.5rem; }
+        .small { font-size: 0.875rem; }
+        .font-weight-bold { font-weight: bold; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -19,24 +30,55 @@
             <p class="text-muted mb-2">Calculate Poisson distribution probabilities</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="lambda">Average Rate (λ)</label>
+                    <input type="number" id="lambda" class="form-input" step="any" min="0.000001" placeholder="e.g. 5">
+                    <small class="text-muted">Average number of events in an interval (λ > 0)</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="kValue">Number of Events (k)</label>
+                    <input type="number" id="kValue" class="form-input" min="0" step="1" placeholder="e.g. 3">
+                    <small class="text-muted">Actual number of events (k ≥ 0)</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="mode">Probability Mode</label>
+                    <select id="mode" class="form-input">
+                        <option value="exactly">Exactly: P(X = k)</option>
+                        <option value="lessThanEqual">At Most: P(X ≤ k)</option>
+                        <option value="greaterThan">More Than: P(X > k)</option>
+                        <option value="range">Range: P(a ≤ X ≤ b)</option>
+                    </select>
+                </div>
+
+                <div id="rangeInputs" class="form-group" style="display: none;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label class="form-label" for="aValue">Min (a)</label>
+                            <input type="number" id="aValue" class="form-input" min="0" step="1" value="0">
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="form-label" for="bValue">Max (b)</label>
+                            <input type="number" id="bValue" class="form-input" min="0" step="1" value="5">
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-bottom: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Results</div>
+                    <div id="output"></div>
                 </div>
                 
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

@@ -7,6 +7,12 @@
     <meta name="theme-color" content="#2563eb">
     <title>🔄 Radian to Degree Converter - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .preset-group { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .preset-btn { padding: 0.25rem 0.5rem; font-size: 0.8rem; background: #e2e8f0; border-radius: 4px; cursor: pointer; border: none; }
+        .preset-btn:hover { background: #cbd5e1; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -16,26 +22,35 @@
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Convert radians to degrees</p>
+            <p class="text-muted mb-2">Convert radians to degrees (degrees = radians × 180/π)</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="radianInput">Radians</label>
+                    <input type="number" id="radianInput" class="form-input" step="any" placeholder="e.g. 3.14159">
+                </div>
+
+                <div class="preset-group">
+                    <button class="preset-btn" data-value="3.1415926535">π</button>
+                    <button class="preset-btn" data-value="1.5707963268">π/2</button>
+                    <button class="preset-btn" data-value="1.0471975512">π/3</button>
+                    <button class="preset-btn" data-value="0.7853981634">π/4</button>
+                    <button class="preset-btn" data-value="0.5235987756">π/6</button>
                 </div>
                 
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="calculate" class="btn btn-primary btn-block">Convert</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-top: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Degrees</div>
+                    <div id="output" style="font-size: 1.5rem; font-weight: bold; color: #2563eb;"></div>
                 </div>
                 
-                <div class="btn-group">
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
                     <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
             </div>

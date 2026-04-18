@@ -7,6 +7,12 @@
     <meta name="theme-color" content="#2563eb">
     <title>▬ Rectangle Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .result-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+        .result-label { font-weight: 600; color: #475569; }
+        .result-value { color: #1e293b; font-weight: 500; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -16,27 +22,33 @@
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate rectangle properties</p>
+            <p class="text-muted mb-2">Calculate rectangle area, perimeter, and diagonal</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="rectLength">Length (l)</label>
+                    <input type="number" id="rectLength" class="form-input" step="any" min="0" placeholder="e.g. 10">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="rectWidth">Width (w)</label>
+                    <input type="number" id="rectWidth" class="form-input" step="any" min="0" placeholder="e.g. 5">
                 </div>
                 
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-top: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Results</div>
+                    <div id="output"></div>
                 </div>
                 
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

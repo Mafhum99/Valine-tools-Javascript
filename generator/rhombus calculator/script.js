@@ -229,56 +229,149 @@ function initTool(toolInfo) {
  * Calculate rhombus area and perimeter
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Rhombus Calculator', icon: '🔷' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const sideEl = $('#rhoSide');
+    const diag1El = $('#rhoDiag1');
+    const diag2El = $('#rhoDiag2');
+    
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
-            return;
-        }
-        
+        const s = parseFloat(sideEl.value);
+        const d1 = parseFloat(diag1El.value);
+        const d2 = parseFloat(diag2El.value);
+
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
         try {
-            // TODO: Implement Rhombus Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            let area, perimeter, side, resD1, resD2;
+
+            if (!isNaN(d1) && !isNaN(d2)) {
+                if (d1 <= 0 || d2 <= 0) {
+                    showError('Diagonals must be positive numbers.');
+                    return;
+                }
+                area = (d1 * d2) / 2;
+                side = Math.sqrt(Math.pow(d1 / 2, 2) + Math.pow(d2 / 2, 2));
+                perimeter = 4 * side;
+                resD1 = d1;
+                resD2 = d2;
+
+                // Validate against side if provided
+                if (!isNaN(s) && Math.abs(s - side) > 0.001) {
+                    showError(`The provided side (${s}) is inconsistent with diagonals d1 and d2. Calculated side is ${formatNumber(side, 4)}.`);
+                    return;
+                }
+            } else if (!isNaN(s) && !isNaN(d1)) {
+                if (s <= 0 || d1 <= 0) {
+                    showError('Side and diagonal must be positive.');
+                    return;
+                }
+                if (d1 >= 2 * s) {
+                    showError('Diagonal d1 must be less than 2 * side.');
+                    return;
+                }
+                resD2 = 2 * Math.sqrt(s * s - Math.pow(d1 / 2, 2));
+                area = (d1 * resD2) / 2;
+                perimeter = 4 * s;
+                side = s;
+                resD1 = d1;
+            } else if (!isNaN(s) && !isNaN(d2)) {
+                if (s <= 0 || d2 <= 0) {
+                    showError('Side and diagonal must be positive.');
+                    return;
+                }
+                if (d2 >= 2 * s) {
+                    showError('Diagonal d2 must be less than 2 * side.');
+                    return;
+                }
+                resD1 = 2 * Math.sqrt(s * s - Math.pow(d2 / 2, 2));
+                area = (resD1 * d2) / 2;
+                perimeter = 4 * s;
+                side = s;
+                resD2 = d2;
+            } else if (!isNaN(s)) {
+                if (s <= 0) {
+                    showError('Side must be positive.');
+                    return;
+                }
+                perimeter = 4 * s;
+                side = s;
+                // Cannot calculate area or diagonals with only side
+                showError('Please provide at least one diagonal to calculate area and other properties.');
+                return;
+            } else {
+                showError('Please provide either both diagonals, or side and one diagonal.');
+                return;
+            }
+
+            let html = `
+                <div class="result-item">
+                    <span class="result-label">Area:</span>
+                    <span class="result-value">${formatNumber(area, 4)} units²</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Perimeter:</span>
+                    <span class="result-value">${formatNumber(perimeter, 4)} units</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Side (s):</span>
+                    <span class="result-value">${formatNumber(side, 4)} units</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Diagonal 1 (d1):</span>
+                    <span class="result-value">${formatNumber(resD1, 4)} units</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Diagonal 2 (d2):</span>
+                    <span class="result-value">${formatNumber(resD2, 4)} units</span>
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        sideEl.value = '';
+        diag1El.value = '';
+        diag2El.value = '';
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
+    });
+
+    [sideEl, diag1El, diag2El].forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
         });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
     });
 });

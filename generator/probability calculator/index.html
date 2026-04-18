@@ -7,6 +7,13 @@
     <meta name="theme-color" content="#2563eb">
     <title>🎲 Probability Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #output { font-family: inherit; white-space: normal; }
+        .bg-light { background-color: #f8fafc; }
+        .p-3 { padding: 0.75rem; }
+        .rounded { border-radius: 0.5rem; }
+        .small { font-size: 0.875rem; }
+    </style>
 </head>
 <body>
     <header class="tool-header">
@@ -19,24 +26,99 @@
             <p class="text-muted mb-2">Calculate event probabilities</p>
             
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="distributionType">Distribution</label>
+                    <select id="distributionType" class="form-input">
+                        <option value="normal">Normal Distribution</option>
+                        <option value="binomial">Binomial Distribution</option>
+                        <option value="poisson">Poisson Distribution</option>
+                        <option value="uniform">Uniform Distribution</option>
+                    </select>
+                </div>
+
+                <!-- Normal Distribution Inputs -->
+                <div id="normalInputs" class="dist-inputs">
+                    <div class="form-group">
+                        <label class="form-label" for="normMean">Mean (μ)</label>
+                        <input type="number" id="normMean" class="form-input" value="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="normStd">Std Dev (σ)</label>
+                        <input type="number" id="normStd" class="form-input" value="1" step="any" min="0.000001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="normX">Value (x)</label>
+                        <input type="number" id="normX" class="form-input" value="0" step="any">
+                    </div>
+                </div>
+
+                <!-- Binomial Distribution Inputs -->
+                <div id="binomialInputs" class="dist-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="binN">Trials (n)</label>
+                        <input type="number" id="binN" class="form-input" min="1" step="1" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="binP">Success Probability (p)</label>
+                        <input type="number" id="binP" class="form-input" min="0" max="1" step="0.01" value="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="binK">Successes (k)</label>
+                        <input type="number" id="binK" class="form-input" min="0" step="1" value="5">
+                    </div>
+                </div>
+
+                <!-- Poisson Distribution Inputs -->
+                <div id="poissonInputs" class="dist-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="poiLambda">Average Rate (λ)</label>
+                        <input type="number" id="poiLambda" class="form-input" min="0.000001" step="any" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="poiK">Events (k)</label>
+                        <input type="number" id="poiK" class="form-input" min="0" step="1" value="3">
+                    </div>
+                </div>
+
+                <!-- Uniform Distribution Inputs -->
+                <div id="uniformInputs" class="dist-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" for="uniA">Min (a)</label>
+                        <input type="number" id="uniA" class="form-input" value="0" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="uniB">Max (b)</label>
+                        <input type="number" id="uniB" class="form-input" value="1" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="uniX">Value (x)</label>
+                        <input type="number" id="uniX" class="form-input" value="0.5" step="any">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="probMode">Probability Mode</label>
+                    <select id="probMode" class="form-input">
+                        <option value="lessEqual">P(X ≤ x)</option>
+                        <option value="greater">P(X > x)</option>
+                        <option value="equal">P(X = x)</option>
+                    </select>
                 </div>
                 
                 <div class="btn-group">
                     <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
+
+                <div id="errorBox" class="error-message" style="display: none; color: #ef4444; margin-bottom: 1rem;"></div>
                 
-                <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                <div class="result-box" id="result" style="display: none;">
+                    <div class="result-label">Results</div>
+                    <div id="output"></div>
                 </div>
                 
-                <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                <div class="btn-group" id="copyBtnGroup" style="display: none;">
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

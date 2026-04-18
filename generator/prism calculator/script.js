@@ -229,56 +229,162 @@ function initTool(toolInfo) {
  * Calculate prism volume and surface area
  */
 
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Prism Calculator', icon: '📐' });
     
     // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
+    const prismTypeEl = $('#prismType');
+    const prismHeightEl = $('#prismHeight');
+    
+    // Input groups
+    const inputGroups = {
+        rectangular: $('#rectangularInputs'),
+        triangular: $('#triangularInputs'),
+        square: $('#squareInputs'),
+        'n-gonal': $('#n-gonalInputs')
+    };
+
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
     
-    // Main calculation function
+    const resultBox = $('#result');
+    const outputEl = $('#output');
+    const errorBox = $('#errorBox');
+    const copyBtnGroup = $('#copyBtnGroup');
+
+    // Toggle inputs
+    prismTypeEl.addEventListener('change', () => {
+        const selected = prismTypeEl.value;
+        Object.keys(inputGroups).forEach(key => {
+            inputGroups[key].style.display = (key === selected) ? 'block' : 'none';
+        });
+    });
+
     function calculate() {
-        const input = inputEl.value.trim();
+        const type = prismTypeEl.value;
+        const H = parseFloat(prismHeightEl.value);
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+
+        if (isNaN(H) || H <= 0) {
+            showError('Prism height must be a positive number.');
             return;
         }
-        
+
+        let baseArea = 0;
+        let basePerimeter = 0;
+        let typeLabel = '';
+
         try {
-            // TODO: Implement Prism Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            if (type === 'rectangular') {
+                const l = parseFloat($('#rectLength').value);
+                const w = parseFloat($('#rectWidth').value);
+                if (isNaN(l) || l <= 0 || isNaN(w) || w <= 0) {
+                    showError('Length and width must be positive numbers.');
+                    return;
+                }
+                baseArea = l * w;
+                basePerimeter = 2 * (l + w);
+                typeLabel = 'Rectangular Prism';
+            } else if (type === 'triangular') {
+                const a = parseFloat($('#triBase').value);
+                const ht = parseFloat($('#triHeight').value);
+                const sideB = parseFloat($('#triSideB').value);
+                const sideC = parseFloat($('#triSideC').value);
+                
+                if (isNaN(a) || a <= 0 || isNaN(ht) || ht <= 0) {
+                    showError('Base and height of triangle must be positive.');
+                    return;
+                }
+                baseArea = 0.5 * a * ht;
+                
+                // If sides are provided, use them for perimeter
+                if (!isNaN(sideB) && sideB > 0 && !isNaN(sideC) && sideC > 0) {
+                    basePerimeter = a + sideB + sideC;
+                } else {
+                    // Fallback to right-angled triangle or just note it
+                    basePerimeter = a + ht + Math.sqrt(a*a + ht*ht);
+                }
+                typeLabel = 'Triangular Prism';
+            } else if (type === 'square') {
+                const s = parseFloat($('#squareSide').value);
+                if (isNaN(s) || s <= 0) {
+                    showError('Base side must be a positive number.');
+                    return;
+                }
+                baseArea = s * s;
+                basePerimeter = 4 * s;
+                typeLabel = 'Square Prism';
+            } else if (type === 'n-gonal') {
+                const n = parseInt($('#nSides').value);
+                const s = parseFloat($('#sideLength').value);
+                if (isNaN(n) || n < 3 || isNaN(s) || s <= 0) {
+                    showError('Sides must be ≥ 3 and side length must be positive.');
+                    return;
+                }
+                baseArea = (n * s * s) / (4 * Math.tan(Math.PI / n));
+                basePerimeter = n * s;
+                typeLabel = `Regular ${n}-gonal Prism`;
+            }
+
+            const volume = baseArea * H;
+            const surfaceArea = 2 * baseArea + basePerimeter * H;
+
+            let html = `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-weight: bold; color: #2563eb; margin-bottom: 0.5rem;">${typeLabel}</div>
+                    <div class="result-item">
+                        <span class="result-label">Volume:</span>
+                        <span class="result-value">${formatNumber(volume, 4)} units³</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Surface Area:</span>
+                        <span class="result-value">${formatNumber(surfaceArea, 4)} units²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Base Area:</span>
+                        <span class="result-value">${formatNumber(baseArea, 4)} units²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Base Perimeter:</span>
+                        <span class="result-value">${formatNumber(basePerimeter, 4)} units</span>
+                    </div>
+                </div>
+                <div class="p-3 bg-light rounded small text-muted">
+                    <strong>Formulas:</strong><br>
+                    Volume = Base Area × H<br>
+                    Surface Area = 2 × Base Area + Base Perimeter × H
+                </div>
+            `;
+
+            outputEl.innerHTML = html;
+            resultBox.style.display = 'block';
+            copyBtnGroup.style.display = 'flex';
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            showError('Calculation error: ' + error.message);
         }
     }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
     }
-    
-    // Event listeners
+
+    function clear() {
+        prismHeightEl.value = '';
+        $$('.prism-inputs input').forEach(input => input.value = '');
+        outputEl.innerHTML = '';
+        resultBox.style.display = 'none';
+        errorBox.style.display = 'none';
+        copyBtnGroup.style.display = 'none';
+    }
+
     calculateBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
-        });
-    }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(outputEl.innerText);
     });
 });
