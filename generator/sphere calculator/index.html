@@ -3,48 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate sphere volume and surface area">
+    <meta name="description" content="Calculate volume, surface area, circumference, and diameter of a sphere.">
     <meta name="theme-color" content="#2563eb">
-    <title>🔵 Sphere Calculator - Mini Tools</title>
+    <title>Sphere Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
-        <span class="tool-header-icon">🔵</span>
+        <a href="../../" class="back-btn">←</a>
+        <span class="tool-header-icon">⚽</span>
         <h1>Sphere Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate sphere volume and surface area</p>
-            
+            <p class="text-muted mb-2">Calculate various properties of a sphere based on its radius.</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="radius">Radius (r)</label>
+                    <input type="number" id="radius" class="form-input" placeholder="Enter radius..." step="any" min="0">
                 </div>
-                
+
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
-                    <button id="clear" class="btn btn-secondary">Clear</button>
+                    <button id="calculate-btn" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                    <div class="result-label">Results</div>
+                    <div id="output">
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Volume:</strong> <span id="res-volume">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Surface Area:</strong> <span id="res-surface-area">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Circumference:</strong> <span id="res-circumference">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between;">
+                            <strong>Diameter:</strong> <span id="res-diameter">-</span>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy All Results</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
-        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |  
         <div class="footer-actions">
             <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
                 🐙 GitHub
@@ -54,5 +66,7 @@
             </a>
         </div>
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>

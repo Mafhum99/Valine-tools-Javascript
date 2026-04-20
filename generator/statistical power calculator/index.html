@@ -3,48 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate statistical power of a test">
+    <meta name="description" content="Calculate statistical power (1-beta) for your experiments.">
     <meta name="theme-color" content="#2563eb">
-    <title>💪 Statistical Power Calculator - Mini Tools</title>
+    <title>Statistical Power Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
-        <span class="tool-header-icon">💪</span>
+        <a href="../../" class="back-btn">←</a>
+        <span class="tool-header-icon">📊</span>
         <h1>Statistical Power Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate statistical power of a test</p>
-            
+            <p class="text-muted mb-2">Determine the probability of detecting an effect if it exists.</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="effect-size">Effect Size (Cohen's d)</label>
+                    <input type="number" id="effect-size" class="form-input" placeholder="e.g., 0.5" step="0.01" min="0">
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="sample-size">Sample Size (n)</label>
+                    <input type="number" id="sample-size" class="form-input" placeholder="e.g., 100" step="1" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="alpha">Significance Level (α)</label>
+                    <input type="number" id="alpha" class="form-input" value="0.05" step="0.01" min="0" max="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="test-type">Test Type</label>
+                    <select id="test-type" class="form-select">
+                        <option value="two-tailed">Two-tailed</option>
+                        <option value="one-tailed">One-tailed</option>
+                    </select>
+                </div>
+
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
-                    <button id="clear" class="btn btn-secondary">Clear</button>
+                    <button id="calculate-btn" class="btn btn-primary btn-block">Calculate Power</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                    <div class="result-label">Results</div>
+                    <div id="output">
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Statistical Power:</strong> <span id="res-power">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Type II Error (β):</strong> <span id="res-beta">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Interpretation:</strong> <span id="res-interpretation">-</span>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
-        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |  
         <div class="footer-actions">
             <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
                 🐙 GitHub
@@ -54,5 +81,7 @@
             </a>
         </div>
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>

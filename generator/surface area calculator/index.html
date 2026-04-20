@@ -3,48 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate surface area of 3D shapes">
+    <meta name="description" content="Calculate surface area of various 3D shapes.">
     <meta name="theme-color" content="#2563eb">
-    <title>📐 Surface Area Calculator - Mini Tools</title>
+    <title>Surface Area Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
+        <a href="../../" class="back-btn">←</a>
         <span class="tool-header-icon">📐</span>
         <h1>Surface Area Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate surface area of 3D shapes</p>
-            
+            <p class="text-muted mb-2">Calculate the total surface area of various three-dimensional objects.</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="shape-select">Select Shape</label>
+                    <select id="shape-select" class="form-select">
+                        <option value="cube">Cube</option>
+                        <option value="rectangular-prism">Rectangular Prism (Balok)</option>
+                        <option value="sphere">Sphere</option>
+                        <option value="cylinder">Cylinder</option>
+                        <option value="cone">Cone</option>
+                        <option value="triangular-prism">Triangular Prism</option>
+                    </select>
                 </div>
-                
+
+                <div id="inputs-container">
+                    <!-- Dynamic inputs go here -->
+                </div>
+
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
-                    <button id="clear" class="btn btn-secondary">Clear</button>
+                    <button id="calculate-btn" class="btn btn-primary btn-block">Calculate Area</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                    <div class="result-label">Results</div>
+                    <div id="output">
+                        <div class="result-item" style="display: flex; justify-content: space-between;">
+                            <strong>Total Surface Area:</strong> <span id="res-area">-</span>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
-        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |  
         <div class="footer-actions">
             <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
                 🐙 GitHub
@@ -54,5 +68,7 @@
             </a>
         </div>
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>

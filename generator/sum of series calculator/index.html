@@ -3,48 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate the sum of a series">
+    <meta name="description" content="Calculate the sum of a mathematical series Σ f(n).">
     <meta name="theme-color" content="#2563eb">
-    <title>➕ Sum of Series Calculator - Mini Tools</title>
+    <title>Sum of Series Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
-        <span class="tool-header-icon">➕</span>
+        <a href="../../" class="back-btn">←</a>
+        <span class="tool-header-icon">Σ</span>
         <h1>Sum of Series Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate the sum of a series</p>
-            
+            <p class="text-muted mb-2">Calculate the summation of a function f(n) over a range of n.</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="series-type">Series Type</label>
+                    <select id="series-type" class="form-select">
+                        <option value="arithmetic">Arithmetic (a + (n-1)d)</option>
+                        <option value="geometric">Geometric (a * r^(n-1))</option>
+                        <option value="harmonic">Harmonic (1/n)</option>
+                        <option value="squares">Squares (n²)</option>
+                        <option value="cubes">Cubes (n³)</option>
+                        <option value="custom">Custom f(n)</option>
+                    </select>
                 </div>
-                
+
+                <div id="standard-inputs">
+                    <div class="form-group" id="group-a">
+                        <label class="form-label" for="input-a">First Term (a)</label>
+                        <input type="number" id="input-a" class="form-input" value="1">
+                    </div>
+                    <div class="form-group" id="group-diff">
+                        <label class="form-label" for="input-diff">Common Difference/Ratio (d/r)</label>
+                        <input type="number" id="input-diff" class="form-input" value="1">
+                    </div>
+                </div>
+
+                <div id="custom-input" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label" for="function-expr">Function f(n)</label>
+                        <input type="text" id="function-expr" class="form-input" placeholder="e.g., n * n + 2" value="n">
+                        <small class="text-muted">Use 'n' as the variable. Supported: +, -, *, /, Math.pow, Math.sin, etc.</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="start-n">Start (n_start)</label>
+                    <input type="number" id="start-n" class="form-input" value="1" step="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="end-n">End (n_end)</label>
+                    <input type="number" id="end-n" class="form-input" value="10" step="1">
+                </div>
+
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
-                    <button id="clear" class="btn btn-secondary">Clear</button>
+                    <button id="calculate-btn" class="btn btn-primary btn-block">Calculate Sum</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                    <div class="result-label">Results</div>
+                    <div id="output">
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Total Sum (Σ):</strong> <span id="res-sum">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid var(--gray-100); padding-bottom: 0.25rem;">
+                            <strong>Number of Terms:</strong> <span id="res-count">-</span>
+                        </div>
+                        <div class="result-item" style="display: flex; justify-content: space-between;">
+                            <strong>Average Value:</strong> <span id="res-avg">-</span>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
-        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |  
         <div class="footer-actions">
             <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
                 🐙 GitHub
@@ -54,5 +99,7 @@
             </a>
         </div>
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>

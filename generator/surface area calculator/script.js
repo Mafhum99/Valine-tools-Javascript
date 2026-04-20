@@ -21,26 +21,6 @@ function createElement(tag, attrs = {}, children = []) {
 }
 
 // ========================================
-// Storage Helpers (localStorage)
-// ========================================
-const Storage = {
-    get(key, defaultValue = null) {
-        try {
-            const item = localStorage.getItem(key);
-            return item ? JSON.parse(item) : defaultValue;
-        } catch { return defaultValue; }
-    },
-    set(key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-            return true;
-        } catch { return false; }
-    },
-    remove(key) { localStorage.removeItem(key); },
-    clear() { localStorage.clear(); }
-};
-
-// ========================================
 // Copy to Clipboard
 // ========================================
 async function copyToClipboard(text) {
@@ -82,203 +62,133 @@ function showToast(message, duration = 2000) {
 }
 
 // ========================================
-// Number Formatting
+// Tool Logic
 // ========================================
-function formatNumber(num, decimals = 2) {
-    if (isNaN(num) || num === null) return '0';
-    return Number(num).toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-function formatCurrency(amount, currency = 'USD') {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
-}
-
-function formatPercent(value, decimals = 2) {
-    return formatNumber(value * 100, decimals) + '%';
-}
-
-// ========================================
-// Math Utilities
-// ========================================
-function percentage(part, whole) { return (part / whole) * 100; }
-function percentageOf(percent, whole) { return (percent / 100) * whole; }
-function percentageChange(oldValue, newValue) { return ((newValue - oldValue) / Math.abs(oldValue)) * 100; }
-function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
-function lerp(start, end, t) { return start + (end - start) * t; }
-function mapRange(value, inMin, inMax, outMin, outMax) { return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin; }
-
-// ========================================
-// String Utilities
-// ========================================
-function slugify(text) {
-    return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').trim();
-}
-function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
-function titleCase(str) { return str.toLowerCase().replace(/\b\w/g, capitalize); }
-function camelCase(str) { return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (_, char) => char.toUpperCase()); }
-function snakeCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('_').toLowerCase() || str.toLowerCase(); }
-function kebabCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('-').toLowerCase() || str.toLowerCase(); }
-
-// ========================================
-// Date Utilities
-// ========================================
-function formatDate(date, format = 'YYYY-MM-DD') {
-    const d = new Date(date);
-    return format.replace('YYYY', d.getFullYear()).replace('MM', String(d.getMonth() + 1).padStart(2, '0')).replace('DD', String(d.getDate()).padStart(2, '0')).replace('HH', String(d.getHours()).padStart(2, '0')).replace('mm', String(d.getMinutes()).padStart(2, '0')).replace('ss', String(d.getSeconds()).padStart(2, '0'));
-}
-function daysBetween(date1, date2) { const oneDay = 24 * 60 * 60 * 1000; return Math.round(Math.abs((date1 - date2) / oneDay)); }
-function addDays(date, days) { const result = new Date(date); result.setDate(result.getDate() + days); return result; }
-
-// ========================================
-// Color Utilities
-// ========================================
-const Color = {
-    rgbToHex(r, g, b) { return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join(''); },
-    hexToRgb(hex) { const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null; },
-    rgbToHsl(r, g, b) {
-        r /= 255; g /= 255; b /= 255;
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2;
-        if (max === min) { h = s = 0; }
-        else {
-            const d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch (max) {
-                case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-                case g: h = ((b - r) / d + 2) / 6; break;
-                case b: h = ((r - g) / d + 4) / 6; break;
-            }
-        }
-        return { h: h * 360, s: s * 100, l: l * 100 };
-    },
-    hslToRgb(h, s, l) {
-        h /= 360; s /= 100; l /= 100;
-        let r, g, b;
-        if (s === 0) { r = g = b = l; }
-        else {
-            const hue2rgb = (p, q, t) => {
-                if (t < 0) t += 1; if (t > 1) t -= 1;
-                if (t < 1/6) return p + (q - p) * 6 * t;
-                if (t < 1/2) return q;
-                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                return p;
-            };
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1/3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1/3);
-        }
-        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
-    },
-    random() { return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'); }
-};
-
-// ========================================
-// Random Utilities
-// ========================================
-function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function randomFloat(min, max, decimals = 2) { return Number((Math.random() * (max - min) + min).toFixed(decimals)); }
-function randomChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function randomString(length = 10, chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
-    return Array.from({ length }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
-}
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
-// ========================================
-// Debounce & Throttle
-// ========================================
-function debounce(func, wait = 300) {
-    let timeout;
-    return function executedFunction(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-function throttle(func, limit = 300) {
-    let inThrottle;
-    return function(...args) {
-        if (!inThrottle) { func.apply(this, args); inThrottle = true; setTimeout(() => inThrottle = false, limit); }
-    };
-}
-
-// ========================================
-// Validation
-// ========================================
-function isEmail(str) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str); }
-function isURL(str) { try { new URL(str); return true; } catch { return false; } }
-function isNumber(str) { return !isNaN(str) && !isNaN(parseFloat(str)); }
-
-// ========================================
-// Tool Init Helper
-// ========================================
-function initTool(toolInfo) {
-    if (toolInfo?.name) document.title = `${toolInfo.icon || '🛠️'} ${toolInfo.name} - Mini Tools`;
-}
-
-// ========================================
-// TOOL LOGIC BELOW
-// ========================================
-
-/**
- * Surface Area Calculator
- * Calculate surface area of 3D shapes
- */
-
-// Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Surface Area Calculator', icon: '📐' });
-    
-    // Get elements
-    const inputEl = $('#input');
-    const outputEl = $('#output');
-    const calculateBtn = $('#calculate');
-    const clearBtn = $('#clear');
-    const copyBtn = $('#copy');
-    
-    // Main calculation function
-    function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
-            return;
+    const shapeSelect = $('#shape-select');
+    const inputsContainer = $('#inputs-container');
+    const calculateBtn = $('#calculate-btn');
+    const clearBtn = $('#clear-btn');
+    const copyBtn = $('#copy-btn');
+    const resArea = $('#res-area');
+
+    const shapes = {
+        cube: {
+            label: 'Cube',
+            fields: [{ id: 'side', label: 'Side Length (s)' }]
+        },
+        'rectangular-prism': {
+            label: 'Rectangular Prism (Balok)',
+            fields: [
+                { id: 'length', label: 'Length (l)' },
+                { id: 'width', label: 'Width (w)' },
+                { id: 'height', label: 'Height (h)' }
+            ]
+        },
+        sphere: {
+            label: 'Sphere',
+            fields: [{ id: 'radius', label: 'Radius (r)' }]
+        },
+        cylinder: {
+            label: 'Cylinder',
+            fields: [
+                { id: 'radius', label: 'Radius (r)' },
+                { id: 'height', label: 'Height (h)' }
+            ]
+        },
+        cone: {
+            label: 'Cone',
+            fields: [
+                { id: 'radius', label: 'Radius (r)' },
+                { id: 'height', label: 'Height (h)' }
+            ]
+        },
+        'triangular-prism': {
+            label: 'Triangular Prism',
+            fields: [
+                { id: 'base-a', label: 'Base Side A' },
+                { id: 'base-b', label: 'Base Side B' },
+                { id: 'base-c', label: 'Base Side C' },
+                { id: 'length', label: 'Length (h)' }
+            ]
         }
-        
-        try {
-            // TODO: Implement Surface Area Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
-        }
-    }
-    
-    // Clear function
-    function clear() {
-        inputEl.value = '';
-        outputEl.textContent = '-';
-        inputEl.focus();
-    }
-    
-    // Event listeners
-    calculateBtn.addEventListener('click', calculate);
-    clearBtn.addEventListener('click', clear);
-    
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+    };
+
+    function updateInputs() {
+        const shape = shapes[shapeSelect.value];
+        inputsContainer.innerHTML = '';
+        shape.fields.forEach(field => {
+            const group = createElement('div', { className: 'form-group' }, [
+                createElement('label', { className: 'form-label', htmlFor: field.id, textContent: field.label }),
+                createElement('input', { type: 'number', id: field.id, className: 'form-input', placeholder: '0', step: 'any', min: '0' })
+            ]);
+            inputsContainer.appendChild(group);
         });
     }
-    
-    // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
+
+    shapeSelect.addEventListener('change', updateInputs);
+    updateInputs();
+
+    function calculate() {
+        const shape = shapeSelect.value;
+        const getVal = (id) => parseFloat($(`#${id}`).value) || 0;
+        let area = 0;
+
+        try {
+            switch (shape) {
+                case 'cube':
+                    const s = getVal('side');
+                    area = 6 * s * s;
+                    break;
+                case 'rectangular-prism':
+                    const l = getVal('length');
+                    const w = getVal('width');
+                    const h = getVal('height');
+                    area = 2 * (l * w + l * h + w * h);
+                    break;
+                case 'sphere':
+                    const r = getVal('radius');
+                    area = 4 * Math.PI * r * r;
+                    break;
+                case 'cylinder':
+                    const cr = getVal('radius');
+                    const ch = getVal('height');
+                    area = 2 * Math.PI * cr * (cr + ch);
+                    break;
+                case 'cone':
+                    const conr = getVal('radius');
+                    const conh = getVal('height');
+                    const slantHeight = Math.sqrt(conr * conr + conh * conh);
+                    area = Math.PI * conr * (conr + slantHeight);
+                    break;
+                case 'triangular-prism':
+                    const a = getVal('base-a');
+                    const b = getVal('base-b');
+                    const c = getVal('base-c');
+                    const length = getVal('length');
+                    // Use Heron's formula for base area
+                    const s_tri = (a + b + c) / 2;
+                    const baseArea = Math.sqrt(s_tri * (s_tri - a) * (s_tri - b) * (s_tri - c)) || 0;
+                    const lateralArea = (a + b + c) * length;
+                    area = 2 * baseArea + lateralArea;
+                    break;
+            }
+
+            if (isNaN(area) || area < 0) throw new Error('Invalid dimensions');
+            resArea.textContent = area.toLocaleString('en-US', { maximumFractionDigits: 4 }) + ' units²';
+        } catch (e) {
+            showToast('Error: Please check your inputs');
+            resArea.textContent = '-';
         }
+    }
+
+    calculateBtn.addEventListener('click', calculate);
+    clearBtn.addEventListener('click', () => {
+        inputsContainer.querySelectorAll('input').forEach(i => i.value = '');
+        resArea.textContent = '-';
+    });
+    copyBtn.addEventListener('click', () => {
+        if (resArea.textContent === '-') return;
+        copyToClipboard(`Surface Area of ${shapes[shapeSelect.value].label}: ${resArea.textContent}`);
     });
 });
