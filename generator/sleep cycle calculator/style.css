@@ -319,20 +319,3 @@ body {
     .back-btn { display: none; }
     .tool-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
 }
-
-
-/* ---- Custom Tool Styles ---- */
-/* Sleep Cycle Calculator - Custom Styles */
-
-/* Add custom styles here if needed */
-
-
-#result {
-    min-height: 80px;
-}
-
-#output {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--primary);
-}

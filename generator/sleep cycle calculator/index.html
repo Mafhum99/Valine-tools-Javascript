@@ -3,48 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculate sleep cycle stages">
+    <meta name="description" content="Calculate the best times to wake up or go to sleep based on 90-minute sleep cycles.">
     <meta name="theme-color" content="#2563eb">
     <title>🌙 Sleep Cycle Calculator - Mini Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="tool-header">
+        <a href="../../index.html" class="back-btn">←</a>
         <span class="tool-header-icon">🌙</span>
         <h1>Sleep Cycle Calculator</h1>
     </header>
 
     <main class="tool-container">
         <div class="tool-card">
-            <p class="text-muted mb-2">Calculate sleep cycle stages</p>
-            
+            <p class="text-muted mb-2">Find the optimal time to wake up or go to bed by calculating 90-minute sleep cycles.</p>
+
             <div id="tool-content">
-                <!-- Tool content goes here -->
+                <!-- ====== TOOL CONTENT START ====== -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="mode">I want to...</label>
+                    <select id="mode" class="form-select">
+                        <option value="wakeup">Wake up at a specific time</option>
+                        <option value="bedtime">Go to bed at a specific time</option>
+                    </select>
                 </div>
-                
+
+                <div class="form-group">
+                    <label class="form-label" for="time">Time (HH:mm)</label>
+                    <input type="time" id="time" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="latency">Sleep Latency (minutes to fall asleep)</label>
+                    <input type="number" id="latency" class="form-input" value="15" min="0" max="60">
+                </div>
+
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
-                    <button id="clear" class="btn btn-secondary">Clear</button>
+                    <button id="action-btn" class="btn btn-primary btn-block">Calculate Cycles</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
                 </div>
-                
+
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                    <div class="result-label">Recommended Times</div>
+                    <div id="output">Enter a time and click Calculate to see recommendations.</div>
                 </div>
-                
+
                 <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                    <button id="copy-btn" class="btn btn-secondary">📋 Copy Result</button>
                 </div>
+                <!-- ====== TOOL CONTENT END ====== -->
             </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
     <footer class="site-footer">
-        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |
+        <p>© 2026 Dibuat dengan ❤️ - By : Andi Almafhum</p> |  
         <div class="footer-actions">
             <a class="footer-btn footer-github" href="https://github.com/mafhum99" target="_blank" rel="noopener noreferrer">
                 🐙 GitHub
@@ -54,5 +68,7 @@
             </a>
         </div>
     </footer>
+
+    <script src="script.js" defer></script>
 </body>
 </html>
