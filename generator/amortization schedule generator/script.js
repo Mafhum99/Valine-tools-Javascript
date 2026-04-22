@@ -244,23 +244,67 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const loanAmount = parseFloat(loanAmountEl.value);
             const annualRate = parseFloat(annualRateEl.value);
-            const termMonths = parseFloat(termMonthsEl.value);
+            const termMonths = parseInt(termMonthsEl.value);
 
-            if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(termMonths)) {
-                outputEl.textContent = 'Please enter valid numbers';
+            if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(termMonths) || termMonths <= 0) {
+                outputEl.innerHTML = '<span style="color: var(--danger)">Please enter valid positive numbers</span>';
                 return;
             }
 
             const r = (annualRate / 100) / 12;
             const n = termMonths;
-            const powTerm = Math.pow(1 + r, n);
-            const monthlyPmt = loanAmount * (r * powTerm) / (powTerm - 1);
-            const interest1 = loanAmount * r;
-            const principal1 = monthlyPmt - interest1;
+            
+            let monthlyPmt;
+            if (r === 0) {
+                monthlyPmt = loanAmount / n;
+            } else {
+                const powTerm = Math.pow(1 + r, n);
+                monthlyPmt = loanAmount * (r * powTerm) / (powTerm - 1);
+            }
 
-            outputEl.textContent = 'Monthly: $' + monthlyPmt.toFixed(2) + ' | 1st Payment → Principal: $' + principal1.toFixed(2) + ', Interest: $' + interest1.toFixed(2);
+            let html = `<div class="amortization-summary">
+                <div class="summary-item"><strong>Monthly Payment:</strong> ${formatCurrency(monthlyPmt)}</div>
+                <div class="summary-item"><strong>Total Payment:</strong> ${formatCurrency(monthlyPmt * n)}</div>
+                <div class="summary-item"><strong>Total Interest:</strong> ${formatCurrency((monthlyPmt * n) - loanAmount)}</div>
+            </div>`;
+
+            html += `
+            <div class="table-responsive">
+                <table class="amortization-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Payment</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            let balance = loanAmount;
+            for (let i = 1; i <= n; i++) {
+                const interest = balance * r;
+                const principal = monthlyPmt - interest;
+                balance -= principal;
+
+                // Adjust for floating point errors in the last month
+                const displayBalance = Math.abs(balance) < 0.01 ? 0 : balance;
+
+                html += `
+                    <tr>
+                        <td>${i}</td>
+                        <td>${formatCurrency(monthlyPmt)}</td>
+                        <td>${formatCurrency(principal)}</td>
+                        <td>${formatCurrency(interest)}</td>
+                        <td>${formatCurrency(displayBalance)}</td>
+                    </tr>`;
+            }
+
+            html += `</tbody></table></div>`;
+            outputEl.innerHTML = html;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = `<span style="color: var(--danger)">Error: ${error.message}</span>`;
         }
     }
 

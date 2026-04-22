@@ -237,15 +237,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     actionBtn?.addEventListener('click', () => {
         try {
-            const aItemsVal = parseFloat(aItems.value) || 0;
-            const aRevVal = parseFloat(aRev.value) || 0;
-            const bItemsVal = parseFloat(bItems.value) || 0;
-            const bRevVal = parseFloat(bRev.value) || 0;
+            const getVal = (el, name) => {
+                const val = el.value.trim();
+                if (val === '') throw new Error(`${name} cannot be empty`);
+                const num = parseFloat(val);
+                if (isNaN(num)) throw new Error(`${name} must be a valid number`);
+                if (num < 0) throw new Error(`${name} cannot be negative`);
+                if (num > 100) throw new Error(`${name} cannot exceed 100%`);
+                return num;
+            };
+
+            const aItemsVal = getVal(aItems, 'A Items');
+            const aRevVal = getVal(aRev, 'A Revenue');
+            const bItemsVal = getVal(bItems, 'B Items');
+            const bRevVal = getVal(bRev, 'B Revenue');
+
+            if (aItemsVal + bItemsVal > 100) {
+                throw new Error('Total Items (A + B) cannot exceed 100%');
+            }
+            if (aRevVal + bRevVal > 100) {
+                throw new Error('Total Revenue (A + B) cannot exceed 100%');
+            }
+
             const cItems = 100 - aItemsVal - bItemsVal;
             const cRev = 100 - aRevVal - bRevVal;
-            output.textContent = `A: ${aItemsVal.toFixed(0)}% items -> ${aRevVal.toFixed(0)}% revenue\nB: ${bItemsVal.toFixed(0)}% items -> ${bRevVal.toFixed(0)}% revenue\nC: ${Math.max(0, cItems).toFixed(0)}% items -> ${Math.max(0, cRev).toFixed(0)}% revenue`;
+
+            output.innerHTML = `<div class="abc-results">
+                <div class="abc-row a"><strong>Category A:</strong> ${formatNumber(aItemsVal, 0)}% items &rarr; ${formatNumber(aRevVal, 0)}% revenue</div>
+                <div class="abc-row b"><strong>Category B:</strong> ${formatNumber(bItemsVal, 0)}% items &rarr; ${formatNumber(bRevVal, 0)}% revenue</div>
+                <div class="abc-row c"><strong>Category C:</strong> ${formatNumber(cItems, 0)}% items &rarr; ${formatNumber(cRev, 0)}% revenue</div>
+            </div>`;
         } catch (error) {
-            output.textContent = 'Error: ' + error.message;
+            output.innerHTML = `<span style="color: var(--danger)">⚠️ ${error.message}</span>`;
         }
     });
 

@@ -119,6 +119,12 @@ function camelCase(str) { return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, 
 function snakeCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('_').toLowerCase() || str.toLowerCase(); }
 function kebabCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('-').toLowerCase() || str.toLowerCase(); }
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // ========================================
 // Date Utilities
 // ========================================
@@ -498,14 +504,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function findWordAnagrams(text) {
         const cleaned = text.toLowerCase().replace(/[^a-z]/g, '');
-        if (cleaned.length < 2) return [];
+        if (cleaned.length < 2) return { exact: [], partial: [] };
 
         const charCount = {};
         for (const c of cleaned) {
             charCount[c] = (charCount[c] || 0) + 1;
         }
 
-        const found = [];
+        const exact = [];
+        const partial = [];
+
         for (const word of commonWords) {
             if (word.length < 2 || word.length > cleaned.length) continue;
             if (word === text.toLowerCase()) continue;
@@ -524,21 +532,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (isAnagram) {
-                found.push(word);
+                if (word.length === cleaned.length) {
+                    exact.push(word);
+                } else {
+                    partial.push(word);
+                }
             }
         }
 
-        return found;
+        return { exact, partial };
     }
 
     function generateShuffledAnagrams(text, count = 10) {
+        const cleaned = text.replace(/\s+/g, '');
         const anagrams = new Set();
         let attempts = 0;
         const maxAttempts = count * 20;
 
         while (anagrams.size < count && attempts < maxAttempts) {
-            const anagram = generateAnagram(text);
-            if (anagram !== text) {
+            const anagram = generateAnagram(cleaned);
+            if (anagram.toLowerCase() !== cleaned.toLowerCase()) {
                 anagrams.add(anagram);
             }
             attempts++;
@@ -555,6 +568,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Validation: Only allow letters and spaces
+        if (/[^a-zA-Z\s]/.test(input)) {
+            outputEl.innerHTML = '<span class="text-danger">Invalid input: Please use only letters (A-Z) and spaces.</span>';
+            return;
+        }
+
         try {
             const cleaned = input.replace(/[^a-zA-Z]/g, '');
             if (cleaned.length < 2) {
@@ -565,13 +584,26 @@ document.addEventListener('DOMContentLoaded', () => {
             let html = '<div class="anagram-results">';
 
             // Find meaningful word anagrams
-            const wordAnagrams = findWordAnagrams(input);
-            if (wordAnagrams.length > 0) {
+            const { exact, partial } = findWordAnagrams(input);
+            
+            if (exact.length > 0) {
                 html += '<div class="anagram-section">';
-                html += `<h4>Found ${wordAnagrams.length} word anagram(s):</h4>`;
+                html += `<h4 class="section-title">✨ Exact Anagrams (${exact.length}):</h4>`;
                 html += '<div class="anagram-list">';
-                wordAnagrams.forEach(word => {
-                    html += `<span class="anagram-word">${escapeHtml(word)}</span>`;
+                exact.forEach(word => {
+                    html += `<span class="anagram-word exact">${escapeHtml(word)}</span>`;
+                });
+                html += '</div></div>';
+            }
+
+            if (partial.length > 0) {
+                html += '<div class="anagram-section">';
+                html += `<h4 class="section-title">🔍 Words within letters (${partial.length}):</h4>`;
+                html += '<div class="anagram-list">';
+                // Sort by length (longest first)
+                partial.sort((a, b) => b.length - a.length || a.localeCompare(b));
+                partial.forEach(word => {
+                    html += `<span class="anagram-word partial">${escapeHtml(word)}</span>`;
                 });
                 html += '</div></div>';
             }
@@ -580,10 +612,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const shuffled = generateShuffledAnagrams(input, 10);
             if (shuffled.length > 0) {
                 html += '<div class="anagram-section">';
-                html += `<h4>Random shuffled anagrams:</h4>`;
+                html += `<h4 class="section-title">🔀 Random Shuffled:</h4>`;
                 html += '<div class="anagram-list">';
                 shuffled.forEach(anagram => {
-                    html += `<span class="anagram-word">${escapeHtml(anagram)}</span>`;
+                    html += `<span class="anagram-word shuffled">${escapeHtml(anagram)}</span>`;
                 });
                 html += '</div></div>';
             }
@@ -594,17 +626,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 letterCount[c] = (letterCount[c] || 0) + 1;
             }
             html += '<div class="anagram-section">';
-            html += '<h4>Letter Breakdown:</h4>';
+            html += '<h4 class="section-title">📊 Letter Breakdown:</h4>';
             html += '<div class="letter-count">';
             for (const [letter, count] of Object.entries(letterCount).sort()) {
-                html += `<span class="letter-badge">${letter} × ${count}</span>`;
+                html += `<span class="letter-badge">${letter.toUpperCase()} × ${count}</span>`;
             }
             html += '</div></div>';
 
             html += '</div>';
             outputEl.innerHTML = html;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = '<span class="text-danger">Error: ' + escapeHtml(error.message) + '</span>';
         }
     }
 

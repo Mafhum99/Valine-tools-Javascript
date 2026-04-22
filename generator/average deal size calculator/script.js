@@ -242,9 +242,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculate() {
         try {
-            const revenue=parseFloat(el0.value)||0;const deals=parseInt(el1.value)||1;const avg=revenue/deals;outputEl.textContent='Average Deal Size: $'+avg.toFixed(2);
+            const revenueVal = el0.value.trim();
+            const dealsVal = el1.value.trim();
+
+            if (revenueVal === '' || dealsVal === '') {
+                throw new Error('Please fill in all fields');
+            }
+
+            const revenue = parseFloat(revenueVal);
+            const deals = parseInt(dealsVal);
+
+            if (isNaN(revenue) || isNaN(deals)) {
+                throw new Error('Please enter valid numbers');
+            }
+
+            if (deals <= 0) {
+                throw new Error('Number of deals must be greater than zero');
+            }
+
+            if (revenue < 0) {
+                throw new Error('Revenue cannot be negative');
+            }
+
+            const avg = revenue / deals;
+            outputEl.innerHTML = `
+                <div class="metric-result">
+                    <div class="metric-value">${formatCurrency(avg)}</div>
+                    <div class="metric-label">Average Deal Size</div>
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = `<span style="color: var(--danger)">⚠️ ${error.message}</span>`;
         }
     }
 

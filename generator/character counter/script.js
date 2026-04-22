@@ -119,6 +119,12 @@ function camelCase(str) { return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, 
 function snakeCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('_').toLowerCase() || str.toLowerCase(); }
 function kebabCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('-').toLowerCase() || str.toLowerCase(); }
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // ========================================
 // Date Utilities
 // ========================================
@@ -258,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '<table class="table"><thead><tr><th>Character</th><th>Count</th><th>Frequency</th></tr></thead><tbody>';
             for (const [char, count] of sorted) {
-                const display = char === ' ' ? '(space)' : char;
+                const display = char === ' ' ? '(space)' : escapeHtml(char);
                 const pct = ((count / total) * 100).toFixed(1);
                 html += `<tr><td><code>${display}</code></td><td>${count}</td><td>${pct}%</td></tr>`;
             }

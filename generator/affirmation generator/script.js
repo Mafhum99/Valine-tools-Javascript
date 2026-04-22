@@ -318,11 +318,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const results = [];
 
         let category = 'general';
-        // Check relationships FIRST before love to avoid overlap
-        if (input.includes('relationship') || input.includes('friend') || input.includes('partner') || input.includes('dating')) {
+        
+        // Refined category detection logic
+        if (input.includes('relationship') || input.includes('friend') || input.includes('partner') || input.includes('dating') || (input.includes('love') && !input.includes('self'))) {
             category = 'relationships';
         }
-        else if (input.includes('self') || input.includes('worth') || input.includes('accept')) {
+        else if (input.includes('self') || input.includes('worth') || input.includes('accept') || input.includes('love')) {
             category = 'self';
         }
         else if (input.includes('confid') || input.includes('bold') || input.includes('brave')) {
@@ -334,9 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (input.includes('health') || input.includes('fitness') || input.includes('body')) {
             category = 'health';
         }
-        else if (input.includes('love')) {
-            category = 'self';
-        }
 
         const pool = affirmations[category];
         const count = 5;
@@ -345,7 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
             results.push(`${i + 1}. ${shuffled[i]}`);
         }
 
-        outputEl.innerHTML = `<h3>Your Daily Affirmations</h3>\n${results.join('<br>')}`;
+        outputEl.innerHTML = `<div class="affirmation-results">
+            <h4 class="section-title">Your Daily Affirmations (${category}):</h4>
+            <div class="affirmation-list">
+                ${results.map(r => `<div class="affirmation-item">${r}</div>`).join('')}
+            </div>
+        </div>`;
     }
 
     function clear() {
@@ -359,8 +362,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            // Use innerHTML to preserve formatting in copy, matching what's displayed
-            const textToCopy = outputEl.innerHTML.replace(/<br>/g, '\n').replace(/<h3>/g, '').replace(/<\/h3>/g, '');
+            const items = outputEl.querySelectorAll('.affirmation-item');
+            if (items.length === 0) {
+                showToast('No affirmations to copy');
+                return;
+            }
+            const textToCopy = Array.from(items).map(el => el.textContent).join('\n');
             copyToClipboard(textToCopy);
         });
     }

@@ -293,3 +293,42 @@ body {
     .tool-header { position: static; }
     .tool-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
 }
+
+/* ACT Score Calculator - Custom Styles */
+#section-scores {
+    margin-top: 1rem;
+}
+
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.score-card {
+    padding: 0.75rem;
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    text-align: center;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.score-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+#output {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+}

@@ -234,7 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Body Surface Area Calculator', icon: '📐' });
     
     // Get elements
-    const inputEl = $('#input');
+    const weightEl = $('#weight');
+    const heightEl = $('#height');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
@@ -242,17 +243,42 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
+        const weightVal = weightEl.value;
+        const heightVal = heightEl.value;
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        if (weightVal === '' || heightVal === '') {
+            outputEl.textContent = 'Please enter both weight and height';
+            return;
+        }
+
+        const weight = Number(weightVal);
+        const height = Number(heightVal);
+
+        if (weight <= 0 || height <= 0) {
+            outputEl.textContent = 'Values must be greater than zero';
             return;
         }
         
         try {
-            // TODO: Implement Body Surface Area Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            // Mosteller Formula: sqrt( (height * weight) / 3600 )
+            const bsaMosteller = Math.sqrt((height * weight) / 3600);
+
+            // Du Bois Formula: 0.007184 * weight^0.425 * height^0.725
+            const bsaDuBois = 0.007184 * Math.pow(weight, 0.425) * Math.pow(height, 0.725);
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:2rem;font-weight:800;color:var(--primary);">${formatNumber(bsaMosteller, 2)} m²</div>
+                    <div style="font-size:0.75rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;">Mosteller Formula (Primary)</div>
+                    
+                    <div style="margin-top:1rem;padding:0.75rem;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200);text-align:left;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;">
+                            <span style="font-size:0.75rem;color:var(--gray-600);">Du Bois:</span>
+                            <span style="font-weight:600;">${formatNumber(bsaDuBois, 2)} m²</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
@@ -260,9 +286,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Clear function
     function clear() {
-        inputEl.value = '';
+        weightEl.value = '';
+        heightEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        weightEl.focus();
     }
     
     // Event listeners

@@ -242,9 +242,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculate() {
         try {
-            const revenue=parseFloat(el0.value)||0;const users=parseInt(el1.value)||1;const arppu=revenue/users;outputEl.textContent='ARPPU: $'+arppu.toFixed(2);
+            const revenueVal = el0.value.trim();
+            const usersVal = el1.value.trim();
+
+            if (revenueVal === '' || usersVal === '') {
+                throw new Error('Please fill in all fields');
+            }
+
+            const revenue = parseFloat(revenueVal);
+            const users = parseInt(usersVal);
+
+            if (isNaN(revenue) || isNaN(users)) {
+                throw new Error('Please enter valid numbers');
+            }
+
+            if (users <= 0) {
+                throw new Error('Paying users must be greater than zero');
+            }
+
+            if (revenue < 0) {
+                throw new Error('Revenue cannot be negative');
+            }
+
+            const arppu = revenue / users;
+            outputEl.innerHTML = `
+                <div class="metric-result">
+                    <div class="metric-value">${formatCurrency(arppu)}</div>
+                    <div class="metric-label">Average Revenue Per Paying User</div>
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = `<span style="color: var(--danger)">⚠️ ${error.message}</span>`;
         }
     }
 

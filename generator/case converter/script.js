@@ -119,6 +119,12 @@ function camelCase(str) { return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, 
 function snakeCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('_').toLowerCase() || str.toLowerCase(); }
 function kebabCase(str) { return str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)?.join('-').toLowerCase() || str.toLowerCase(); }
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // ========================================
 // Date Utilities
 // ========================================
@@ -296,13 +302,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '<div class="case-results">';
             cases.forEach(c => {
-                html += `<div class="case-result">
+                const escapedValue = escapeHtml(c.value);
+                html += `
+                <div class="case-item">
                     <span class="case-name">${c.name}</span>
-                    <code class="case-value">${c.value}</code>
-                    <button class="copy-case-btn" data-value="${c.value.replace(/"/g, '&quot;')}">📋</button>
+                    <code class="case-value">${escapedValue}</code>
+                    <button class="copy-case-btn" data-value="${escapedValue.replace(/"/g, '&quot;')}">📋</button>
                 </div>`;
             });
-            html += '</div>';
+
 
             outputEl.innerHTML = html;
 

@@ -323,16 +323,81 @@ body {
 
 /* ---- Custom Tool Styles ---- */
 /* Anagram Solver - Custom Styles */
-
-/* Add custom styles here if needed */
-
-
-#result {
-    min-height: 80px;
+.anagram-results {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-family: inherit;
+    white-space: normal;
 }
 
-#output {
-    font-size: 1.25rem;
-    font-weight: 600;
+.anagram-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 0.5rem 0;
+}
+
+.section-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 0.25rem;
+}
+
+.anagram-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.anagram-word {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+}
+
+.anagram-word.exact {
+    background: var(--primary-light);
     color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 700;
+}
+
+.anagram-word.partial {
+    background: var(--gray-50);
+    color: var(--secondary);
+    border-color: var(--gray-200);
+}
+
+.anagram-word.shuffled {
+    background: var(--gray-100);
+    color: var(--gray-600);
+    font-family: monospace;
+}
+
+.letter-count {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.letter-badge {
+    background: var(--dark);
+    color: var(--white);
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+    font-weight: 600;
+}
+
+.text-danger {
+    color: var(--danger);
+    font-weight: 600;
 }

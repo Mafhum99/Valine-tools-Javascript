@@ -262,22 +262,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show section breakdown
             breakdownEl.style.display = 'block';
             sectionScoresEl.innerHTML = `
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;">
-                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
-                        <div style="font-size:0.75rem;color:#6b7280;">English</div>
-                        <div style="font-weight:600;">${english}</div>
+                <div class="score-grid">
+                    <div class="score-card">
+                        <div class="score-label">English</div>
+                        <div class="score-value">${english}</div>
                     </div>
-                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
-                        <div style="font-size:0.75rem;color:#6b7280;">Math</div>
-                        <div style="font-weight:600;">${math}</div>
+                    <div class="score-card">
+                        <div class="score-label">Math</div>
+                        <div class="score-value">${math}</div>
                     </div>
-                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
-                        <div style="font-size:0.75rem;color:#6b7280;">Reading</div>
-                        <div style="font-weight:600;">${reading}</div>
+                    <div class="score-card">
+                        <div class="score-label">Reading</div>
+                        <div class="score-value">${reading}</div>
                     </div>
-                    <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;">
-                        <div style="font-size:0.75rem;color:#6b7280;">Science</div>
-                        <div style="font-weight:600;">${science}</div>
+                    <div class="score-card">
+                        <div class="score-label">Science</div>
+                        <div class="score-value">${science}</div>
                     </div>
                 </div>
             `;

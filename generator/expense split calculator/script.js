@@ -242,9 +242,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculate() {
         try {
-            const expense=parseFloat(el0.value)||0;const people=parseInt(el1.value)||1;const perPerson=expense/people;outputEl.textContent='Expense per Person: $'+perPerson.toFixed(2);
+            const expenseVal = el0.value.trim();
+            const peopleVal = el1.value.trim();
+
+            if (expenseVal === '' || peopleVal === '') {
+                throw new Error('Please fill in all fields');
+            }
+
+            const expense = parseFloat(expenseVal);
+            const people = parseInt(peopleVal);
+
+            if (isNaN(expense) || isNaN(people)) {
+                throw new Error('Please enter valid numbers');
+            }
+
+            if (people <= 0) {
+                throw new Error('Number of people must be greater than zero');
+            }
+
+            if (expense < 0) {
+                throw new Error('Total expense cannot be negative');
+            }
+
+            const perPerson = expense / people;
+            outputEl.innerHTML = `
+                <div class="metric-result">
+                    <div class="metric-value">${formatCurrency(perPerson)}</div>
+                    <div class="metric-label">Per Person</div>
+                </div>
+            `;
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = `<span style="color: var(--danger)">⚠️ ${error.message}</span>`;
         }
     }
 
