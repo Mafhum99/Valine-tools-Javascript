@@ -245,17 +245,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function parseFunction(funcStr) {
         try {
-            const sanitized = funcStr.replace(/[^0-9tTy\s+\-*/().,^]/gi, (match) => {
-                if (match.toLowerCase() === 't' || match.toLowerCase() === 'y') return match;
-                if (['+', '-', '*', '/', '.', '(', ')', '^', ' ', ','].includes(match)) return match;
-                return '';
-            });
-            
-            const jsExpr = sanitized.replace(/\^/g, '**')
-                .replace(/(\d)([ty])/gi, '$1*$2')
-                .replace(/([ty])(\d)/gi, '$1*$2')
-                .replace(/([)])([ty])/gi, '$1*$2')
-                .replace(/([ty])([(])/gi, '$1*$2');
+            // Support common math functions in the input
+            let jsExpr = funcStr.replace(/\b(sin|cos|tan|exp|log|sqrt|abs|pow|PI|E)\b/gi, (match) => {
+                return `Math.${match.charAt(0).toUpperCase()}${match.slice(1).toLowerCase()}`;
+            })
+            .replace(/\bpi\b/gi, 'Math.PI')
+            .replace(/\be\b/gi, 'Math.E')
+            .replace(/\^/g, '**')
+            .replace(/(\d)([ty])/gi, '$1*$2')
+            .replace(/([ty])(\d)/gi, '$1*$2')
+            .replace(/([)])([ty])/gi, '$1*$2')
+            .replace(/([ty])([(])/gi, '$1*$2');
             
             return new Function('t', 'y', `return ${jsExpr};`);
         } catch (e) {

@@ -257,11 +257,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .replace(/\bpi\b/gi, 'Math.PI')
                 .replace(/\bpow\b/g, 'Math.pow')
                 .replace(/\babs\b/g, 'Math.abs')
-                .replace(/\bPI\b/g, 'Math.PI');
+                .replace(/\bPI\b/g, 'Math.PI')
+                .replace(/\be\b/g, 'Math.E');
 
-            return function(x) {
-                return eval(sanitized);
-            };
+            // Test if the function is valid
+            const testFn = new Function('x', `return ${sanitized};`);
+            testFn(1); 
+            return testFn;
         } catch (e) {
             return null;
         }
@@ -339,6 +341,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ensure n is even for display
             const displayN = n % 2 === 0 ? n : n + 1;
 
+            const resultText = `Definite Integral Results:
+Function: f(x) = ${expr}
+Bounds: [${formatNumber(a, 4)}, ${formatNumber(b, 4)}]
+Intervals (n): ${displayN}
+Simpson's Rule Result: ${formatNumber(simpsonResult, 6)}
+Trapezoidal Rule Result: ${formatNumber(trapezoidalResult, 6)}`;
+
             outputEl.innerHTML = `
                 <div style="text-align: left; line-height: 1.8;">
                     <strong>∫ Definite Integral Results:</strong><br>
@@ -350,6 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>Trapezoidal Rule Result:</strong> ${formatNumber(trapezoidalResult, 6)}
                 </div>
             `;
+            outputEl.dataset.rawResult = resultText;
         } catch (error) {
             outputEl.innerHTML = '<span style="color: #ef4444;">Error evaluating function: ' + error.message + '</span>';
         }
@@ -362,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         upperBoundEl.value = '';
         intervalsEl.value = '10';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         functionExprEl.focus();
     }
 
@@ -371,7 +382,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

@@ -325,39 +325,41 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calculate required final exam score
         const requiredScore = (desiredGrade - currentGrade * (weightCurrent / 100)) / (weightFinal / 100);
 
-        let result = `Final Exam Score Required\n`;
-        result += `${'='.repeat(30)}\n\n`;
-        result += `Current Grade: ${fmt(currentGrade)}%\n`;
-        result += `Weight of Current Grade: ${fmt(weightCurrent)}%\n`;
-        result += `Desired Final Grade: ${fmt(desiredGrade)}%\n`;
-        result += `Weight of Final Exam: ${fmt(weightFinal)}%\n\n`;
-        result += `Formula: Required = (Desired - Current x WeightCurrent) / WeightFinal\n`;
-        result += `Step: (${fmt(desiredGrade)} - ${fmt(currentGrade)} x ${fmt(weightCurrent / 100)}) / ${fmt(weightFinal / 100)}\n`;
-        result += `Required Final Exam Score: ${fmt(requiredScore)}%\n\n`;
-
-        // Feasibility assessment
+        let feasibility = '';
         if (requiredScore < 0) {
-            result += `Status: Already Achieved!\n`;
-            result += `You can score 0% on the final exam and still exceed your desired grade.\n`;
-            result += `Your current grade already guarantees a final grade of ${fmt(currentGrade * weightCurrent / 100)}%.`;
+            feasibility = 'Already Achieved! You can score 0% on the final exam.';
         } else if (requiredScore <= 100) {
-            result += `Status: Achievable!\n`;
-            if (requiredScore <= 50) {
-                result += `This is a very manageable score. You have a strong cushion from your current grade.`;
-            } else if (requiredScore <= 70) {
-                result += `This is a reasonable target. Focus your studying to secure this score.`;
-            } else if (requiredScore <= 85) {
-                result += `This requires solid preparation. Dedicate extra time to review key topics.`;
-            } else {
-                result += `This is a high target. Thorough preparation and practice will be essential.`;
-            }
+            feasibility = 'Achievable!';
         } else {
-            result += `Status: Impossible!\n`;
-            result += `You would need ${fmt(requiredScore)}% on the final exam, which exceeds 100%.\n`;
-            result += `Even with a perfect score (100%), your maximum achievable final grade would be ${fmt(currentGrade * weightCurrent / 100 + 100 * weightFinal / 100)}%.`;
+            feasibility = 'Impossible! Requires more than 100%.';
         }
 
-        outputEl.textContent = result;
+        const resultText = `Final Grade Calculator Results:
+Current Grade: ${fmt(currentGrade)}% (${fmt(weightCurrent)}% weight)
+Desired Final Grade: ${fmt(desiredGrade)}%
+Final Exam Weight: ${fmt(weightFinal)}%
+Required Final Exam Score: ${fmt(requiredScore)}%
+Status: ${feasibility}`;
+
+        let resultHTML = `
+            <div style="text-align: left; line-height: 1.8;">
+                <strong>🎯 Final Grade Results:</strong><br>
+                <strong>Current:</strong> ${fmt(currentGrade)}% (${fmt(weightCurrent)}% weight)<br>
+                <strong>Desired:</strong> ${fmt(desiredGrade)}%<br>
+                <strong>Final Exam Weight:</strong> ${fmt(weightFinal)}%<br>
+                <br>
+                <strong>Required Final Score:</strong><br>
+                <div style="font-size: 1.5rem; font-weight: 700; color: ${requiredScore > 100 ? '#ef4444' : '#10b981'};">
+                    ${fmt(requiredScore)}%
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">
+                    ${feasibility}
+                </div>
+            </div>
+        `;
+
+        outputEl.innerHTML = resultHTML;
+        outputEl.dataset.rawResult = resultText;
     }
 
     function clear() {
@@ -366,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
         desiredGradeEl.value = '';
         weightFinalEl.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         currentGradeEl.focus();
     }
 
@@ -374,7 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

@@ -231,38 +231,120 @@ function initTool(toolInfo) {
 
 // Initialize tool
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Euler's Method Calculator', icon: '📈' });
+    initTool({ name: "Euler's Method Calculator", icon: '📈' });
     
     // Get elements
-    const inputEl = $('#input');
+    const odeFuncEl = $('#ode-func');
+    const initCondEl = $('#init-cond');
+    const startTimeEl = $('#start-time');
+    const endTimeEl = $('#end-time');
+    const stepSizeEl = $('#step-size');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
     const copyBtn = $('#copy');
-    
+
+    function parseFunction(funcStr) {
+        try {
+            // Support common math functions in the input
+            let jsExpr = funcStr.replace(/\b(sin|cos|tan|exp|log|sqrt|abs|pow|PI|E)\b/gi, (match) => {
+                return `Math.${match.charAt(0).toUpperCase()}${match.slice(1).toLowerCase()}`;
+            })
+            .replace(/\bpi\b/gi, 'Math.PI')
+            .replace(/\be\b/gi, 'Math.E')
+            .replace(/\^/g, '**')
+            .replace(/(\d)([ty])/gi, '$1*$2')
+            .replace(/([ty])(\d)/gi, '$1*$2')
+            .replace(/([)])([ty])/gi, '$1*$2')
+            .replace(/([ty])([(])/gi, '$1*$2');
+            
+            return new Function('t', 'y', `return ${jsExpr};`);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function eulerMethod(f, t0, y0, h, steps) {
+        const results = [[t0, y0]];
+        let t = t0, y = y0;
+        for (let i = 1; i <= steps; i++) {
+            y = y + h * f(t, y);
+            t = t0 + i * h;
+            results.push([t, y]);
+        }
+        return results;
+    }
+
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
-        
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        const funcStr = odeFuncEl.value.trim();
+        const y0 = parseFloat(initCondEl.value);
+        const t0 = parseFloat(startTimeEl.value);
+        const t1 = parseFloat(endTimeEl.value);
+        const h = parseFloat(stepSizeEl.value);
+
+        if (!funcStr) {
+            outputEl.textContent = 'Please enter an ODE function';
             return;
         }
-        
-        try {
-            // TODO: Implement Euler's Method Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
-        } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+        if (isNaN(y0)) {
+            outputEl.textContent = 'Please enter a valid initial condition';
+            return;
         }
+        if (isNaN(t0) || isNaN(t1)) {
+            outputEl.textContent = 'Please enter valid time bounds';
+            return;
+        }
+        if (t0 >= t1) {
+            outputEl.textContent = 'Error: Start time must be less than end time';
+            return;
+        }
+        if (isNaN(h) || h <= 0) {
+            outputEl.textContent = 'Error: Step size must be positive';
+            return;
+        }
+
+        const f = parseFunction(funcStr);
+        if (!f) {
+            outputEl.textContent = 'Error: Invalid function syntax. Use format like: -2*t*y or t+y';
+            return;
+        }
+
+        const steps = Math.floor((t1 - t0) / h);
+        if (steps > 1000) {
+            outputEl.textContent = 'Error: Too many steps (> 1000). Please increase step size.';
+            return;
+        }
+
+        let results;
+        try {
+            results = eulerMethod(f, t0, y0, h, steps);
+        } catch (e) {
+            outputEl.textContent = 'Error during calculation: ' + e.message;
+            return;
+        }
+
+        let output = `Method: Euler's Method\nODE: dy/dt = ${funcStr}\nInitial: y(${t0}) = ${y0}\n\n`;
+        output += 't\t\ty(t)\n';
+        output += '─'.repeat(40) + '\n';
+        results.forEach(([t, y]) => {
+            output += `${t.toFixed(4)}\t${y.toFixed(6)}\n`;
+        });
+
+        outputEl.textContent = output;
+        outputEl.dataset.rawResult = output;
     }
     
     // Clear function
     function clear() {
-        inputEl.value = '';
+        odeFuncEl.value = '';
+        initCondEl.value = '';
+        startTimeEl.value = '0';
+        endTimeEl.value = '1';
+        stepSizeEl.value = '0.1';
         outputEl.textContent = '-';
-        inputEl.focus();
+        delete outputEl.dataset.rawResult;
+        odeFuncEl.focus();
     }
     
     // Event listeners
@@ -271,14 +353,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
     
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    [odeFuncEl, initCondEl, startTimeEl, endTimeEl, stepSizeEl].forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
     });
 });

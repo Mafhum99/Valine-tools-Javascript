@@ -255,11 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 .replace(/\bpi\b/gi, 'Math.PI')
                 .replace(/\bpow\b/g, 'Math.pow')
                 .replace(/\babs\b/g, 'Math.abs')
-                .replace(/\bPI\b/g, 'Math.PI');
+                .replace(/\bPI\b/g, 'Math.PI')
+                .replace(/\be\b/g, 'Math.E');
 
-            return function(x) {
-                return eval(sanitized);
-            };
+            return new Function('x', `return ${sanitized};`);
         } catch (e) {
             return null;
         }
@@ -333,8 +332,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const symbolicDeriv = getSymbolicDerivative(expr);
 
             let outputParts = [`<strong>📈 Derivative Results:</strong><br>`];
+            let resultTextParts = [`Derivative Results:`];
+            
             outputParts.push(`<strong>Function:</strong> f(x) = ${expr}`);
+            resultTextParts.push(`Function: f(x) = ${expr}`);
+            
             outputParts.push(`<strong>Step Size (h):</strong> ${h}`);
+            resultTextParts.push(`Step Size (h): ${h}`);
+            
             outputParts.push(`<br>`);
 
             // Check if evaluation point is provided
@@ -350,25 +355,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 const derivValue = centralDifference(f, x0, h);
 
                 outputParts.push(`<strong>Evaluation Point (x₀):</strong> ${formatNumber(x0, 6)}`);
+                resultTextParts.push(`Evaluation Point (x₀): ${formatNumber(x0, 6)}`);
+                
                 outputParts.push(`<strong>Numerical Derivative f'(x₀):</strong> ${formatNumber(derivValue, 6)}`);
+                resultTextParts.push(`Numerical Derivative f'(x₀): ${formatNumber(derivValue, 6)}`);
 
                 // Also compute f(x₀)
                 const fx = f(x0);
                 outputParts.push(`<strong>f(x₀):</strong> ${formatNumber(fx, 6)}`);
+                resultTextParts.push(`f(x₀): ${formatNumber(fx, 6)}`);
 
                 // Second derivative (numerical)
                 const secondDeriv = (f(x0 + h) - 2 * f(x0) + f(x0 - h)) / (h * h);
                 outputParts.push(`<strong>Second Derivative f''(x₀):</strong> ${formatNumber(secondDeriv, 6)}`);
+                resultTextParts.push(`Second Derivative f''(x₀): ${formatNumber(secondDeriv, 6)}`);
             }
 
             // Always show symbolic derivative if available
             if (symbolicDeriv !== null) {
                 outputParts.push(`<br><strong>Symbolic Derivative f'(x):</strong> ${symbolicDeriv}`);
+                resultTextParts.push(`Symbolic Derivative f'(x): ${symbolicDeriv}`);
             }
 
             outputParts.push(`<br><strong>Method:</strong> Central Difference: f'(x) ≈ [f(x+h) - f(x-h)] / (2h)`);
 
             outputEl.innerHTML = `<div style="text-align: left; line-height: 1.8;">${outputParts.join('<br>')}</div>`;
+            outputEl.dataset.rawResult = resultTextParts.join('\n');
         } catch (error) {
             outputEl.innerHTML = '<span style="color: #ef4444;">Error evaluating function: ' + error.message + '</span>';
         }
@@ -380,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
         evalPointEl.value = '';
         stepSizeEl.value = '0.00001';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         functionExprEl.focus();
     }
 
@@ -389,7 +402,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

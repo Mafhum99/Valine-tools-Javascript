@@ -282,17 +282,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const steps = getComputationSteps(n);
         const parity = n % 2 === 0 ? 'even' : 'odd';
 
-        let output = `${n}!! = ${result.toString()}\n\n`;
-        output += `Definition: n!! for ${parity} n\n`;
-        output += `Computation: ${steps}\n`;
-        output += `Result: ${result.toLocaleString()}`;
+        const resultText = `Double Factorial Results:
+n: ${n}
+Definition: n!! for ${parity} n
+Computation: ${steps}
+Result: ${result.toString()}`;
 
-        outputEl.textContent = output;
+        outputEl.innerHTML = `
+            <div style="text-align: left; line-height: 1.8;">
+                <strong>❗ Double Factorial Results:</strong><br>
+                <strong>n:</strong> ${n}<br>
+                <strong>Definition:</strong> n!! for ${parity} n<br>
+                <strong>Computation:</strong> ${steps}<br>
+                <br>
+                <strong>Result:</strong><br>
+                <div style="word-break: break-all; background: rgba(0,0,0,0.05); padding: 0.75rem; border-radius: 0.25rem; font-family: monospace;">
+                    ${result.toString()}
+                </div>
+            </div>
+        `;
+        
+        outputEl.dataset.rawResult = resultText;
     }
 
     function clear() {
         inputEl.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         inputEl.focus();
     }
 
@@ -301,7 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

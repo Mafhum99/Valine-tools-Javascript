@@ -416,6 +416,16 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (result.gpa >= 2.0) gpaClass = 'gpa-average';
         else gpaClass = 'gpa-below';
 
+        // Build raw text for copying
+        let rawText = `GPA Calculator Results:\n`;
+        rawText += `Cumulative GPA: ${formatNumber(result.gpa, 3)}\n`;
+        rawText += `Total Credits: ${formatNumber(result.totalCredits, 1)}\n`;
+        rawText += `Total Quality Points: ${formatNumber(result.totalQualityPoints, 2)}\n\n`;
+        rawText += `Courses:\n`;
+        courses.forEach((c, i) => {
+            rawText += `${i+1}. ${c.name}: ${c.grade} (${c.credits} credits)\n`;
+        });
+
         // Build output HTML
         let outputHTML = '';
         outputHTML += `<div class="gpa-display ${gpaClass}">`;
@@ -429,6 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outputHTML += `</div>`;
 
         outputEl.innerHTML = outputHTML;
+        outputEl.dataset.rawResult = rawText;
 
         // Grade breakdown
         let breakdownHTML = '<table class="breakdown-table"><thead><tr><th>Grade</th><th>Count</th><th>Credits</th><th>Points</th></tr></thead><tbody>';
@@ -490,6 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
         courseCount = 0;
         createCourseRow();
         outputEl.innerHTML = '-';
+        delete outputEl.dataset.rawResult;
         gradeBreakdownEl.innerHTML = '';
     }
 
@@ -528,12 +540,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            const gpaValue = outputEl.querySelector('.gpa-value');
-            if (gpaValue) {
-                copyToClipboard(`GPA: ${gpaValue.textContent}, Total Credits: ${outputEl.querySelector('.stat-value')?.textContent || ''}`);
-            } else {
-                copyToClipboard(outputEl.textContent);
-            }
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 });

@@ -368,15 +368,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = gamma(n);
             const roundedN = isInteger(n) ? Math.round(n) : n;
 
-            // Build output
-            let output = '';
+            // Build output parts for raw text
+            let resultParts = [];
+            resultParts.push(`Γ(${roundedN}) = ${formatGammaValue(result)}`);
+            resultParts.push(`Definition: Γ(n) = ∫(0 to ∞) t^(n-1) × e^(-t) dt`);
 
-            // Main result
-            output += `Γ(${roundedN}) = ${formatGammaValue(result)}\n\n`;
-
-            // Definition reference
-            output += `Definition: Γ(n) = ∫(0 to ∞) t^(n-1) × e^(-t) dt\n`;
-            output += `Γ(${roundedN}) = ∫(0 to ∞) t^${roundedN - 1} × e^(-t) dt\n\n`;
+            // Build result HTML
+            let outputHTML = `<div style="text-align: left; line-height: 1.8;">`;
+            outputHTML += `<strong>Γ(${roundedN}) = ${formatGammaValue(result)}</strong><br><br>`;
+            outputHTML += `<div style="font-size: 0.875rem; color: #6b7280;">Definition: Γ(n) = ∫(0 to ∞) t<sup>n-1</sup> × e<sup>-t</sup> dt</div><br>`;
 
             // Factorial equivalence for positive integers
             if (isInteger(n) && n > 0) {
@@ -384,33 +384,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 const factVal = intN - 1;
                 const factResult = factorial(factVal);
 
-                output += `Factorial Equivalence:\n`;
-                output += `Γ(${intN}) = (${intN - 1})! = ${formatNumber(factResult)}\n\n`;
-                output += `Since ${intN} is a positive integer, Γ(${intN}) = (${intN} - 1)!`;
+                resultParts.push(`Factorial Equivalence: Γ(${intN}) = (${intN - 1})! = ${formatNumber(factResult)}`);
+                
+                outputHTML += `<strong>Factorial Equivalence:</strong><br>`;
+                outputHTML += `Γ(${intN}) = (${intN - 1})! = ${formatNumber(factResult)}<br>`;
 
-                // Add the actual factorial expansion for small integers
                 if (factVal <= 20 && factVal > 0) {
                     const factors = [];
-                    for (let i = factVal; i >= 1; i--) {
-                        factors.push(i);
-                    }
-                    output += ` = ${factors.join(' × ')}`;
+                    for (let i = factVal; i >= 1; i--) factors.push(i);
+                    outputHTML += `<div style="font-size: 0.875rem; color: #6b7280;">= ${factors.join(' × ')}</div>`;
                 }
             } else if (n > 0) {
-                // For non-integer positive values, show relation to nearest integers
                 const floorN = Math.floor(n);
                 const ceilN = Math.ceil(n);
-                if (floorN !== ceilN) {
-                    output += `Note: Γ(${n}) is between Γ(${floorN}) = ${formatGammaValue(gamma(floorN))} and Γ(${ceilN}) = ${formatGammaValue(gamma(ceilN))}`;
-                }
+                outputHTML += `<div style="font-size: 0.875rem; font-style: italic;">Note: Γ(${n}) is between Γ(${floorN}) and Γ(${ceilN})</div>`;
             } else {
-                // For negative non-integer values
-                output += `Note: The Gamma function is defined for negative non-integer values via reflection.`;
+                outputHTML += `<div style="font-size: 0.875rem; font-style: italic;">Note: Calculated via reflection for negative values.</div>`;
             }
-
-            outputEl.textContent = output;
+            
+            outputHTML += `</div>`;
+            outputEl.innerHTML = outputHTML;
+            outputEl.dataset.rawResult = resultParts.join('\n');
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = `<span style="color: #ef4444;">Error: ${error.message}</span>`;
         }
     }
 
@@ -420,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function clear() {
         inputEl.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         inputEl.focus();
     }
 
@@ -429,7 +426,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

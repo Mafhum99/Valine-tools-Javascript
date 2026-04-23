@@ -309,9 +309,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Specific term (k-th term)
+            // specific term (k-th term)
+            let resultParts = [`Geometric Sequence Results:`];
+            resultParts.push(`Sequence: ${sequence.slice(0, 10).join(', ')}...`);
+
             if (k !== null) {
                 const kthTerm = a * Math.pow(r, k - 1);
+                resultParts.push(`k-th Term (a${k}): ${formatNumber(kthTerm, 4)}`);
                 html += `
                     <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem;color:#6b7280;">k-th Term (a<sub>${k}</sub>)</div>
@@ -323,22 +327,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // n-th term (last term if n is provided)
             if (n !== null) {
                 const nthTerm = a * Math.pow(r, n - 1);
+                resultParts.push(`n-th Term (a${n}): ${formatNumber(nthTerm, 4)}`);
                 html += `
                     <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem;color:#6b7280;">n-th Term (a<sub>${n}</sub>)</div>
                         <div style="font-weight:600;font-size:1.125rem;">${formatNumber(nthTerm, 4)}</div>
                     </div>
                 `;
-            }
 
-            // Sum of first n terms
-            if (n !== null) {
                 let sum;
-                if (r === 1) {
-                    sum = a * n;
-                } else {
-                    sum = a * (1 - Math.pow(r, n)) / (1 - r);
-                }
+                if (r === 1) sum = a * n;
+                else sum = a * (1 - Math.pow(r, n)) / (1 - r);
+                
+                resultParts.push(`Sum of first ${n} terms: ${formatNumber(sum, 4)}`);
                 html += `
                     <div style="padding:0.5rem;background:#f3f4f6;border-radius:0.375rem;margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem;color:#6b7280;">Sum of First ${n} Terms (S<sub>${n}</sub>)</div>
@@ -347,9 +348,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            // Infinite sum (convergent only if |r| < 1)
+            // Infinite sum
             if (Math.abs(r) < 1) {
                 const infiniteSum = a / (1 - r);
+                resultParts.push(`Infinite Sum: ${formatNumber(infiniteSum, 4)} (Convergent)`);
                 html += `
                     <div style="padding:0.5rem;background:#ecfdf5;border-radius:0.375rem;margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem;color:#065f46;font-weight:600;">Infinite Sum (S<sub>∞</sub>)</div>
@@ -358,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
             } else {
+                resultParts.push(`Infinite Sum: Divergent`);
                 html += `
                     <div style="padding:0.5rem;background:#fef2f2;border-radius:0.375rem;margin-bottom:0.5rem;">
                         <div style="font-size:0.75rem;color:#991b1b;font-weight:600;">Infinite Sum (S<sub>∞</sub>)</div>
@@ -366,7 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            // Formula display
             html += `
                 <div style="font-size:0.75rem;color:#6b7280;margin-top:0.75rem;padding-top:0.5rem;border-top:1px solid #e5e7eb;">
                     <div style="margin-bottom:0.25rem;"><strong>Formulas:</strong></div>
@@ -378,8 +380,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             html += '</div>';
             outputEl.innerHTML = html;
+            outputEl.dataset.rawResult = resultParts.join('\n');
         } catch (error) {
-            outputEl.textContent = 'Error: ' + error.message;
+            outputEl.innerHTML = `<span style="color:#ef4444;">Error: ${error.message}</span>`;
         }
     }
 
@@ -389,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
         numTermsEl.value = '';
         specificTermEl.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         firstTermEl.focus();
     }
 
@@ -397,7 +401,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

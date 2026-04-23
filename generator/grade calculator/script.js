@@ -416,6 +416,15 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (weightedSum >= 60) { letterGrade = 'D'; gradeColor = '#f97316'; }
         else { letterGrade = 'F'; gradeColor = '#ef4444'; }
 
+        // Build raw text for copying
+        let rawText = `Grade Calculator Results:\n`;
+        rawText += `Final Weighted Grade: ${formatNumber(weightedSum, 1)}%\n`;
+        rawText += `Letter Grade: ${letterGrade}\n\n`;
+        rawText += `Breakdown:\n`;
+        breakdown.forEach(b => {
+            rawText += `- ${b.name}: ${formatNumber(b.score, 1)}/${formatNumber(b.maxScore, 1)} (${formatNumber(b.pct, 1)}%) - Weight: ${formatNumber(b.weight, 1)}%\n`;
+        });
+
         // Build breakdown rows
         const breakdownRows = breakdown.map(b =>
             `<tr style="border-bottom:1px solid #e5e7eb;">
@@ -449,6 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </table>
             </div>
         `;
+        outputEl.dataset.rawResult = rawText;
 
         if (weightSummaryEl) {
             weightSummaryEl.textContent = `Total weight: ${formatNumber(totalWeight, 1)}%`;
@@ -461,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
         assignmentsContainer.appendChild(createRow());
         updateRemoveButtons();
         outputEl.innerHTML = '<p style="color:#9ca3af;">Enter your assignment grades and click Calculate</p>';
+        delete outputEl.dataset.rawResult;
         if (weightSummaryEl) weightSummaryEl.textContent = '';
     }
 
@@ -473,17 +484,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            const rows = $$('.assignment-row');
-            let text = 'Grade Calculator Results\n';
-            rows.forEach((row, i) => {
-                const name = row.querySelector('.assignment-name').value.trim() || `Assignment ${i + 1}`;
-                const score = row.querySelector('.assignment-score').value;
-                const max = row.querySelector('.assignment-max').value || '100';
-                const weight = row.querySelector('.assignment-weight').value;
-                text += `${name}: ${score}/${max} (${weight}%)\n`;
-            });
-            text += outputEl.textContent;
-            copyToClipboard(text);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

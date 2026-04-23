@@ -403,7 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         result += `  Max Magnitude: Bin k=${dftResult.reduce((maxIdx, entry, idx, arr) => magnitude(entry.real, entry.imag) > magnitude(arr[maxIdx].real, arr[maxIdx].imag) ? idx : maxIdx, 0)}, value = ${formatNumber(Math.max(...dftResult.map(e => magnitude(e.real, e.imag))))}\n`;
 
-        outputEl.textContent = result;
+        outputEl.innerHTML = `<pre style="text-align: left; white-space: pre; overflow-x: auto; font-family: monospace; font-size: 0.875rem; background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 0.5rem;">${result}</pre>`;
+        outputEl.dataset.rawResult = result;
     }
 
     // ========================================
@@ -413,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputEl.value = '';
         samplingRateEl.value = '1';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         inputEl.focus();
     }
 
@@ -424,7 +426,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

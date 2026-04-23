@@ -280,6 +280,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calculate focal distance: c = sqrt(a^2 - b^2)
             const focalDistance = Math.sqrt(Math.pow(a, 2) - Math.pow(b, 2));
 
+            const resultText = `Ellipse Results:
+Semi-Major Axis (a): ${formatNumber(a, 4)}
+Semi-Minor Axis (b): ${formatNumber(b, 4)}
+Area: ${formatNumber(area, 4)}
+Perimeter (Ramanujan): ${formatNumber(perimeter, 4)}
+Eccentricity: ${formatNumber(eccentricity, 6)}
+Focal Distance: ${formatNumber(focalDistance, 4)}`;
+
             // Build result HTML
             const swapNote = swapped ? '<div style="font-size:0.75rem;color:#6b7280;margin-bottom:0.75rem;font-style:italic;">Note: Inputs were swapped so that a >= b</div>' : '';
 
@@ -318,6 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             outputEl.innerHTML = resultHTML;
+            outputEl.dataset.rawResult = resultText;
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
@@ -328,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         semiMajorInput.value = '';
         semiMinorInput.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         semiMajorInput.focus();
     }
 
@@ -337,7 +347,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

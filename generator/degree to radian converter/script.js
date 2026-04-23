@@ -319,9 +319,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const piFraction = findPiFraction(radians);
 
         let piFractionDisplay = '';
+        let piFractionText = '';
         if (piFraction) {
             piFractionDisplay = `<br><strong>In terms of π:</strong> ${piFraction}`;
+            piFractionText = `\nIn terms of π: ${piFraction}`;
         }
+
+        const resultText = `Conversion Results:
+Degrees: ${formatNumber(degrees, 6)}°
+Radians: ${formatNumber(radians, 6)} rad${piFractionText}`;
 
         outputEl.innerHTML = `
             <div style="text-align: left; line-height: 1.8;">
@@ -334,6 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 degrees = radians × (180 / π)
             </div>
         `;
+        outputEl.dataset.rawResult = resultText;
     }
 
     // Clear function
@@ -341,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         degreesEl.value = '';
         radiansEl.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         degreesEl.focus();
     }
 
@@ -363,7 +371,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

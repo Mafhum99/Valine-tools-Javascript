@@ -261,6 +261,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const lateralSA = 2 * Math.PI * r * h;
             const totalSA = 2 * Math.PI * r * (r + h);
 
+            const resultText = `Cylinder Results:
+Radius (r): ${formatNumber(r, 4)}
+Height (h): ${formatNumber(h, 4)}
+Volume (V): ${formatNumber(volume, 4)} cubic units
+Lateral Surface Area (LSA): ${formatNumber(lateralSA, 4)} square units
+Total Surface Area (TSA): ${formatNumber(totalSA, 4)} square units`;
+
             outputEl.innerHTML = `
                 <div style="text-align: left; line-height: 1.8;">
                     <strong>🛢️ Cylinder Results:</strong><br>
@@ -271,6 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>Total Surface Area (TSA = 2πr(r+h)):</strong> ${formatNumber(totalSA, 4)} square units
                 </div>
             `;
+            
+            // Store raw text for better copying
+            outputEl.dataset.rawResult = resultText;
         } catch (error) {
             outputEl.innerHTML = '<span style="color: #ef4444;">Error: ' + error.message + '</span>';
         }
@@ -281,6 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         radiusEl.value = '';
         heightEl.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         radiusEl.focus();
     }
 
@@ -290,7 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 

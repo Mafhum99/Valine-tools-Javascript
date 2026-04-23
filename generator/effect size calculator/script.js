@@ -285,17 +285,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const direction = cohensD > 0 ? 'Group 1 > Group 2' : cohensD < 0 ? 'Group 2 > Group 1' : 'No difference';
 
-        let output = `Cohen's d: ${cohensD.toFixed(4)}\n\n`;
-        output += `Pooled SD: ${pooledSD.toFixed(4)}\n`;
-        output += `Mean Difference: ${(mean1 - mean2).toFixed(4)}\n`;
-        output += `Effect Size: ${interpretation}\n`;
-        output += `Direction: ${direction}\n\n`;
-        output += `Interpretation Guide:\n`;
-        output += `• Small: |d| ≈ 0.2\n`;
-        output += `• Medium: |d| ≈ 0.5\n`;
-        output += `• Large: |d| ≈ 0.8`;
+        const resultText = `Effect Size Results (Cohen's d):
+Cohen's d: ${cohensD.toFixed(4)}
+Pooled SD: ${pooledSD.toFixed(4)}
+Mean Difference: ${(mean1 - mean2).toFixed(4)}
+Interpretation: ${interpretation}
+Direction: ${direction}`;
 
-        outputEl.textContent = output;
+        outputEl.innerHTML = `
+            <div style="text-align: left; line-height: 1.8;">
+                <strong>📏 Effect Size Results:</strong><br>
+                <strong>Cohen's d:</strong> ${cohensD.toFixed(4)}<br>
+                <strong>Pooled SD:</strong> ${pooledSD.toFixed(4)}<br>
+                <strong>Mean Difference:</strong> ${(mean1 - mean2).toFixed(4)}<br>
+                <strong>Interpretation:</strong> ${interpretation}<br>
+                <strong>Direction:</strong> ${direction}<br>
+                <br>
+                <div style="font-size: 0.75rem; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 0.5rem;">
+                    <strong>Interpretation Guide:</strong><br>
+                    • Small: |d| ≈ 0.2<br>
+                    • Medium: |d| ≈ 0.5<br>
+                    • Large: |d| ≈ 0.8
+                </div>
+            </div>
+        `;
+        
+        outputEl.dataset.rawResult = resultText;
     }
 
     function clear() {
@@ -306,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
         n1El.value = '';
         n2El.value = '';
         outputEl.textContent = '-';
+        delete outputEl.dataset.rawResult;
         mean1El.focus();
     }
 
@@ -314,7 +330,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            copyToClipboard(outputEl.textContent);
+            const textToCopy = outputEl.dataset.rawResult || outputEl.textContent;
+            if (textToCopy === '-') return;
+            copyToClipboard(textToCopy);
         });
     }
 
