@@ -234,7 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initTool({ name: 'Heron's Formula Calculator', icon: '📐' });
     
     // Get elements
-    const inputEl = $('#input');
+    const sideAEl = $('#side-a');
+    const sideBEl = $('#side-b');
+    const sideCEl = $('#side-c');
     const outputEl = $('#output');
     const calculateBtn = $('#calculate');
     const clearBtn = $('#clear');
@@ -242,17 +244,30 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Main calculation function
     function calculate() {
-        const input = inputEl.value.trim();
+        const a = parseFloat(sideAEl.value);
+        const b = parseFloat(sideBEl.value);
+        const c = parseFloat(sideCEl.value);
         
-        if (!input) {
-            outputEl.textContent = 'Please enter a value';
+        if (isNaN(a) || isNaN(b) || isNaN(c)) {
+            outputEl.textContent = 'Please enter valid numbers for all sides';
+            return;
+        }
+
+        if (a <= 0 || b <= 0 || c <= 0) {
+            outputEl.textContent = 'Side lengths must be greater than zero';
+            return;
+        }
+
+        // Triangle Inequality Theorem
+        if (a + b <= c || a + c <= b || b + c <= a) {
+            outputEl.textContent = 'Invalid triangle: The sum of any two sides must be greater than the third side';
             return;
         }
         
         try {
-            // TODO: Implement Heron's Formula Calculator logic here
-            const result = input; // Placeholder
-            outputEl.textContent = result;
+            const s = (a + b + c) / 2;
+            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+            outputEl.textContent = formatNumber(area, 4);
         } catch (error) {
             outputEl.textContent = 'Error: ' + error.message;
         }
@@ -260,9 +275,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Clear function
     function clear() {
-        inputEl.value = '';
+        sideAEl.value = '';
+        sideBEl.value = '';
+        sideCEl.value = '';
         outputEl.textContent = '-';
-        inputEl.focus();
+        sideAEl.focus();
     }
     
     // Event listeners
@@ -276,9 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Enter key support
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            calculate();
-        }
+    [sideAEl, sideBEl, sideCEl].forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
     });
 });

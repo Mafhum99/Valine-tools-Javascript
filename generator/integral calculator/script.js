@@ -542,12 +542,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            const text = `Integral Calculator\nf(x) = ${fxEl.value}\nMode: ${modeEl.value}\n${outputEl.textContent}`;
+            const fx = fxEl.value;
+            if (!fx) return;
+            
+            const mode = modeEl.value;
+            const result = outputEl.textContent.trim();
+            
+            let text = `Integral Calculator\nf(x) = ${fx}\nMode: ${mode}\n`;
+            if (mode === 'definite') {
+                text += `Bounds: [${boundAEl.value}, ${boundBEl.value}]\n`;
+            }
+            text += `Result: ${result}`;
+            
             copyToClipboard(text);
         });
     }
 
-    document.addEventListener('keypress', (e) => {
+    fxEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
+    });
+    boundAEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
+    });
+    boundBEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') calculate();
     });
 });

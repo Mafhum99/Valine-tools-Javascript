@@ -21,22 +21,40 @@
             <div id="tool-content">
                 <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label">Gender</label>
+                    <div style="display:flex;gap:1rem;margin-bottom:0.5rem;">
+                        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                            <input type="radio" name="gender" id="gender-male" checked> Male
+                        </label>
+                        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                            <input type="radio" name="gender" id="gender-female"> Female
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="height">Height</label>
+                    <div style="display:flex;gap:0.5rem;">
+                        <input type="number" id="height" class="form-input" style="flex:1;" placeholder="Enter height" step="any">
+                        <select id="unit" class="form-input" style="width:80px;">
+                            <option value="cm">cm</option>
+                            <option value="in">in</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate Ideal Weight</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
                 
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
-                    <div id="output">-</div>
+                    <div class="result-label">Results</div>
+                    <div id="output">Enter your gender and height to calculate ideal weight</div>
                 </div>
                 
                 <div class="btn-group">
-                    <button id="copy" class="btn btn-secondary">📋 Copy Result</button>
+                    <button id="copy" class="btn btn-secondary">📋 Copy Results</button>
                 </div>
             </div>
         </div>

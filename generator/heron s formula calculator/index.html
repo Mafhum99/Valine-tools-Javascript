@@ -21,17 +21,25 @@
             <div id="tool-content">
                 <!-- Tool content goes here -->
                 <div class="form-group">
-                    <label class="form-label" for="input">Input</label>
-                    <input type="text" id="input" class="form-input" placeholder="Enter value...">
+                    <label class="form-label" for="side-a">Side A</label>
+                    <input type="number" id="side-a" class="form-input" placeholder="Enter length of side a" step="any">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="side-b">Side B</label>
+                    <input type="number" id="side-b" class="form-input" placeholder="Enter length of side b" step="any">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="side-c">Side C</label>
+                    <input type="number" id="side-c" class="form-input" placeholder="Enter length of side c" step="any">
                 </div>
                 
                 <div class="btn-group">
-                    <button id="calculate" class="btn btn-primary btn-block">Calculate</button>
+                    <button id="calculate" class="btn btn-primary btn-block">Calculate Area</button>
                     <button id="clear" class="btn btn-secondary">Clear</button>
                 </div>
                 
                 <div class="result-box" id="result">
-                    <div class="result-label">Result</div>
+                    <div class="result-label">Triangle Area</div>
                     <div id="output">-</div>
                 </div>
                 

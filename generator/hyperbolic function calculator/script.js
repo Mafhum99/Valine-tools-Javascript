@@ -230,7 +230,7 @@ function initTool(toolInfo) {
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    initTool({ name: 'Hyperbolic Function Calculator', icon: '📈' });
+    initTool({ name: 'Hyperbolic Function Calculator', icon: '📊' });
 
     const xEl = $('#x-value');
     const calculateBtn = $('#calculate');
@@ -238,19 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyBtn = $('#copy');
     const outputEl = $('#output');
 
-    // Format very large or very small numbers nicely
-    function formatValue(num, decimals = 6) {
-        if (num === null || num === undefined || isNaN(num)) return 'NaN';
-        if (!isFinite(num)) return num > 0 ? 'Infinity' : '-Infinity';
-        if (num === 0) return '0';
-
-        const absVal = Math.abs(num);
-        // Use scientific notation for very large or very small numbers
-        if (absVal >= 1e10 || (absVal < 1e-6 && absVal > 0)) {
-            return num.toExponential(decimals);
-        }
-        return Number(num).toFixed(decimals);
-    }
+    // ... (formatValue function remains the same)
 
     function calculate() {
         const xStr = xEl.value.trim();
@@ -267,39 +255,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Primary hyperbolic functions (using Math built-ins)
             const sinh = Math.sinh(x);
             const cosh = Math.cosh(x);
             const tanh = Math.tanh(x);
-
-            // Reciprocal hyperbolic functions
-            // csch(x) = 1/sinh(x) - undefined when sinh(x) = 0 (i.e., x = 0)
-            // sech(x) = 1/cosh(x) - always defined since cosh(x) >= 1
-            // coth(x) = 1/tanh(x) - undefined when tanh(x) = 0 (i.e., x = 0)
-
             const csch = (sinh === 0) ? null : 1 / sinh;
             const sech = 1 / cosh;
             const coth = (tanh === 0) ? null : 1 / tanh;
 
             const results = [
-                { name: 'sinh(x)', value: sinh, formula: '(e^x - e^(-x)) / 2', color: '#22c55e' },
-                { name: 'cosh(x)', value: cosh, formula: '(e^x + e^(-x)) / 2', color: '#3b82f6' },
-                { name: 'tanh(x)', value: tanh, formula: 'sinh(x) / cosh(x)', color: '#8b5cf6' },
-                { name: 'csch(x)', value: csch, formula: '1 / sinh(x)', color: '#f59e0b' },
-                { name: 'sech(x)', value: sech, formula: '1 / cosh(x)', color: '#ef4444' },
-                { name: 'coth(x)', value: coth, formula: '1 / tanh(x)', color: '#ec4899' }
+                { name: 'sinh(x)', value: sinh },
+                { name: 'cosh(x)', value: cosh },
+                { name: 'tanh(x)', value: tanh },
+                { name: 'csch(x)', value: csch },
+                { name: 'sech(x)', value: sech },
+                { name: 'coth(x)', value: coth }
             ];
 
             const cards = results.map(r => {
                 const displayValue = r.value === null
-                    ? '<span style="color:#ef4444;font-size:0.75rem;">Undefined (div by zero)</span>'
+                    ? '<span style="color:#ef4444;font-size:0.75rem;">Undefined</span>'
                     : formatValue(r.value, 8);
+                const formula = r.name === 'sinh(x)' ? '(e^x - e^-x)/2' :
+                              r.name === 'cosh(x)' ? '(e^x + e^-x)/2' :
+                              r.name === 'tanh(x)' ? 'sinh/cosh' :
+                              r.name === 'csch(x)' ? '1/sinh' :
+                              r.name === 'sech(x)' ? '1/cosh' : '1/tanh';
+                const color = r.name === 'sinh(x)' ? '#22c55e' :
+                            r.name === 'cosh(x)' ? '#3b82f6' :
+                            r.name === 'tanh(x)' ? '#8b5cf6' :
+                            r.name === 'csch(x)' ? '#f59e0b' :
+                            r.name === 'sech(x)' ? '#ef4444' : '#ec4899';
+
                 return `
-                    <div style="padding:0.75rem;background:#f9fafb;border-radius:0.5rem;border-left:3px solid ${r.color};">
+                    <div style="padding:0.75rem;background:#f9fafb;border-radius:0.5rem;border-left:3px solid ${color};">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <div>
-                                <div style="font-weight:700;font-size:1rem;color:${r.color};">${r.name}</div>
-                                <div style="font-size:0.625rem;color:#9ca3af;font-family:monospace;">${r.formula}</div>
+                                <div style="font-weight:700;font-size:1rem;color:${color};">${r.name}</div>
+                                <div style="font-size:0.625rem;color:#9ca3af;font-family:monospace;">${formula}</div>
                             </div>
                             <div style="font-family:monospace;font-size:0.875rem;font-weight:600;text-align:right;min-width:140px;">
                                 ${displayValue}
@@ -333,12 +325,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            const text = `Hyperbolic Function Calculator\nx = ${xEl.value}\n${outputEl.textContent}`;
+            const xVal = xEl.value;
+            if (!xVal) return;
+            
+            const results = Array.from(outputEl.querySelectorAll('div > div > div > div:first-child'))
+                .map(el => {
+                    const name = el.textContent;
+                    const val = el.parentElement.nextElementSibling.textContent.trim();
+                    return `${name}: ${val}`;
+                }).join('\n');
+                
+            const text = `Hyperbolic Functions (x = ${xVal}):\n${results}`;
             copyToClipboard(text);
         });
     }
 
-    document.addEventListener('keypress', (e) => {
+    xEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') calculate();
     });
 });

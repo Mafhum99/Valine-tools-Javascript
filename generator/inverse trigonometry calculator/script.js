@@ -1,322 +1,188 @@
-/* ============================================================
-   TOOL 1: Inverse Trigonometry Calculator
-   ============================================================ */
+// ========================================
+// DOM Helpers
+// ========================================
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
 
-// ── DOM Helpers ──────────────────────────────────────────────
-const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-const createEl = (tag, attrs = {}, children = []) => {
-  const el = document.createElement(tag);
-  Object.entries(attrs).forEach(([k, v]) => {
-    if (k === "className") el.className = v;
-    else if (k === "textContent") el.textContent = v;
-    else if (k === "innerHTML") el.innerHTML = v;
-    else el.setAttribute(k, v);
-  });
-  children.forEach(c => { if (c) el.appendChild(c); });
-  return el;
-};
-const setText = (sel, text, ctx = document) => { const el = $(sel, ctx); if (el) el.textContent = text; };
-const show = (sel, ctx = document) => { const el = $(sel, ctx); if (el) el.style.display = ""; };
-const hide = (sel, ctx = document) => { const el = $(sel, ctx); if (el) el.style.display = "none"; };
-const val = (sel) => { const el = $(sel); return el ? el.value : ""; };
+function createElement(tag, attrs = {}, children = []) {
+    const el = document.createElement(tag);
+    Object.entries(attrs).forEach(([key, value]) => {
+        if (key === 'className') el.className = value;
+        else if (key === 'textContent') el.textContent = value;
+        else if (key === 'innerHTML') el.innerHTML = value;
+        else if (key.startsWith('on')) el.addEventListener(key.slice(2).toLowerCase(), value);
+        else el.setAttribute(key, value);
+    });
+    children.forEach(child => {
+        if (typeof child === 'string') el.appendChild(document.createTextNode(child));
+        else if (child instanceof Node) el.appendChild(child);
+    });
+    return el;
+}
 
-// ── Storage ──────────────────────────────────────────────────
-const Storage = {
-  get(key, fallback = null) {
-    try { const v = localStorage.getItem("inverse_trig_" + key); return v ? JSON.parse(v) : fallback; }
-    catch { return fallback; }
-  },
-  set(key, value) {
-    try { localStorage.setItem("inverse_trig_" + key, JSON.stringify(value)); } catch {}
-  },
-  remove(key) { try { localStorage.removeItem("inverse_trig_" + key); } catch {} }
-};
+// ========================================
+// Copy to Clipboard
+// ========================================
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        showToast('Copied to clipboard!');
+        return true;
+    } catch {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Copied to clipboard!');
+        return true;
+    }
+}
 
-// ── Clipboard ────────────────────────────────────────────────
-const Clipboard = {
-  async copy(text) {
-    try { await navigator.clipboard.writeText(text); return true; }
-    catch { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); return true; }
-  }
-};
-
-// ── Toast ────────────────────────────────────────────────────
-const Toast = {
-  container: null,
-  init() {
-    if (this.container) return;
-    this.container = createEl("div", { id: "toast-container", className: "toast-container" });
-    document.body.appendChild(this.container);
-  },
-  show(message, type = "info", duration = 3000) {
-    this.init();
-    const toast = createEl("div", { className: `toast toast-${type}` });
+// ========================================
+// Toast Notification
+// ========================================
+function showToast(message, duration = 2000) {
+    let toast = $('#toast-notification');
+    if (!toast) {
+        toast = createElement('div', {
+            id: 'toast-notification',
+            style: 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:#1f2937;color:#fff;padding:0.75rem 1.5rem;border-radius:0.5rem;font-size:0.875rem;z-index:9999;transition:transform 0.3s ease;box-shadow:0 4px 6px rgba(0,0,0,0.1);'
+        });
+        document.body.appendChild(toast);
+    }
     toast.textContent = message;
-    this.container.appendChild(toast);
-    requestAnimationFrame(() => toast.classList.add("show"));
-    setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, duration);
-  }
-};
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(100px)';
+    }, duration);
+}
 
-// ── Number Formatting ────────────────────────────────────────
-const Num = {
-  format(n, decimals = 6) {
-    if (typeof n !== "number" || isNaN(n)) return "NaN";
-    if (!isFinite(n)) return n > 0 ? "Infinity" : "-Infinity";
-    const fixed = parseFloat(n.toFixed(decimals));
-    return fixed.toLocaleString("en-US", { maximumFractionDigits: decimals });
-  },
-  toScientific(n, decimals = 4) {
-    if (typeof n !== "number" || isNaN(n)) return "NaN";
-    if (n === 0) return "0";
-    if (!isFinite(n)) return n > 0 ? "Infinity" : "-Infinity";
-    return n.toExponential(decimals);
-  },
-  parseInput(str) {
-    const cleaned = str.replace(/,/g, "").trim();
-    if (cleaned === "") return NaN;
-    return Number(cleaned);
-  }
-};
+// ========================================
+// Number Formatting
+// ========================================
+function formatNumber(num, decimals = 6) {
+    if (isNaN(num) || num === null) return '0';
+    if (!isFinite(num)) return num > 0 ? 'Infinity' : '-Infinity';
+    return Number(num).toFixed(decimals).replace(/\.?0+$/, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
-// ── Math Utilities ───────────────────────────────────────────
-const MathUtil = {
-  degToRad(deg) { return deg * Math.PI / 180; },
-  radToDeg(rad) { return rad * 180 / Math.PI; },
-  clamp(val, min, max) { return Math.max(min, Math.min(max, val)); },
-  isNumeric(val) { return typeof val === "number" && !isNaN(val) && isFinite(val); }
-};
+// ========================================
+// Tool Init Helper
+// ========================================
+function initTool(toolInfo) {
+    if (toolInfo?.name) document.title = `${toolInfo.icon || '🛠️'} ${toolInfo.name} - Mini Tools`;
+}
 
-// ── String Utilities ─────────────────────────────────────────
-const Str = {
-  capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); },
-  truncate(s, len) { return s.length > len ? s.slice(0, len) + "..." : s; },
-  escapeHtml(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
-};
+// ========================================
+// TOOL LOGIC BELOW
+// ========================================
 
-// ── Date Utilities ───────────────────────────────────────────
-const DateUtil = {
-  now() { return new Date(); },
-  format(d = new Date()) { return d.toLocaleString(); }
-};
+/**
+ * Inverse Trigonometry Calculator
+ * Calculate arcsin, arccos, arctan, etc.
+ */
 
-// ── Color Utilities ──────────────────────────────────────────
-const Color = {
-  hexToRgb(hex) {
-    const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return r ? { r: parseInt(r[1], 16), g: parseInt(r[2], 16), b: parseInt(r[3], 16) } : null;
-  },
-  rgbToHex(r, g, b) { return "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join(""); },
-  randomHex() { return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0"); }
-};
+document.addEventListener('DOMContentLoaded', () => {
+    initTool({ name: 'Inverse Trigonometry Calculator', icon: '🔄' });
 
-// ── Random Utilities ─────────────────────────────────────────
-const Rand = {
-  int(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; },
-  float(min, max) { return Math.random() * (max - min) + min; },
-  pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-};
+    const inputValEl = $('#input-value');
+    const functionEl = $('#function');
+    const unitEl = $('#unit');
+    const calculateBtn = $('#calculate');
+    const clearBtn = $('#clear');
+    const copyBtn = $('#copy');
+    const outputEl = $('#output');
 
-// ── Debounce / Throttle ──────────────────────────────────────
-const debounce = (fn, delay = 300) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); }; };
-const throttle = (fn, limit = 300) => { let last = 0; return (...args) => { const now = Date.now(); if (now - last >= limit) { last = now; fn(...args); } }; };
+    function calculate() {
+        const valStr = inputValEl.value.trim();
+        if (valStr === '') {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Please enter a value</p>';
+            return;
+        }
 
-// ── Validation ───────────────────────────────────────────────
-const Validation = {
-  isRequired(val) { return val !== null && val !== undefined && String(val).trim() !== ""; },
-  isNumber(val) { return !isNaN(Number(val)) && isFinite(Number(val)); },
-  inRange(val, min, max) { const n = Number(val); return n >= min && n <= max; }
-};
+        const x = parseFloat(valStr);
+        const func = functionEl.value;
+        const unit = unitEl.value;
 
-// ── initTool Bootstrap ───────────────────────────────────────
-const initTool = (callback) => {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", callback);
-  } else {
-    callback();
-  }
-};
+        if (isNaN(x)) {
+            outputEl.innerHTML = '<p style="color:#ef4444;">Invalid number entered</p>';
+            return;
+        }
 
-// ═══════════════════════════════════════════════════════════════
-//  TOOL-SPECIFIC LOGIC: Inverse Trigonometry Calculator
-// ═══════════════════════════════════════════════════════════════
+        // Domain validation
+        if ((func === 'arcsin' || func === 'arccos') && (x < -1 || x > 1)) {
+            outputEl.innerHTML = `<p style="color:#ef4444;">Domain Error: ${func} requires input in range [-1, 1]</p>`;
+            return;
+        }
 
-const InverseTrigCalc = (() => {
-  const FUNCTIONS = [
-    { value: "arcsin", label: "arcsin (sin\u207B\u00B9)", range: "[-\u03C0/2, \u03C0/2]", domain: [-1, 1] },
-    { value: "arccos", label: "arccos (cos\u207B\u00B9)", range: "[0, \u03C0]", domain: [-1, 1] },
-    { value: "arctan", label: "arctan (tan\u207B\u00B9)", range: "(-\u03C0/2, \u03C0/2)", domain: [-Infinity, Infinity] }
-  ];
+        try {
+            let resultRad;
+            switch (func) {
+                case 'arcsin': resultRad = Math.asin(x); break;
+                case 'arccos': resultRad = Math.acos(x); break;
+                case 'arctan': resultRad = Math.atan(x); break;
+                case 'arccsc': resultRad = Math.asin(1/x); break;
+                case 'arcsec': resultRad = Math.acos(1/x); break;
+                case 'arccot': resultRad = Math.atan(1/x); break;
+                default: resultRad = 0;
+            }
 
-  const compute = (funcName, x, unit) => {
-    const func = FUNCTIONS.find(f => f.value === funcName);
-    if (!func) return { error: "Invalid function selected." };
+            if (isNaN(resultRad)) {
+                outputEl.innerHTML = '<p style="color:#ef4444;">Undefined result</p>';
+                return;
+            }
 
-    const numX = Num.parseInput(x);
-    if (!MathUtil.isNumeric(numX)) return { error: "Please enter a valid number." };
+            const resultDeg = resultRad * (180 / Math.PI);
+            
+            const displayValue = unit === 'radians' 
+                ? `${formatNumber(resultRad, 8)} rad`
+                : `${formatNumber(resultDeg, 4)}°`;
 
-    if (funcName !== "arctan") {
-      if (numX < -1 || numX > 1) {
-        return { error: `${funcName} requires input in range [-1, 1].` };
-      }
+            const funcLabels = {
+                arcsin: 'arcsin(x)',
+                arccos: 'arccos(x)',
+                arctan: 'arctan(x)',
+                arccsc: 'arccsc(x)',
+                arcsec: 'arcsec(x)',
+                arccot: 'arccot(x)'
+            };
+
+            outputEl.innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:0.875rem;color:#6b7280;margin-bottom:0.5rem;">${funcLabels[func]} for x = ${x}</div>
+                    <div style="font-size:2rem;font-weight:700;color:#2563eb;">${displayValue}</div>
+                    <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.5rem;">
+                        ${unit === 'radians' ? `${formatNumber(resultDeg, 4)}°` : `${formatNumber(resultRad, 8)} rad`}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            outputEl.innerHTML = `<p style="color:#ef4444;">Error: ${error.message}</p>`;
+        }
     }
 
-    let resultRad;
-    switch (funcName) {
-      case "arcsin": resultRad = Math.asin(numX); break;
-      case "arccos": resultRad = Math.acos(numX); break;
-      case "arctan": resultRad = Math.atan(numX); break;
+    function clear() {
+        inputValEl.value = '';
+        outputEl.innerHTML = '-';
+        inputValEl.focus();
     }
 
-    const resultDeg = MathUtil.radToDeg(resultRad);
+    calculateBtn.addEventListener('click', calculate);
+    clearBtn.addEventListener('click', clear);
 
-    return {
-      resultRad,
-      resultDeg,
-      displayRad: Num.format(resultRad),
-      displayDeg: Num.format(resultDeg),
-      range: func.range,
-      functionName: func.label,
-      input: numX
-    };
-  };
-
-  const buildUI = () => {
-    const container = createEl("div", { className: "inverse-trig-calc" });
-
-    // Input section
-    const inputGroup = createEl("div", { className: "input-group" });
-
-    const xLabel = createEl("label", { textContent: "Value (x):" });
-    const xInput = createEl("input", { type: "number", id: "it-x-input", placeholder: "Enter a number", step: "any" });
-
-    const funcLabel = createEl("label", { textContent: "Function:" });
-    const funcSelect = createEl("select", { id: "it-func-select" });
-    FUNCTIONS.forEach(f => {
-      const opt = createEl("option", { value: f.value, textContent: f.label });
-      funcSelect.appendChild(opt);
-    });
-
-    const unitLabel = createEl("label", { textContent: "Output Unit:" });
-    const unitSelect = createEl("select", { id: "it-unit-select" });
-    unitSelect.appendChild(createEl("option", { value: "both", textContent: "Both (Degrees & Radians)" }));
-    unitSelect.appendChild(createEl("option", { value: "degrees", textContent: "Degrees" }));
-    unitSelect.appendChild(createEl("option", { value: "radians", textContent: "Radians" }));
-
-    [xLabel, xInput, funcLabel, funcSelect, unitLabel, unitSelect].forEach(el => inputGroup.appendChild(el));
-    container.appendChild(inputGroup);
-
-    // Buttons
-    const btnGroup = createEl("div", { className: "btn-group" });
-    const calcBtn = createEl("button", { id: "it-calc-btn", className: "btn-primary", textContent: "Calculate" });
-    const clearBtn = createEl("button", { id: "it-clear-btn", className: "btn-secondary", textContent: "Clear" });
-    btnGroup.appendChild(calcBtn);
-    btnGroup.appendChild(clearBtn);
-    container.appendChild(btnGroup);
-
-    // Result
-    const resultDiv = createEl("div", { id: "it-result", className: "result-box", style: "display:none;" });
-    container.appendChild(resultDiv);
-
-    // History
-    const historyDiv = createEl("div", { id: "it-history", className: "history-box" });
-    const historyTitle = createEl("h3", { textContent: "History" });
-    const historyList = createEl("ul", { id: "it-history-list" });
-    historyDiv.appendChild(historyTitle);
-    historyDiv.appendChild(historyList);
-    container.appendChild(historyDiv);
-
-    return { container, xInput, funcSelect, unitSelect, calcBtn, clearBtn, resultDiv, historyList };
-  };
-
-  const attachEvents = (ui) => {
-    const doCalc = () => {
-      const x = ui.xInput.value;
-      const func = ui.funcSelect.value;
-      const unit = ui.unitSelect.value;
-
-      const result = compute(func, x, unit);
-
-      if (result.error) {
-        ui.resultDiv.style.display = "";
-        ui.resultDiv.innerHTML = `<div class="error">${Str.escapeHtml(result.error)}</div>`;
-        return;
-      }
-
-      ui.resultDiv.style.display = "";
-      let html = `<h3>Result</h3>`;
-      html += `<p><strong>${Str.escapeHtml(result.functionName)}(${Num.format(result.input)})</strong></p>`;
-
-      if (unit === "both" || unit === "radians") {
-        html += `<p><strong>Radians:</strong> ${result.displayRad} rad</p>`;
-      }
-      if (unit === "both" || unit === "degrees") {
-        html += `<p><strong>Degrees:</strong> ${result.displayDeg}\u00B0</p>`;
-      }
-      html += `<p class="info"><strong>Range:</strong> ${result.range}</p>`;
-
-      // Copy button
-      html += `<button class="btn-copy" id="it-copy-btn">Copy Result</button>`;
-
-      ui.resultDiv.innerHTML = html;
-
-      $("#it-copy-btn")?.addEventListener("click", () => {
-        Clipboard.copy(`${result.functionName}(${result.input}) = ${result.displayRad} rad = ${result.displayDeg}°`);
-        Toast.show("Result copied!", "success");
-      });
-
-      // Save to history
-      const history = Storage.get("history", []);
-      history.unshift({ func: result.functionName, input: result.input, rad: result.displayRad, deg: result.displayDeg, time: DateUtil.format() });
-      if (history.length > 20) history.pop();
-      Storage.set("history", history);
-      renderHistory(ui.historyList);
-    };
-
-    ui.calcBtn.addEventListener("click", doCalc);
-    ui.xInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doCalc(); });
-    ui.clearBtn.addEventListener("click", () => {
-      ui.xInput.value = "";
-      ui.resultDiv.style.display = "none";
-      ui.funcSelect.value = "arcsin";
-      ui.unitSelect.value = "both";
-    });
-
-    // Load saved unit preference
-    const savedUnit = Storage.get("unit", "both");
-    ui.unitSelect.value = savedUnit;
-    ui.unitSelect.addEventListener("change", () => Storage.set("unit", ui.unitSelect.value));
-
-    renderHistory(ui.historyList);
-  };
-
-  const renderHistory = (listEl) => {
-    const history = Storage.get("history", []);
-    listEl.innerHTML = "";
-    if (history.length === 0) {
-      listEl.appendChild(createEl("li", { className: "empty", textContent: "No calculations yet." }));
-      return;
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            const resultText = outputEl.innerText.split('\n').join(' ').trim();
+            if (resultText === '-') return;
+            copyToClipboard(`Inverse Trig: ${resultText}`);
+        });
     }
-    history.forEach(h => {
-      const li = createEl("li");
-      li.innerHTML = `<span class="hist-entry">${Str.escapeHtml(h.func)}(${Num.format(h.input)}) = ${h.displayRad || h.rad} rad</span><span class="hist-time">${Str.escapeHtml(h.time)}</span>`;
-      listEl.appendChild(li);
+
+    inputValEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculate();
     });
-  };
-
-  const init = () => {
-    const ui = buildUI();
-    const mount = document.getElementById("app") || document.body;
-    mount.appendChild(ui.container);
-    attachEvents(ui);
-  };
-
-  return { init, compute };
-})();
-
-// Bootstrap
-initTool(() => { InverseTrigCalc.init(); });
-
-// Expose for testing / external use
-if (typeof window !== "undefined") window.InverseTrigCalc = InverseTrigCalc;
+});

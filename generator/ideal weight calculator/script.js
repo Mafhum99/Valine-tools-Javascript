@@ -397,12 +397,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
-            const text = `Ideal Weight Calculator\n${outputEl.textContent}`;
+            const height = heightEl.value;
+            if (!height) return;
+            
+            const results = Array.from(outputEl.querySelectorAll('div > div > div > div:first-child'))
+                .filter(el => el.textContent && !el.textContent.includes('|'))
+                .map(el => {
+                    const name = el.textContent;
+                    const val = el.parentElement.nextElementSibling ? el.parentElement.nextElementSibling.textContent.trim() : '';
+                    return val ? `${name}: ${val}` : '';
+                }).filter(s => s).join('\n');
+                
+            const avg = outputEl.querySelector('div[style*="background:#eff6ff"] div:last-child')?.textContent || '';
+            
+            const text = `Ideal Weight Calculator\nHeight: ${height} ${unitEl.value}\n\n${results}\n\nAverage: ${avg}`;
             copyToClipboard(text);
         });
     }
 
-    document.addEventListener('keypress', (e) => {
+    heightEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') calculate();
     });
 });
