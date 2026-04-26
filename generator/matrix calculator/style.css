@@ -336,3 +336,59 @@ body {
     font-weight: 600;
     color: var(--primary);
 }
+.matrix-grid-a, .matrix-grid-b {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 0.5rem;
+    background: var(--gray-100);
+    border-radius: var(--radius);
+}
+
+.matrix-input {
+    width: 60px;
+    padding: 0.5rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-family: monospace;
+}
+
+.matrix-input:focus {
+    border-color: var(--primary);
+    outline: none;
+    background: var(--white);
+}
+
+.matrix-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.matrix-result-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.matrix-display {
+    display: inline-grid;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--white);
+    border-left: 2px solid var(--gray-800);
+    border-right: 2px solid var(--gray-800);
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.matrix-cell {
+    min-width: 50px;
+    text-align: center;
+    padding: 0.25rem;
+}
